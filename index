@@ -1,1 +1,752 @@
+<!DOCTYPE html>
 
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CB價格一頁通 | Rex大叔投資研究室</title>
+    <script src="https://unpkg.com/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <style>
+        :root { --primary: #c96442; --bg: #faf9f5; --text: #2c2c2c; --gray: #555; --border: #d8d8d8; --up: #e74c3c; --down: #27ae60; --clickable: #fff0e0; --clickable-hover: #ffe0c8; --clickable-border: #ffc8a0; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Microsoft JhengHei", sans-serif; background: var(--bg); color: var(--text); font-size: 16px; line-height: 1.6; }
+        .container { max-width: 900px; margin: 0 auto; padding: 12px; }
+        @media(min-width: 1024px) { .container { max-width: 1200px; padding: 20px; } }
+
+```
+    .loading { position: fixed; top:0; left:0; right:0; bottom:0; background: var(--bg); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .loading.hidden { display: none; }
+    .spinner { width: 40px; height: 40px; border: 3px solid #e0e0e0; border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .header { text-align: center; padding: 20px 0; border-bottom: 1px solid var(--border); margin-bottom: 16px; }
+    .header h1 { color: var(--primary); font-size: 24px; font-weight: 800; }
+    .header .subtitle { color: var(--gray); font-size: 14px; margin-top: 5px; }
+
+    /* 子功能標籤 */
+    .sub-tabs { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; justify-content: center; }
+    .sub-tab { padding: 8px 18px; border-radius: 20px; font-size: 14px; font-weight: 600; cursor: pointer; border: 1px solid var(--clickable-border); background: var(--clickable); color: #333; transition: all 0.2s; }
+    .sub-tab:hover { border-color: var(--primary); background: var(--clickable-hover); }
+    .sub-tab.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+    .stats-box { background: linear-gradient(135deg, #fff8f0 0%, #fff0e5 100%); border-radius: 14px; padding: 18px; margin-bottom: 18px; border: 1px solid #ffd8c0; }
+    .section-title { font-size: 16px; font-weight: 700; color: #2c2c2c; margin: 16px 0 12px; padding-left: 10px; border-left: 4px solid var(--primary); }
+    .section-title:first-child { margin-top: 0; }
+
+    .stats-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+    .stat-item { background: #fff; padding: 10px 16px; border-radius: 8px; text-align: center; border: 1px solid #d0d0d0; min-width: 80px; }
+    .stat-item.clickable { cursor: pointer; transition: all 0.2s; background: var(--clickable); border-color: var(--clickable-border); }
+    .stat-item.clickable:hover { border-color: var(--primary); background: var(--clickable-hover); }
+    .stat-item.clickable.active { background: #27ae60; border-color: #27ae60; }
+    .stat-item.clickable.active .stat-num, .stat-item.clickable.active .stat-label { color: #fff; }
+    .stat-num { font-size: 22px; font-weight: 800; color: var(--primary); font-family: 'Menlo', monospace; }
+    .stat-label { font-size: 13px; color: #333; margin-top: 3px; }
+
+    /* 產業標籤 - 垂直長條按鈕（如主檔設計） */
+    .ind-grid { display: flex; flex-direction: column; gap: 8px; }
+    .ind-tag { display: flex; align-items: center; gap: 12px; padding: 14px 18px; background: var(--clickable); border: 1px solid var(--clickable-border); border-radius: 12px; cursor: pointer; font-size: 16px; font-weight: 600; color: #2c2c2c; transition: all 0.2s; }
+    .ind-tag:hover { border-color: var(--primary); background: var(--clickable-hover); }
+    .ind-tag.active { background: #27ae60; color: #fff; border-color: #27ae60; }
+    .ind-tag .emoji { font-size: 20px; }
+    .ind-tag .name { flex: 1; }
+    .ind-tag .num { background: rgba(0,0,0,0.08); padding: 4px 14px; border-radius: 12px; font-size: 15px; font-weight: 700; font-family: 'Menlo', monospace; color: var(--primary); min-width: 50px; text-align: center; }
+    .ind-tag.active .num { background: rgba(255,255,255,0.3); color: #fff; }
+
+    .year-btns { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    @media(min-width: 500px) { .year-btns { grid-template-columns: repeat(4, 1fr); } }
+    @media(min-width: 768px) { .year-btns { grid-template-columns: repeat(6, 1fr); } }
+    .year-btn { display: flex; align-items: center; justify-content: center; gap: 4px; padding: 10px 8px; background: var(--clickable); border: 1px solid var(--clickable-border); border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; color: #2c2c2c; transition: all 0.2s; }
+    .year-btn:hover { border-color: var(--primary); background: var(--clickable-hover); }
+    .year-btn.active { background: #27ae60; color: #fff; border-color: #27ae60; }
+    .year-btn.loading { opacity: 0.6; pointer-events: none; }
+
+    /* 上傳提示區塊 */
+    .upload-hint { background: linear-gradient(135deg, #fff5e0, #fffbe8); padding: 20px; border-radius: 12px; margin: 16px 0; border: 2px dashed #ffc966; text-align: center; }
+    .upload-hint .hint-icon { font-size: 36px; margin-bottom: 8px; }
+    .upload-hint .hint-text { color: #d35400; font-size: 15px; margin-bottom: 14px; }
+    .upload-hint .upload-btn { display: inline-block; background: var(--primary); color: #fff; padding: 10px 24px; border-radius: 20px; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .upload-hint .upload-btn:hover { background: #d35400; transform: scale(1.02); }
+
+    .search-box { margin-bottom: 16px; }
+    .search-input { width: 100%; padding: 12px 16px; border-radius: 10px; border: 2px solid var(--border); font-size: 16px; outline: none; }
+    .search-input:focus { border-color: var(--primary); }
+
+    /* 篩選狀態列 */
+    .filter-status { background: linear-gradient(90deg, #fff5e0, #fffbe8); padding: 12px 18px; border-radius: 10px; margin-bottom: 14px; border: 1px solid #ffd080; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+    .filter-status .status-text { font-size: 15px; color: #e65100; font-weight: 600; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .filter-status .status-tag { background: var(--primary); color: #fff; padding: 4px 12px; border-radius: 12px; font-size: 14px; }
+    .filter-status .status-count { color: #2c2c2c; }
+    .filter-status .status-count b { color: var(--primary); font-size: 18px; }
+    .filter-status .status-clear { background: var(--clickable); border: 1px solid var(--clickable-border); color: #555; padding: 6px 14px; border-radius: 16px; font-size: 14px; cursor: pointer; transition: all 0.2s; }
+    .filter-status .status-clear:hover { background: #e74c3c; color: #fff; border-color: #e74c3c; }
+
+    /* 圖/表切換 + 時間區間 */
+    .control-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; }
+    .view-tabs { display: flex; gap: 6px; }
+    .view-tab { padding: 6px 14px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid var(--border); background: #fff; color: #555; }
+    .view-tab:hover { border-color: var(--primary); }
+    .view-tab.active { background: #e67e22; color: #fff; border-color: #e67e22; }
+    .period-tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+    .period-tab { padding: 5px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; border: 1px solid var(--border); background: #fff; color: #555; }
+    .period-tab:hover { border-color: var(--primary); }
+    .period-tab.active { background: #3498db; color: #fff; border-color: #3498db; }
+
+    /* 走勢圖區域 */
+    .chart-area { background: #fff; border-radius: 10px; border: 1px solid var(--border); padding: 16px; margin-bottom: 16px; min-height: 250px; display: flex; align-items: center; justify-content: center; }
+    .chart-placeholder { text-align: center; color: #999; }
+    .chart-placeholder .icon { font-size: 48px; margin-bottom: 10px; }
+
+    .table-wrap { overflow-x: auto; background: #fff; border-radius: 10px; border: 1px solid var(--border); }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #eee; }
+    th { background: #f8f8f8; font-weight: 600; position: sticky; top: 0; }
+    tr:hover { background: #fafafa; cursor: pointer; }
+    .code { color: var(--primary); font-weight: 600; }
+    .up { color: var(--up); }
+    .down { color: var(--down); }
+    .text-right { text-align: right; }
+    .text-center { text-align: center; }
+    @media(max-width: 600px) { .hide-mobile { display: none; } }
+
+    .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
+    .modal.show { display: flex; }
+    .modal-content { background: #fff; border-radius: 14px; max-width: 700px; width: 100%; max-height: 85vh; overflow: hidden; display: flex; flex-direction: column; }
+    .modal-header { padding: 16px 20px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+    .modal-header h3 { font-size: 18px; color: var(--primary); }
+    .modal-close { width: 32px; height: 32px; border-radius: 50%; border: none; background: #f0f0f0; font-size: 18px; cursor: pointer; }
+    .modal-body { padding: 16px 20px; overflow-y: auto; flex: 1; }
+    .modal-stats { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+    .modal-stat { background: linear-gradient(135deg, #fff8f0, #fff0e5); padding: 12px 16px; border-radius: 10px; text-align: center; min-width: 80px; }
+    .modal-stat .val { font-size: 20px; font-weight: 700; color: var(--primary); }
+    .modal-stat .lbl { font-size: 12px; color: #666; }
+
+    .hidden { display: none !important; }
+</style>
+```
+
+</head>
+<body>
+
+<div class="loading" id="loading">
+    <div class="spinner"></div>
+    <div id="loadStatus">準備中...</div>
+</div>
+
+<div class="container">
+    <div class="header">
+        <h1>📈 CB價格一頁通</h1>
+        <div class="subtitle">可轉債歷史價格查詢系統 | Rex大叔投資研究室</div>
+    </div>
+
+```
+<!-- 子功能標籤 -->
+<div class="sub-tabs" id="subTabs">
+    <div class="sub-tab active" onclick="setMode('stock')">🔍 個股查詢</div>
+    <div class="sub-tab" onclick="setMode('industry')">🏭 產業查詢</div>
+    <div class="sub-tab" onclick="setMode('overall')">📊 整體查詢</div>
+</div>
+
+<div class="stats-box" id="statsBox">
+    <!-- 動態渲染 -->
+</div>
+
+<!-- 篩選狀態列 -->
+<div class="filter-status hidden" id="filterStatus">
+    <div class="status-text">
+        <span>🔍 篩選條件：</span>
+        <span class="status-tag" id="filterTag"></span>
+        <span class="status-count">符合 <b id="filterCount">0</b> 筆</span>
+    </div>
+    <button class="status-clear" onclick="clearFilter()">✕ 清除篩選</button>
+</div>
+
+<div class="search-box">
+    <input type="text" class="search-input" id="search" placeholder="搜尋CB代號、名稱、產業..." oninput="renderTable()">
+</div>
+
+<!-- 圖/表切換 + 時間區間 -->
+<div class="control-row">
+    <div class="view-tabs">
+        <div class="view-tab active" onclick="setView('table')">📋 表格</div>
+        <div class="view-tab" onclick="setView('chart')">📈 走勢圖</div>
+    </div>
+    <div class="period-tabs">
+        <div class="period-tab" onclick="setPeriod('3m')">3個月</div>
+        <div class="period-tab" onclick="setPeriod('6m')">6個月</div>
+        <div class="period-tab active" onclick="setPeriod('1y')">1年</div>
+        <div class="period-tab" onclick="setPeriod('2y')">2年</div>
+        <div class="period-tab" onclick="setPeriod('3y')">3年</div>
+        <div class="period-tab" onclick="setPeriod('all')">全部</div>
+    </div>
+</div>
+
+<!-- 走勢圖區域 -->
+<div class="chart-area hidden" id="chartArea">
+    <div class="chart-placeholder">
+        <div class="icon">📊</div>
+        <div>請先選擇CB查看走勢圖</div>
+        <div style="font-size:13px;margin-top:5px">點擊表格中的CB代號</div>
+    </div>
+</div>
+
+<!-- 表格區域 -->
+<div class="table-wrap" id="tableArea">
+    <table>
+        <thead>
+            <tr>
+                <th>CB代號</th>
+                <th>CB名稱</th>
+                <th class="hide-mobile">產業</th>
+                <th class="text-center">筆數</th>
+                <th class="hide-mobile">首日</th>
+                <th class="hide-mobile">末日</th>
+                <th class="text-right">最高</th>
+                <th class="text-right">最低</th>
+                <th class="text-right">末收盤</th>
+                <th class="text-right">漲跌%</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+    </table>
+</div>
+```
+
+</div>
+
+<!-- 彈窗 -->
+
+<div class="modal" id="modal" onclick="if(event.target===this)closeModal()">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="modalTitle">CB明細</h3>
+            <button class="modal-close" onclick="closeModal()">✕</button>
+        </div>
+        <div class="modal-body" id="modalBody"></div>
+    </div>
+</div>
+
+<script>
+const FILES = { CBPRICE_BASE: 'data/cbprice/' };
+const DB = { cbPrice: {}, cbPriceYears: {}, cbInfo: {} };
+const META = { industries: {}, guarantees: { '有擔保': 0, '無擔保': 0 }, cbInfoLoaded: false };
+const currentYear = new Date().getFullYear();
+const availableYears = [];
+for(let y = 2015; y <= currentYear; y++) availableYears.push(y);
+
+let MODE = 'stock';      // stock, industry, overall
+let VIEW = 'table';      // table, chart
+let PERIOD = '1y';       // 3m, 6m, 1y, 2y, 3y, all
+let FILTER = { industry: '', guarantee: '' };
+
+// 產業Emoji對照（使用簡化產業名稱）
+function industryEmoji(ind) {
+    const map = {
+        '半導體業': '🔬', '零組件業': '⚡', '光電產業': '💡', '電腦週邊': '💻',
+        '通信網路': '📡', '電子通路': '🔌', '其他電子': '📱', '資訊服務': '🖥️',
+        '生技醫療': '🧬', '化工產業': '🧪', '塑膠產業': '🎨', '紡織纖維': '🧵',
+        '電機機械': '⚙️', '鋼鐵產業': '🔩', '汽車產業': '🚗', '航運產業': '🚢',
+        '觀光餐旅': '🏨', '金融保險': '🏦', '建材營造': '🏗️', '食品產業': '🍜',
+        '貿易百貨': '🛒', '油電燃氣': '⛽', '文化創意': '🎬', '其他傳產': '📦',
+        '電器電纜': '🔋', '造紙產業': '📄', '水泥產業': '🧱', '農業科技': '🌾'
+    };
+    return map[ind] || '📦';
+}
+
+// 數字補空格對齊
+function padNum(n) {
+    const s = String(n);
+    return s.length < 3 ? '\u00A0'.repeat(3 - s.length) + s : s;
+}
+
+function setMode(m) {
+    MODE = m;
+    document.querySelectorAll('.sub-tab').forEach(t => t.classList.toggle('active', t.textContent.includes(
+        m === 'stock' ? '個股' : m === 'industry' ? '產業' : '整體'
+    )));
+    renderStatsBox();
+    renderTable();
+}
+
+function setView(v) {
+    VIEW = v;
+    document.querySelectorAll('.view-tab').forEach((t,i) => t.classList.toggle('active', ['table','chart'][i] === v));
+    document.getElementById('tableArea').classList.toggle('hidden', v !== 'table');
+    document.getElementById('chartArea').classList.toggle('hidden', v !== 'chart');
+}
+
+function setPeriod(p) {
+    PERIOD = p;
+    document.querySelectorAll('.period-tab').forEach(t => {
+        const txt = t.textContent;
+        t.classList.toggle('active', 
+            (p === '3m' && txt === '3個月') || (p === '6m' && txt === '6個月') ||
+            (p === '1y' && txt === '1年') || (p === '2y' && txt === '2年') ||
+            (p === '3y' && txt === '3年') || (p === 'all' && txt === '全部')
+        );
+    });
+    renderTable();
+}
+
+function setFilter(type, value) {
+    if(FILTER[type] === value) {
+        FILTER[type] = ''; // 取消篩選
+    } else {
+        FILTER[type] = value;
+    }
+    renderStatsBox();
+    updateFilterStatus();
+    renderTable();
+}
+
+function clearFilter() {
+    FILTER = { industry: '', guarantee: '' };
+    renderStatsBox();
+    updateFilterStatus();
+    renderTable();
+}
+
+function updateFilterStatus() {
+    const el = document.getElementById('filterStatus');
+    const hasFilter = FILTER.industry || FILTER.guarantee;
+    el.classList.toggle('hidden', !hasFilter);
+    
+    if(hasFilter) {
+        const tags = [];
+        if(FILTER.industry) tags.push(FILTER.industry);
+        if(FILTER.guarantee) tags.push(FILTER.guarantee);
+        document.getElementById('filterTag').textContent = tags.join(' + ');
+    }
+}
+
+async function init() {
+    document.getElementById('loadStatus').innerText = '載入CB基本資料...';
+    await loadCbInfo();
+    renderYearBtns();
+    renderStatsBox();
+    document.getElementById('loading').classList.add('hidden');
+}
+
+async function loadCbInfo() {
+    // 嘗試多個路徑
+    const paths = ['00_CB.xlsx', 'data/00_CB.xlsx', '../00_CB.xlsx'];
+    
+    for(const path of paths) {
+        try {
+            const res = await fetch(path);
+            if(!res.ok) continue;
+            const wb = XLSX.read(await res.arrayBuffer(), {type: 'array'});
+            
+            // 工作表名稱：優先使用「01」
+            const sheetNames = ['01', '01_ALLCB基本資料', '02', wb.SheetNames[0]].filter(s => s && wb.Sheets[s]);
+            
+            sheetNames.forEach(sn => {
+                const sheet = wb.Sheets[sn];
+                if(!sheet) return;
+                XLSX.utils.sheet_to_json(sheet).forEach(r => {
+                    const code = String(r['CB代號'] || r['代號'] || '').trim();
+                    if(!code || code.length < 4) return;
+                    
+                    // L欄：產業分類
+                    const industry = r['產業分類'] || r['產業'] || '其他';
+                    const simpleIndustry = simplifyIndustry(industry);
+                    
+                    const guarVal = r['擔保'] || '';
+                    const guarantee = (guarVal === '有擔保' || guarVal === 'Y' || guarVal === '有') ? '有擔保' : '無擔保';
+                    
+                    const methodVal = r['發行方式'] || '';
+                    const method = methodVal.includes('競') ? '競拍' : (methodVal.includes('詢') ? '詢圈' : '');
+                    
+                    DB.cbInfo[code] = {
+                        name: r['CB簡稱'] || r['名稱'] || '',
+                        stockCode: String(r['股票代號'] || '').replace(/\.0$/, ''),
+                        stockName: r['標的簡稱'] || '',
+                        industry: simpleIndustry,
+                        convPrice: parseFloat(r['轉換價格'] || r['轉換價格(元)']) || 0,
+                        guarantee: guarantee,
+                        method: method
+                    };
+                    
+                    // 統計產業
+                    META.industries[simpleIndustry] = (META.industries[simpleIndustry] || 0) + 1;
+                    // 統計擔保
+                    META.guarantees[guarantee] = (META.guarantees[guarantee] || 0) + 1;
+                });
+            });
+            
+            if(Object.keys(DB.cbInfo).length > 0) {
+                META.cbInfoLoaded = true;
+                console.log('CB資料載入成功:', path, Object.keys(DB.cbInfo).length, '筆');
+                return;
+            }
+        } catch(e) { 
+            console.log('載入失敗:', path, e.message);
+        }
+    }
+}
+
+// 產業名稱簡化對照（與主檔一致）
+function simplifyIndustry(ind) {
+    const map = {
+        '光電業': '光電產業', '其他業': '其他傳產', '其他業電子業': '其他電子',
+        '其他電子業': '其他電子', '化學工業': '化工產業', '半導體業': '半導體業',
+        '塑膠工業': '塑膠產業', '建材營造業': '建材營造', '文化創意業': '文化創意',
+        '橡膠工業': '其他傳產', '水泥工業': '水泥產業', '汽車工業': '汽車產業',
+        '油電燃氣業': '油電燃氣', '玻璃陶瓷': '其他傳產', '生技醫療業': '生技醫療',
+        '紡織纖維': '紡織纖維', '航運業': '航運產業', '觀光餐旅': '觀光餐旅',
+        '證券業': '金融保險', '貿易百貨業': '貿易百貨', '資訊服務業': '資訊服務',
+        '農業科技業': '農業科技', '通信網路業': '通信網路', '造紙工業': '造紙產業',
+        '金控業': '金融保險', '銀行業': '金融保險', '鋼鐵工業': '鋼鐵產業',
+        '電器電纜': '電器電纜', '電子通路業': '電子通路', '電子零組件業': '零組件業',
+        '電機機械': '電機機械', '電腦及週邊設備業': '電腦週邊', '食品工業': '食品產業'
+    };
+    return map[ind] || ind || '其他傳產';
+}
+
+function renderStatsBox() {
+    const codes = Object.keys(DB.cbPrice);
+    let totalRecords = 0;
+    codes.forEach(c => totalRecords += DB.cbPrice[c].length);
+    const loadedYears = Object.keys(DB.cbPriceYears).length;
+    const sortedIndustries = Object.entries(META.industries).sort((a,b) => b[1]-a[1]);
+    const cbInfoCnt = Object.keys(DB.cbInfo).length;
+    
+    let html = `
+        <div class="section-title">📊 統計數據</div>
+        <div class="stats-grid">
+            <div class="stat-item"><div class="stat-num">${cbInfoCnt}</div><div class="stat-label">全部CB</div></div>
+            <div class="stat-item"><div class="stat-num">${codes.length}</div><div class="stat-label">已載入CB</div></div>
+            <div class="stat-item"><div class="stat-num">${loadedYears}</div><div class="stat-label">已載入年度</div></div>
+            <div class="stat-item clickable ${FILTER.guarantee === '有擔保' ? 'active' : ''}" onclick="setFilter('guarantee', '有擔保')"><div class="stat-num">${padNum(META.guarantees['有擔保'])}</div><div class="stat-label">有擔保</div></div>
+            <div class="stat-item clickable ${FILTER.guarantee === '無擔保' ? 'active' : ''}" onclick="setFilter('guarantee', '無擔保')"><div class="stat-num">${padNum(META.guarantees['無擔保'])}</div><div class="stat-label">無擔保</div></div>
+        </div>
+    `;
+    
+    // 如果沒載入CB資料，顯示上傳按鈕
+    if(cbInfoCnt === 0) {
+        html += `
+            <div class="upload-hint">
+                <div class="hint-icon">📂</div>
+                <div class="hint-text">請上傳 00_CB.xlsx 以載入CB基本資料與產業分類</div>
+                <label class="upload-btn">
+                    <input type="file" accept=".xlsx,.xls" onchange="handleCbUpload(this)" style="display:none">
+                    📤 選擇檔案
+                </label>
+            </div>
+        `;
+    }
+    
+    html += `
+        <div class="section-title">📅 選擇年度載入</div>
+        <div class="year-btns" id="yearBtns"></div>
+    `;
+    
+    // 產業標籤區塊（有資料時直接顯示）
+    if(sortedIndustries.length > 0) {
+        html += `
+            <div class="section-title">📊 各產業CB分佈</div>
+            <div class="ind-grid">
+                ${sortedIndustries.map(([ind, cnt]) => `
+                    <div class="ind-tag ${FILTER.industry === ind ? 'active' : ''}" onclick="setFilter('industry', '${ind}')">
+                        <span class="emoji">${industryEmoji(ind)}</span>
+                        <span class="name">${ind}</span>
+                        <span class="num">${cnt}</span>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+    }
+    
+    document.getElementById('statsBox').innerHTML = html;
+    renderYearBtns();
+}
+
+// 處理上傳 00_CB.xlsx
+async function handleCbUpload(input) {
+    const file = input.files[0];
+    if(!file) return;
+    
+    try {
+        const data = await file.arrayBuffer();
+        const wb = XLSX.read(data, {type: 'array'});
+        
+        // 嘗試讀取「01」工作表
+        const sheetNames = ['01', '01_ALLCB基本資料', wb.SheetNames[0]].filter(s => s && wb.Sheets[s]);
+        
+        sheetNames.forEach(sn => {
+            const sheet = wb.Sheets[sn];
+            if(!sheet) return;
+            XLSX.utils.sheet_to_json(sheet).forEach(r => {
+                const code = String(r['CB代號'] || r['代號'] || '').trim();
+                if(!code || code.length < 4) return;
+                
+                // L欄：產業分類
+                const industry = r['產業分類'] || r['產業'] || '其他';
+                const simpleIndustry = simplifyIndustry(industry);
+                
+                const guarVal = r['擔保'] || '';
+                const guarantee = (guarVal === '有擔保' || guarVal === 'Y' || guarVal === '有') ? '有擔保' : '無擔保';
+                
+                const methodVal = r['發行方式'] || '';
+                const method = methodVal.includes('競') ? '競拍' : (methodVal.includes('詢') ? '詢圈' : '');
+                
+                DB.cbInfo[code] = {
+                    name: r['CB簡稱'] || r['名稱'] || '',
+                    stockCode: String(r['股票代號'] || '').replace(/\.0$/, ''),
+                    stockName: r['標的簡稱'] || '',
+                    industry: simpleIndustry,
+                    convPrice: parseFloat(r['轉換價格'] || r['轉換價格(元)']) || 0,
+                    guarantee: guarantee,
+                    method: method
+                };
+                
+                META.industries[simpleIndustry] = (META.industries[simpleIndustry] || 0) + 1;
+                META.guarantees[guarantee] = (META.guarantees[guarantee] || 0) + 1;
+            });
+        });
+        
+        if(Object.keys(DB.cbInfo).length > 0) {
+            META.cbInfoLoaded = true;
+            console.log('上傳成功:', Object.keys(DB.cbInfo).length, '筆CB');
+            renderStatsBox();
+            renderTable();
+        } else {
+            alert('無法解析檔案，請確認是否為正確的 00_CB.xlsx');
+        }
+    } catch(e) {
+        console.error('上傳失敗:', e);
+        alert('檔案讀取失敗：' + e.message);
+    }
+}
+
+function renderYearBtns() {
+    const container = document.getElementById('yearBtns');
+    if(!container) return;
+    container.innerHTML = availableYears.map(y => `
+        <div class="year-btn ${DB.cbPriceYears[y] ? 'active' : ''}" id="btn${y}" onclick="loadYear(${y})">
+            ${DB.cbPriceYears[y] ? '✅' : '📁'} ${y}
+        </div>
+    `).join('');
+}
+
+async function loadYear(year) {
+    if(DB.cbPriceYears[year]) return;
+    const btn = document.getElementById('btn' + year);
+    btn.classList.add('loading');
+    btn.innerHTML = '⏳ 載入中...';
+    
+    const urls = [FILES.CBPRICE_BASE + `CB_price_${year}_cleaned.xlsx`, FILES.CBPRICE_BASE + `CB_price_${year}.xlsx`];
+    let success = false;
+    for(const url of urls) {
+        try {
+            const res = await fetch(url);
+            if(!res.ok) continue;
+            const wb = XLSX.read(await res.arrayBuffer(), {type: 'array'});
+            parseWorkbook(wb);
+            success = true;
+            break;
+        } catch(e) {}
+    }
+    
+    if(success) {
+        DB.cbPriceYears[year] = true;
+        renderStatsBox();
+        renderTable();
+    } else {
+        alert(`載入 ${year} 年度失敗`);
+        btn.classList.remove('loading');
+        btn.innerHTML = `📁 ${year}`;
+    }
+}
+
+function parseWorkbook(wb) {
+    wb.SheetNames.forEach(sn => {
+        if(!/^\d{8}$/.test(sn.trim())) return;
+        const ds = sn.trim();
+        const fd = `${ds.substring(0,4)}/${ds.substring(4,6)}/${ds.substring(6,8)}`;
+        XLSX.utils.sheet_to_json(wb.Sheets[sn]).forEach(r => {
+            const code = String(r['代號'] || '').trim();
+            const close = parseFloat(r['收市']) || 0;
+            if(!code || close <= 0) return;
+            if(!DB.cbPrice[code]) DB.cbPrice[code] = [];
+            DB.cbPrice[code].push({
+                date: fd, dateNum: parseInt(ds),
+                open: parseFloat(r['開市']) || close,
+                high: parseFloat(r['最高']) || close,
+                low: parseFloat(r['最低']) || close,
+                close: close,
+                change: parseFloat(r['漲跌']) || 0,
+                vol: parseFloat(r['單位']) || 0
+            });
+        });
+    });
+    Object.keys(DB.cbPrice).forEach(c => DB.cbPrice[c].sort((a, b) => a.dateNum - b.dateNum));
+}
+
+// 根據時間區間篩選價格資料
+function filterByPeriod(prices) {
+    if(PERIOD === 'all' || !prices.length) return prices;
+    
+    const now = new Date();
+    let cutoffDate;
+    switch(PERIOD) {
+        case '3m': cutoffDate = new Date(now.setMonth(now.getMonth() - 3)); break;
+        case '6m': cutoffDate = new Date(now.setMonth(now.getMonth() - 6)); break;
+        case '1y': cutoffDate = new Date(now.setFullYear(now.getFullYear() - 1)); break;
+        case '2y': cutoffDate = new Date(now.setFullYear(now.getFullYear() - 2)); break;
+        case '3y': cutoffDate = new Date(now.setFullYear(now.getFullYear() - 3)); break;
+        default: return prices;
+    }
+    
+    const cutoffNum = parseInt(cutoffDate.toISOString().slice(0,10).replace(/-/g, ''));
+    return prices.filter(p => p.dateNum >= cutoffNum);
+}
+
+function renderTable() {
+    const q = document.getElementById('search').value.toLowerCase().trim();
+    const codes = Object.keys(DB.cbPrice).sort();
+    
+    // 篩選
+    const filtered = codes.filter(c => {
+        const info = DB.cbInfo[c] || {};
+        
+        // 搜尋條件
+        const matchSearch = !q || c.toLowerCase().includes(q) || 
+            (info.name||'').toLowerCase().includes(q) || 
+            (info.industry||'').toLowerCase().includes(q);
+        
+        // 產業篩選
+        const matchIndustry = !FILTER.industry || (info.industry || '') === FILTER.industry;
+        
+        // 擔保篩選
+        const matchGuarantee = !FILTER.guarantee || (info.guarantee || '') === FILTER.guarantee;
+        
+        return matchSearch && matchIndustry && matchGuarantee;
+    });
+    
+    // 更新篩選計數
+    document.getElementById('filterCount').textContent = filtered.length;
+    
+    if(filtered.length === 0) {
+        document.getElementById('tableBody').innerHTML = `<tr><td colspan="10" style="text-align:center;padding:40px;color:#999">${codes.length === 0 ? '請先點擊上方年度按鈕載入資料' : '無符合條件的CB'}</td></tr>`;
+        return;
+    }
+    
+    document.getElementById('tableBody').innerHTML = filtered.slice(0, 300).map(code => {
+        const allPrices = DB.cbPrice[code];
+        const p = filterByPeriod(allPrices);
+        if(p.length === 0) return '';
+        
+        const info = DB.cbInfo[code] || {};
+        const first = p[0], last = p[p.length - 1];
+        const high = Math.max(...p.map(x => x.high)), low = Math.min(...p.map(x => x.low));
+        const chg = last.close - first.close, pct = first.close > 0 ? (chg / first.close * 100) : 0;
+        
+        return `<tr onclick="openDetail('${code}')">
+            <td class="code">${code}</td>
+            <td>${info.name || '-'}</td>
+            <td class="hide-mobile">${info.industry || '-'}</td>
+            <td class="text-center">${p.length}</td>
+            <td class="hide-mobile">${first.date}</td>
+            <td class="hide-mobile">${last.date}</td>
+            <td class="text-right">${high.toFixed(2)}</td>
+            <td class="text-right">${low.toFixed(2)}</td>
+            <td class="text-right">${last.close.toFixed(2)}</td>
+            <td class="text-right ${chg >= 0 ? 'up' : 'down'}">${chg >= 0 ? '+' : ''}${pct.toFixed(1)}%</td>
+        </tr>`;
+    }).filter(r => r).join('');
+}
+
+function openDetail(code) {
+    const allPrices = DB.cbPrice[code];
+    if(!allPrices) return;
+    
+    const p = filterByPeriod(allPrices);
+    if(p.length === 0) return;
+    
+    const info = DB.cbInfo[code] || {};
+    const first = p[0], last = p[p.length - 1];
+    const high = Math.max(...p.map(x => x.high)), low = Math.min(...p.map(x => x.low));
+    
+    document.getElementById('modalTitle').innerText = info.name ? `${info.name} (${code})` : code;
+    
+    let html = `
+        <div style="font-size:13px;color:#666;margin-bottom:12px">
+            ${info.stockName ? `標的: ${info.stockName}(${info.stockCode})` : ''}
+            ${info.industry ? ` | 產業: ${info.industry}` : ''}
+            ${info.convPrice ? ` | 轉換價: ${info.convPrice}元` : ''}
+            ${info.guarantee ? ` | ${info.guarantee}` : ''}
+        </div>
+        <div class="modal-stats">
+            <div class="modal-stat"><div class="val">${high.toFixed(2)}</div><div class="lbl">期間最高</div></div>
+            <div class="modal-stat"><div class="val">${low.toFixed(2)}</div><div class="lbl">期間最低</div></div>
+            <div class="modal-stat"><div class="val">${last.close.toFixed(2)}</div><div class="lbl">最新收盤</div></div>
+            <div class="modal-stat"><div class="val">${p.length}</div><div class="lbl">資料筆數</div></div>
+        </div>
+        
+        <!-- 彈窗內的圖/表切換 -->
+        <div class="view-tabs" style="margin-bottom:12px">
+            <div class="view-tab active" onclick="showModalView('table','${code}')">📋 表格</div>
+            <div class="view-tab" onclick="showModalView('chart','${code}')">📈 走勢圖</div>
+        </div>
+        <div class="period-tabs" style="margin-bottom:12px">
+            <div class="period-tab ${PERIOD==='3m'?'active':''}" onclick="setModalPeriod('3m','${code}')">3個月</div>
+            <div class="period-tab ${PERIOD==='6m'?'active':''}" onclick="setModalPeriod('6m','${code}')">6個月</div>
+            <div class="period-tab ${PERIOD==='1y'?'active':''}" onclick="setModalPeriod('1y','${code}')">1年</div>
+            <div class="period-tab ${PERIOD==='2y'?'active':''}" onclick="setModalPeriod('2y','${code}')">2年</div>
+            <div class="period-tab ${PERIOD==='3y'?'active':''}" onclick="setModalPeriod('3y','${code}')">3年</div>
+            <div class="period-tab ${PERIOD==='all'?'active':''}" onclick="setModalPeriod('all','${code}')">全部</div>
+        </div>
+        
+        <!-- 走勢圖佔位 -->
+        <div id="modalChart" class="chart-area hidden" style="min-height:200px;margin-bottom:12px">
+            <div class="chart-placeholder">
+                <div class="icon">📈</div>
+                <div>走勢圖功能開發中</div>
+            </div>
+        </div>
+        
+        <!-- 表格 -->
+        <div id="modalTable">
+            <div style="font-size:13px;color:#666;margin-bottom:10px">價格期間: ${first.date} ~ ${last.date}</div>
+            <div class="table-wrap" style="max-height:300px;overflow-y:auto"><table>
+                <thead><tr><th>日期</th><th class="text-right">開盤</th><th class="text-right">最高</th><th class="text-right">最低</th><th class="text-right">收盤</th><th class="text-right">漲跌</th><th class="text-right">張數</th></tr></thead>
+                <tbody>`;
+    
+    [...p].reverse().slice(0, 100).forEach(x => {
+        const cls = x.change > 0 ? 'up' : x.change < 0 ? 'down' : '';
+        html += `<tr><td>${x.date}</td><td class="text-right">${x.open.toFixed(2)}</td><td class="text-right">${x.high.toFixed(2)}</td><td class="text-right">${x.low.toFixed(2)}</td><td class="text-right">${x.close.toFixed(2)}</td><td class="text-right ${cls}">${x.change > 0 ? '+' : ''}${x.change.toFixed(2)}</td><td class="text-right">${x.vol}</td></tr>`;
+    });
+    
+    html += '</tbody></table></div></div>';
+    if(p.length > 100) html += '<div style="text-align:center;padding:10px;color:#999;font-size:13px">僅顯示最近100筆</div>';
+    
+    document.getElementById('modalBody').innerHTML = html;
+    document.getElementById('modal').classList.add('show');
+}
+
+function showModalView(v, code) {
+    document.getElementById('modalChart').classList.toggle('hidden', v !== 'chart');
+    document.getElementById('modalTable').classList.toggle('hidden', v !== 'table');
+    document.querySelectorAll('#modalBody .view-tab').forEach((t,i) => t.classList.toggle('active', ['table','chart'][i] === v));
+}
+
+function setModalPeriod(p, code) {
+    PERIOD = p;
+    document.querySelectorAll('#modalBody .period-tab').forEach(t => {
+        const txt = t.textContent;
+        t.classList.toggle('active', 
+            (p === '3m' && txt === '3個月') || (p === '6m' && txt === '6個月') ||
+            (p === '1y' && txt === '1年') || (p === '2y' && txt === '2年') ||
+            (p === '3y' && txt === '3年') || (p === 'all' && txt === '全部')
+        );
+    });
+    // 重新開啟詳情以更新資料
+    openDetail(code);
+}
+
+function closeModal() { document.getElementById('modal').classList.remove('show'); }
+window.onload = init;
+</script>
+
+</body>
+</html>
