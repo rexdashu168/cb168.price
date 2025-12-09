@@ -165,6 +165,10 @@
         .avg-type-tab { padding: 10px 24px; border-radius: 20px; font-size: 15px; font-weight: 600; cursor: pointer; border: 2px solid var(--clickable-border); background: var(--clickable); color: #333; transition: all 0.2s; }
         .avg-type-tab:hover { border-color: var(--primary); background: var(--clickable-hover); }
         .avg-type-tab.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+        .avg-list-filter-tabs { display: flex; gap: 8px; margin-bottom: 12px; justify-content: center; align-items: center; flex-wrap: wrap; }
+        .avg-list-tab { padding: 6px 14px; border-radius: 16px; font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid var(--border); background: #fff; color: #666; transition: all 0.2s; }
+        .avg-list-tab:hover { border-color: var(--primary); background: var(--clickable); }
+        .avg-list-tab.active { background: #9b59b6; color: #fff; border-color: #9b59b6; }
         .avg-period-tabs { display: flex; gap: 6px; margin-bottom: 16px; justify-content: center; flex-wrap: wrap; }
         .avg-period-tab { padding: 6px 14px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid var(--border); background: #fff; color: #555; }
         .avg-period-tab:hover { border-color: var(--primary); }
@@ -199,26 +203,61 @@
 
         /* 多檔查詢區塊 */
         .multi-query-area { background: #fff; border-radius: 14px; padding: 20px; border: 1px solid var(--border); }
-        .multi-input-row { display: flex; gap: 10px; margin-bottom: 12px; align-items: flex-start; flex-wrap: wrap; }
-        .multi-codes-input { flex: 1; min-width: 200px; max-width: 400px; padding: 12px 16px; border-radius: 10px; border: 2px solid var(--border); font-size: 15px; outline: none; min-height: 80px; resize: vertical; font-family: inherit; }
-        .multi-codes-input:focus { border-color: var(--primary); }
-        .multi-codes-input::placeholder { color: #aaa; }
-        .multi-btn-group { display: flex; flex-direction: column; gap: 8px; }
-        .multi-search-btn { padding: 12px 24px; border-radius: 10px; border: none; background: var(--primary); color: #fff; font-size: 15px; font-weight: 600; cursor: pointer; }
-        .multi-search-btn:hover { background: #b55a3a; }
-        .multi-clear-btn { padding: 8px 16px; border-radius: 8px; border: 1px solid var(--border); background: #fff; color: #666; font-size: 13px; cursor: pointer; }
-        .multi-clear-btn:hover { background: #f5f5f5; }
+        .multi-search-container { position: relative; margin-bottom: 16px; }
+        .multi-search-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        .multi-search-input-wrap { position: relative; flex: 1; max-width: 450px; }
+        .multi-search-input { width: 100%; padding: 14px 18px; padding-right: 40px; border-radius: 12px; border: 2px solid var(--border); font-size: 16px; outline: none; transition: all 0.2s; }
+        .multi-search-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(201,100,66,0.1); }
+        .multi-search-input::placeholder { color: #aaa; }
+        .multi-search-icon { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); font-size: 18px; color: #999; pointer-events: none; }
+        .multi-search-hint { font-size: 12px; color: #999; margin-top: 6px; }
+        
+        /* 搜尋建議下拉選單 */
+        .multi-suggestions { position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 2px solid var(--primary); border-top: none; border-radius: 0 0 12px 12px; max-height: 350px; overflow-y: auto; z-index: 100; display: none; box-shadow: 0 8px 24px rgba(0,0,0,0.15); }
+        .multi-suggestions.show { display: block; }
+        .multi-suggestions-header { padding: 10px 14px; background: linear-gradient(135deg, #fff8f0, #fff0e5); border-bottom: 1px solid #eee; font-size: 12px; color: #888; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; }
+        .multi-suggestions-header .count { color: var(--primary); font-weight: 600; }
+        .multi-suggestion-item { display: flex; align-items: center; padding: 12px 14px; cursor: pointer; border-bottom: 1px solid #f0f0f0; transition: all 0.15s; gap: 12px; }
+        .multi-suggestion-item:last-child { border-bottom: none; }
+        .multi-suggestion-item:hover, .multi-suggestion-item.active { background: linear-gradient(135deg, #fff8f0, #fff0e5); }
+        .multi-suggestion-item.selected { background: #e8f5e9; }
+        .multi-suggestion-item.selected::after { content: '✓ 已加入'; position: absolute; right: 14px; font-size: 11px; color: #27ae60; font-weight: 600; }
+        .multi-suggestion-item { position: relative; }
+        .suggestion-code { font-family: 'Menlo', monospace; font-weight: 700; color: var(--primary); font-size: 14px; min-width: 55px; }
+        .suggestion-info { flex: 1; min-width: 0; }
+        .suggestion-name { font-weight: 600; color: #333; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .suggestion-meta { display: flex; gap: 8px; margin-top: 2px; font-size: 11px; color: #888; }
+        .suggestion-meta span { display: inline-flex; align-items: center; gap: 2px; }
+        .suggestion-price { text-align: right; min-width: 60px; }
+        .suggestion-price .price { font-family: 'Menlo', monospace; font-weight: 700; font-size: 14px; }
+        .suggestion-price .price.up { color: var(--up); }
+        .suggestion-price .price.down { color: var(--down); }
+        .suggestion-price .label { font-size: 10px; color: #999; }
+        .suggestion-add-btn { padding: 6px 12px; border-radius: 16px; border: none; background: var(--primary); color: #fff; font-size: 12px; font-weight: 600; cursor: pointer; opacity: 0; transition: opacity 0.15s; white-space: nowrap; }
+        .multi-suggestion-item:hover .suggestion-add-btn { opacity: 1; }
+        .multi-suggestion-item.selected .suggestion-add-btn { display: none; }
+        
+        /* 快速篩選標籤 */
+        .multi-quick-filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+        .multi-quick-filter { padding: 6px 14px; border-radius: 16px; font-size: 12px; font-weight: 600; cursor: pointer; border: 1px solid var(--border); background: #fff; color: #666; transition: all 0.2s; }
+        .multi-quick-filter:hover { border-color: var(--primary); background: var(--clickable); }
+        .multi-quick-filter.active { background: var(--info); color: #fff; border-color: var(--info); }
+        
+        .multi-btn-group { display: flex; gap: 8px; align-items: center; }
+        .multi-clear-btn { padding: 10px 18px; border-radius: 10px; border: 1px solid var(--border); background: #fff; color: #666; font-size: 14px; cursor: pointer; transition: all 0.2s; }
+        .multi-clear-btn:hover { background: #f5f5f5; border-color: #ccc; }
         .multi-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
-        .multi-tag { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; background: linear-gradient(135deg, #fff8f0, #fff0e5); border: 1px solid #ffd8c0; border-radius: 16px; font-size: 13px; font-weight: 600; color: var(--primary); }
-        .multi-tag .remove { cursor: pointer; opacity: 0.6; font-size: 14px; }
-        .multi-tag .remove:hover { opacity: 1; }
+        .multi-tag { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; background: linear-gradient(135deg, #fff8f0, #fff0e5); border: 1px solid #ffd8c0; border-radius: 20px; font-size: 13px; font-weight: 600; color: var(--primary); transition: all 0.2s; }
+        .multi-tag:hover { box-shadow: 0 2px 8px rgba(201,100,66,0.2); }
+        .multi-tag .remove { cursor: pointer; opacity: 0.6; font-size: 14px; margin-left: 2px; }
+        .multi-tag .remove:hover { opacity: 1; color: #e74c3c; }
         .multi-controls { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
         .multi-result { min-height: 200px; }
         .multi-chart-container { background: #fafafa; border-radius: 10px; padding: 15px; margin-top: 16px; position: relative; }
         .multi-chart-container canvas { width: 100%; height: 350px; }
-        .multi-legend { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 12px; justify-content: center; }
-        .multi-legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; }
-        .multi-legend-color { width: 20px; height: 3px; border-radius: 2px; }
+        .multi-legend { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 16px; justify-content: center; padding: 12px; background: #fafafa; border-radius: 10px; }
+        .multi-legend-item { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; color: #333; }
+        .multi-legend-color { width: 24px; height: 4px; border-radius: 2px; }
 
         /* 價格表區塊 */
         .price-table-area { background: #fff; border-radius: 14px; padding: 20px; border: 1px solid var(--border); }
@@ -375,26 +414,32 @@
         .screener-tab.active { background: #e74c3c; color: #fff; border-color: #e74c3c; }
         
         /* 篩選結果 */
-        .screener-result { background: #fff; border-radius: 12px; border: 1px solid var(--border); overflow: hidden; }
-        .screener-header { background: linear-gradient(135deg, #fff8f0 0%, #fff0e5 100%); padding: 14px 18px; border-bottom: 1px solid #eee; }
-        .screener-header .title { font-size: 15px; font-weight: 700; color: var(--primary); }
-        .screener-header .desc { font-size: 12px; color: #888; margin-top: 4px; }
-        .screener-header .stats { display: flex; gap: 16px; margin-top: 10px; }
-        .screener-header .stat-badge { background: #fff; padding: 6px 14px; border-radius: 16px; font-size: 13px; }
-        .screener-header .stat-badge b { color: var(--primary); font-family: 'Menlo', monospace; }
+        .screener-result { background: #fff; border-radius: 12px; border: 1px solid var(--border); overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+        .screener-header { background: linear-gradient(135deg, #fff8f0 0%, #fff0e5 100%); padding: 16px 20px; border-bottom: 1px solid #ffd8c0; }
+        .screener-header .title { font-size: 16px; font-weight: 700; color: var(--primary); }
+        .screener-header .desc { font-size: 13px; color: #666; margin-top: 6px; line-height: 1.5; }
+        .screener-header .stats { display: flex; gap: 16px; margin-top: 12px; flex-wrap: wrap; }
+        .screener-header .stat-badge { background: #fff; padding: 8px 16px; border-radius: 20px; font-size: 13px; border: 1px solid #ffd8c0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .screener-header .stat-badge b { color: var(--primary); font-family: 'Menlo', monospace; font-size: 15px; }
         .screener-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-        .screener-table th { background: #f8f8f8; padding: 10px 12px; text-align: left; font-weight: 600; border-bottom: 1px solid #eee; position: sticky; top: 0; }
-        .screener-table td { padding: 10px 12px; border-bottom: 1px solid #f0f0f0; }
-        .screener-table tr:hover { background: #fafafa; }
-        .screener-table .code { color: var(--primary); font-weight: 600; cursor: pointer; }
-        .screener-table .code:hover { text-decoration: underline; }
-        .screener-table .up { color: #e74c3c; }
-        .screener-table .down { color: #27ae60; }
-        .screener-table .text-right { text-align: right; }
-        .screener-table .tag { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; }
-        .screener-table .tag.guaranteed { background: #e8f5e9; color: #27ae60; }
-        .screener-table .tag.unguaranteed { background: #fff3e0; color: #e67e22; }
-        .screener-table .tag.high-prob { background: #ffebee; color: #e74c3c; }
+        .screener-table th { background: linear-gradient(135deg, #f8f8f8 0%, #f0f0f0 100%); padding: 12px 14px; text-align: left; font-weight: 700; border-bottom: 2px solid #e0e0e0; position: sticky; top: 0; color: #444; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .screener-table td { padding: 12px 14px; border-bottom: 1px solid #f0f0f0; vertical-align: middle; }
+        .screener-table tr:nth-child(even) { background: #fafafa; }
+        .screener-table tr:hover { background: linear-gradient(135deg, #fff8f0 0%, #fff5eb 100%); }
+        .screener-table tr:hover td { border-bottom-color: #ffd8c0; }
+        .screener-table .code { color: var(--primary); font-weight: 700; cursor: pointer; font-family: 'Menlo', monospace; font-size: 14px; }
+        .screener-table .code:hover { text-decoration: underline; background: rgba(201,100,66,0.1); padding: 2px 6px; margin: -2px -6px; border-radius: 4px; }
+        .screener-table .up { color: #e74c3c; font-weight: 600; }
+        .screener-table .down { color: #27ae60; font-weight: 600; }
+        .screener-table .text-right { text-align: right; font-family: 'Menlo', monospace; }
+        .screener-table .tag { display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; }
+        .screener-table .tag.guaranteed { background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); color: #2e7d32; border: 1px solid #a5d6a7; }
+        .screener-table .tag.unguaranteed { background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%); color: #e65100; border: 1px solid #ffcc80; }
+        .screener-table .tag.high-prob { background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%); color: #c62828; border: 1px solid #ef9a9a; }
+        .screener-table .days-badge { display: inline-block; padding: 3px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; font-family: 'Menlo', monospace; }
+        .screener-table .days-badge.urgent { background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%); color: #c62828; border: 1px solid #ef9a9a; }
+        .screener-table .days-badge.warning { background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%); color: #f57f17; border: 1px solid #ffd54f; }
+        .screener-table .days-badge.normal { background: #f5f5f5; color: #616161; border: 1px solid #e0e0e0; }
         
         @media(max-width: 600px) {
             .analysis-title { font-size: 16px; }
@@ -473,12 +518,31 @@
 
     <!-- 多檔查詢區塊 -->
     <div class="multi-query-area hidden" id="multiQueryArea">
-        <div class="multi-input-row">
-            <textarea class="multi-codes-input" id="multiCodesInput" placeholder="輸入多個CB代號，用逗號、空格或換行分隔&#10;例如：49232, 49231, 38aboratory&#10;或每行一個代號"></textarea>
-            <div class="multi-btn-group">
-                <button class="multi-search-btn" onclick="loadMultiQuery()">🔍 查詢</button>
-                <button class="multi-clear-btn" onclick="clearMultiQuery()">清除全部</button>
+        <div class="multi-search-container">
+            <div class="multi-search-row">
+                <div class="multi-search-input-wrap">
+                    <input type="text" class="multi-search-input" id="multiSearchInput" 
+                           placeholder="搜尋CB代號、名稱或產業..." 
+                           autocomplete="off"
+                           oninput="onMultiSearchInput()"
+                           onkeydown="onMultiSearchKeydown(event)"
+                           onfocus="onMultiSearchFocus()"
+                           onblur="onMultiSearchBlur()">
+                    <span class="multi-search-icon">🔍</span>
+                    <div class="multi-suggestions" id="multiSuggestions"></div>
+                </div>
+                <div class="multi-btn-group">
+                    <button class="multi-clear-btn" onclick="clearMultiQuery()">🗑️ 清除全部</button>
+                </div>
             </div>
+            <div class="multi-search-hint">💡 輸入代號、名稱或產業即時搜尋，點選加入比較清單（最多10檔）</div>
+        </div>
+        <div class="multi-quick-filters">
+            <span class="multi-quick-filter" onclick="addMultiByFilter('discount')">🔥 折價CB</span>
+            <span class="multi-quick-filter" onclick="addMultiByFilter('lowPremium')">💎 低溢價</span>
+            <span class="multi-quick-filter" onclick="addMultiByFilter('highVolume')">📊 高成交量</span>
+            <span class="multi-quick-filter" onclick="addMultiByFilter('nearExpiry')">⏰ 近期到期</span>
+            <span class="multi-quick-filter" onclick="addMultiByFilter('guaranteed')">🛡️ 有擔保</span>
         </div>
         <div class="multi-tags" id="multiTags"></div>
         <div class="multi-controls" id="multiControls" style="display:none">
@@ -499,8 +563,8 @@
         <div class="multi-result" id="multiResult">
             <div class="stock-placeholder">
                 <div class="icon">📊</div>
-                <div>輸入多個CB代號進行比較分析</div>
-                <div style="font-size:13px;margin-top:8px;color:#aaa">可同時比較多檔CB的價格走勢</div>
+                <div>搜尋CB代號或名稱，點選加入比較清單</div>
+                <div style="font-size:13px;margin-top:8px;color:#aaa">支援代號、名稱、產業、股票代號搜尋，或使用快速篩選按鈕</div>
             </div>
         </div>
     </div>
@@ -510,6 +574,12 @@
             <div class="avg-type-tab active" onclick="setAvgType('all')">全部</div>
             <div class="avg-type-tab" onclick="setAvgType('guaranteed')">有擔保</div>
             <div class="avg-type-tab" onclick="setAvgType('unguaranteed')">無擔保</div>
+        </div>
+        <div class="avg-list-filter-tabs">
+            <span style="font-size:13px;color:#888;margin-right:8px;">掛牌期限：</span>
+            <div class="avg-list-tab active" onclick="setAvgListFilter('all')">含新掛牌</div>
+            <div class="avg-list-tab" onclick="setAvgListFilter('exclude3m')">排除3個月內</div>
+            <div class="avg-list-tab" onclick="setAvgListFilter('exclude6m')">排除6個月內</div>
         </div>
         <div class="avg-period-tabs">
             <div class="avg-period-tab" onclick="setAvgPeriod('3m')">3個月</div>
@@ -740,6 +810,7 @@ let PERIOD = '1y';
 let FILTER = { industry: '', guarantee: '', method: '', quickFilter: '' };
 let CURRENT_CODE = '';
 let AVG_TYPE = 'all';
+let AVG_LIST_FILTER = 'all';
 let PRICE_RANGE_VIEW = 'lt100';
 let PRICE_RANGE_PERIOD = '1y';
 let PERCENTILE_PERIOD = '1y';
@@ -1984,13 +2055,99 @@ function setAvgPeriod(p) {
     renderAvgPriceChart();
 }
 
+function setAvgListFilter(filter) {
+    AVG_LIST_FILTER = filter;
+    document.querySelectorAll('.avg-list-tab').forEach(t => {
+        t.classList.toggle('active', 
+            (filter === 'all' && t.textContent === '含新掛牌') || 
+            (filter === 'exclude3m' && t.textContent === '排除3個月內') || 
+            (filter === 'exclude6m' && t.textContent === '排除6個月內')
+        );
+    });
+    renderAvgPriceChart();
+}
+
+// 將日期字串 YYYY/MM/DD 轉換為 dateNum
+function parseDateStrToNum(dateStr) {
+    if (!dateStr || dateStr === '-') return null;
+    const parts = dateStr.split('/');
+    if (parts.length !== 3) return null;
+    return parseInt(parts[0]) * 10000 + parseInt(parts[1]) * 100 + parseInt(parts[2]);
+}
+
+// 計算兩個 dateNum 之間的天數差
+function daysBetweenDateNums(dateNum1, dateNum2) {
+    const y1 = Math.floor(dateNum1 / 10000);
+    const m1 = Math.floor((dateNum1 % 10000) / 100);
+    const d1 = dateNum1 % 100;
+    const y2 = Math.floor(dateNum2 / 10000);
+    const m2 = Math.floor((dateNum2 % 10000) / 100);
+    const d2 = dateNum2 % 100;
+    const date1 = new Date(y1, m1 - 1, d1);
+    const date2 = new Date(y2, m2 - 1, d2);
+    return Math.floor((date2 - date1) / (1000 * 60 * 60 * 24));
+}
+
 function getDailyAvgData() {
-    const dateNums = Object.keys(DB.dailyAvg).map(Number).sort((a, b) => a - b);
     const cutoffNum = getCutoffDateNum();
-    const filteredDates = cutoffNum ? dateNums.filter(d => d >= cutoffNum) : dateNums;
-    
-    // 最小樣本數：有擔保/無擔保至少要5檔以上才計入，避免極端值影響
     const MIN_SAMPLE_SIZE = 5;
+    
+    // 根據掛牌期限篩選需要的最小天數
+    let minListDays = 0;
+    if (AVG_LIST_FILTER === 'exclude3m') minListDays = 90;
+    else if (AVG_LIST_FILTER === 'exclude6m') minListDays = 180;
+    
+    // 如果需要篩選掛牌期限，則需要重新計算每日均價
+    if (minListDays > 0) {
+        // 重新計算每日均價（根據掛牌期限篩選）
+        const dailyPrices = {};
+        
+        Object.entries(DB.cbPrice).forEach(([code, prices]) => {
+            const info = DB.cbInfo[code];
+            if (!info) return;
+            
+            const isGuaranteed = info.guarantee === '有擔保';
+            const listDateNum = parseDateStrToNum(info.listDate);
+            if (!listDateNum) return;
+            
+            prices.forEach(p => {
+                const dateNum = p.dateNum;
+                
+                // 計算該日期距離掛牌日的天數
+                const daysSinceListing = daysBetweenDateNums(listDateNum, dateNum);
+                if (daysSinceListing < minListDays) return; // 排除掛牌未滿期限的
+                
+                const refPrice = p.refPrice || p.close;
+                if (!dailyPrices[dateNum]) {
+                    dailyPrices[dateNum] = { date: p.date, all: [], guaranteed: [], unguaranteed: [] };
+                }
+                dailyPrices[dateNum].all.push(refPrice);
+                if (isGuaranteed) dailyPrices[dateNum].guaranteed.push(refPrice);
+                else dailyPrices[dateNum].unguaranteed.push(refPrice);
+            });
+        });
+        
+        const dateNums = Object.keys(dailyPrices).map(Number).sort((a, b) => a - b);
+        const filteredDates = cutoffNum ? dateNums.filter(d => d >= cutoffNum) : dateNums;
+        
+        const rawData = filteredDates.map(dateNum => {
+            const day = dailyPrices[dateNum];
+            const prices = AVG_TYPE === 'all' ? day.all : AVG_TYPE === 'guaranteed' ? day.guaranteed : day.unguaranteed;
+            
+            if (AVG_TYPE !== 'all' && prices.length < MIN_SAMPLE_SIZE) return null;
+            if (prices.length === 0) return null;
+            
+            return { dateNum, date: day.date, avg: prices.reduce((a, b) => a + b, 0) / prices.length, count: prices.length };
+        }).filter(d => d !== null);
+        
+        const samplingMode = getSamplingMode();
+        if (samplingMode === 'daily') return rawData;
+        return sampleData(rawData, samplingMode);
+    }
+    
+    // 原本的邏輯（不篩選掛牌期限）
+    const dateNums = Object.keys(DB.dailyAvg).map(Number).sort((a, b) => a - b);
+    const filteredDates = cutoffNum ? dateNums.filter(d => d >= cutoffNum) : dateNums;
     
     // 取得原始日線數據
     const rawData = filteredDates.map(dateNum => {
@@ -2722,7 +2879,7 @@ function renderScreener() {
     const container = document.getElementById('screenerResult');
     if (!container) return;
     
-    // 取得掛牌中CB的最新價格資料
+    // 取得掛牌中CB的最新價格資料（加入更多發行資訊）
     const cbList = [];
     DB.listedCodes.forEach(code => {
         const info = DB.cbInfo[code];
@@ -2736,8 +2893,13 @@ function renderScreener() {
         cbList.push({
             code,
             name: info.name || '',
+            stockCode: info.stockCode || '-',
             industry: info.industry || '',
             guarantee: info.guarantee || '無擔保',
+            creditRating: info.creditRating || '-',
+            convPrice: info.convPrice || 0,
+            issueAmount: info.issueAmount || 0,
+            method: info.method || '-',
             price: lastPrice,
             high,
             low,
@@ -2802,46 +2964,56 @@ function renderScreener() {
             <div class="title">${title}</div>
             <div class="desc">${desc}</div>
             <div class="stats">
-                <span class="stat-badge">符合 <b>${filtered.length}</b> 檔</span>
-                <span class="stat-badge">歷史翻倍率 <b>${historyRate}</b></span>
+                <span class="stat-badge">🎯 符合 <b>${filtered.length}</b> 檔</span>
+                <span class="stat-badge">📈 歷史翻倍率 <b>${historyRate}</b></span>
             </div>
         </div>
-        <div style="max-height:400px;overflow-y:auto">
-            <table class="screener-table">
+        <div style="overflow-x:auto">
+            <table class="screener-table" style="min-width:1100px">
                 <thead>
                     <tr>
-                        <th>代號</th>
-                        <th>名稱</th>
-                        <th>產業</th>
-                        <th class="text-right">收盤價</th>
-                        <th class="text-right">歷史高點</th>
-                        <th class="text-right">潛在空間</th>
-                        <th>到期日期</th>
-                        <th class="text-right">剩餘天數</th>
-                        <th>擔保</th>
+                        <th style="width:35px;text-align:center">#</th>
+                        <th style="width:60px;text-align:center">CB代號</th>
+                        <th style="width:80px">名稱</th>
+                        <th style="width:55px;text-align:center">股票</th>
+                        <th style="width:75px">產業</th>
+                        <th style="width:70px;text-align:right">收盤價</th>
+                        <th style="width:65px;text-align:right">轉換價</th>
+                        <th style="width:55px;text-align:right">規模</th>
+                        <th style="width:70px;text-align:right">歷史高</th>
+                        <th style="width:70px;text-align:right">潛在空間</th>
+                        <th style="width:85px;text-align:center">到期日</th>
+                        <th style="width:70px;text-align:right">剩餘天數</th>
+                        <th style="width:60px;text-align:center">擔保</th>
+                        <th style="width:70px;text-align:center">評等</th>
                     </tr>
                 </thead>
                 <tbody>
-                    ${filtered.slice(0, 30).map(c => {
+                    ${filtered.slice(0, 30).map((c, idx) => {
                         const isHighProb = highProbIndustries.some(ind => c.industry.includes(ind));
                         const daysClass = c.daysLeft <= 180 ? 'urgent' : c.daysLeft <= 365 ? 'warning' : 'normal';
                         return `
                         <tr>
-                            <td class="code" onclick="loadStockByCode('${c.code}')">${c.code}</td>
-                            <td>${c.name}</td>
-                            <td>${c.industry}${isHighProb ? ' <span class="tag high-prob">高翻倍</span>' : ''}</td>
-                            <td class="text-right ${c.price < 100 ? 'down' : ''}">${c.price.toFixed(2)}</td>
-                            <td class="text-right">${c.high.toFixed(2)}</td>
+                            <td style="text-align:center;color:#aaa;font-size:11px">${idx + 1}</td>
+                            <td class="code" style="text-align:center" onclick="loadStockByCode('${c.code}')">${c.code}</td>
+                            <td style="font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:80px" title="${c.name}">${c.name}</td>
+                            <td style="text-align:center;font-size:12px;color:#666">${c.stockCode}</td>
+                            <td style="font-size:12px">${c.industry}${isHighProb ? '<br><span class="tag high-prob">高翻倍</span>' : ''}</td>
+                            <td class="text-right ${c.price < 100 ? 'down' : ''}" style="font-weight:700">${c.price.toFixed(2)}</td>
+                            <td class="text-right" style="color:#666">${c.convPrice > 0 ? c.convPrice.toFixed(1) : '-'}</td>
+                            <td class="text-right" style="color:#666;font-size:12px">${c.issueAmount > 0 ? c.issueAmount + '億' : '-'}</td>
+                            <td class="text-right" style="color:#e74c3c">${c.high.toFixed(2)}</td>
                             <td class="text-right ${c.upside > 30 ? 'up' : ''}">${c.upside > 0 ? '+' : ''}${c.upside.toFixed(1)}%</td>
-                            <td>${c.expiryDate}</td>
+                            <td style="text-align:center;font-size:11px">${c.expiryDate}</td>
                             <td class="text-right"><span class="days-badge ${daysClass}">${c.daysLeft === Infinity ? '-' : c.daysLeft + '天'}</span></td>
-                            <td><span class="tag ${c.guarantee === '有擔保' ? 'guaranteed' : 'unguaranteed'}">${c.guarantee}</span></td>
+                            <td style="text-align:center"><span class="tag ${c.guarantee === '有擔保' ? 'guaranteed' : 'unguaranteed'}">${c.guarantee === '有擔保' ? '有' : '無'}</span></td>
+                            <td style="text-align:center;font-size:11px;color:#666">${c.creditRating}</td>
                         </tr>`;
                     }).join('')}
                 </tbody>
             </table>
         </div>
-        ${filtered.length > 30 ? `<div style="padding:10px;text-align:center;color:#999;font-size:12px">顯示前30筆，共${filtered.length}筆符合</div>` : ''}
+        ${filtered.length > 30 ? `<div style="padding:12px;text-align:center;color:#888;font-size:13px;background:#f8f8f8;border-top:1px solid #eee">📋 顯示前30筆，共 <b style="color:var(--primary)">${filtered.length}</b> 筆符合條件</div>` : ''}
     `;
 }
 
@@ -2895,11 +3067,13 @@ function renderAvgPriceChart() {
     ctx.fillStyle = '#333'; ctx.font = isMobile ? 'bold 13px sans-serif' : 'bold 14px sans-serif'; ctx.textAlign = 'left';
     ctx.fillText(`${typeLabel} 明日參價均價走勢`, chartLeft, 16);
     
-    // 採樣模式標籤（灰色小字）+ 有擔保/無擔保加註
+    // 採樣模式標籤（灰色小字）+ 有擔保/無擔保加註 + 掛牌期限篩選
     ctx.fillStyle = '#999'; ctx.font = isMobile ? '10px sans-serif' : '11px sans-serif';
     const titleWidth = ctx.measureText(`${typeLabel} 明日參價均價走勢`).width;
     let labelText = `(${samplingLabel}`;
     if (AVG_TYPE !== 'all') labelText += '，≥5檔';
+    if (AVG_LIST_FILTER === 'exclude3m') labelText += '，排除3月內';
+    else if (AVG_LIST_FILTER === 'exclude6m') labelText += '，排除6月內';
     labelText += ')';
     ctx.fillText(labelText, chartLeft + titleWidth + 8, 16);
     
@@ -3543,6 +3717,11 @@ let MULTI_PERIOD = '1y';
 let MULTI_VIEW = 'table';
 const MULTI_COLORS = ['#e74c3c', '#3498db', '#27ae60', '#9b59b6', '#f39c12', '#1abc9c', '#e67e22', '#34495e', '#e91e63', '#00bcd4'];
 
+// 搜尋建議相關變數
+let multiSearchTimeout = null;
+let multiSuggestionIndex = -1;
+let multiSuggestionList = [];
+
 function setMultiPeriod(p) {
     MULTI_PERIOD = p;
     document.querySelectorAll('#multiControls .stock-period').forEach(t => {
@@ -3587,21 +3766,240 @@ function filterMultiPeriod(prices) {
     return prices.filter(p => p.dateNum >= cutoffNum);
 }
 
-function loadMultiQuery() {
-    const input = document.getElementById('multiCodesInput').value.trim();
-    if (!input) return;
+// ========== 智能搜尋功能 ==========
+function onMultiSearchInput() {
+    clearTimeout(multiSearchTimeout);
+    multiSearchTimeout = setTimeout(() => {
+        const query = document.getElementById('multiSearchInput').value.trim().toLowerCase();
+        if (query.length < 1) {
+            hideMultiSuggestions();
+            return;
+        }
+        searchAndShowSuggestions(query);
+    }, 150);
+}
+
+function onMultiSearchFocus() {
+    const query = document.getElementById('multiSearchInput').value.trim().toLowerCase();
+    if (query.length >= 1) {
+        searchAndShowSuggestions(query);
+    }
+}
+
+function onMultiSearchBlur() {
+    // 延遲隱藏，讓點擊事件有時間觸發
+    setTimeout(() => hideMultiSuggestions(), 200);
+}
+
+function onMultiSearchKeydown(e) {
+    const suggestionsEl = document.getElementById('multiSuggestions');
+    if (!suggestionsEl.classList.contains('show')) return;
     
-    // 解析代碼
-    const codes = input.split(/[\s,，\n]+/).map(c => c.trim()).filter(c => c.length >= 4);
-    const validCodes = codes.filter(c => DB.cbInfo[c] || DB.cbPrice[c]);
+    if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        multiSuggestionIndex = Math.min(multiSuggestionIndex + 1, multiSuggestionList.length - 1);
+        updateSuggestionHighlight();
+    } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        multiSuggestionIndex = Math.max(multiSuggestionIndex - 1, -1);
+        updateSuggestionHighlight();
+    } else if (e.key === 'Enter') {
+        e.preventDefault();
+        if (multiSuggestionIndex >= 0 && multiSuggestionList[multiSuggestionIndex]) {
+            addMultiCode(multiSuggestionList[multiSuggestionIndex].code);
+        }
+    } else if (e.key === 'Escape') {
+        hideMultiSuggestions();
+    }
+}
+
+function searchAndShowSuggestions(query) {
+    const targetCodes = LISTED_MODE === 'listed' ? Array.from(DB.listedCodes) : Object.keys(DB.cbInfo).filter(c => !DB.listedCodes.has(c));
     
-    if (validCodes.length === 0) {
-        document.getElementById('multiResult').innerHTML = '<div class="stock-placeholder"><div class="icon">❌</div><div>找不到有效的CB代號</div></div>';
+    // 搜尋匹配
+    const results = [];
+    targetCodes.forEach(code => {
+        const info = DB.cbInfo[code] || {};
+        const prices = DB.cbPrice[code] || [];
+        const lastPrice = prices.length > 0 ? prices[prices.length - 1] : null;
+        
+        const codeMatch = code.toLowerCase().includes(query);
+        const nameMatch = (info.name || '').toLowerCase().includes(query);
+        const industryMatch = (info.industry || '').toLowerCase().includes(query);
+        const stockCodeMatch = (info.stockCode || '').toLowerCase().includes(query);
+        
+        if (codeMatch || nameMatch || industryMatch || stockCodeMatch) {
+            results.push({
+                code,
+                name: info.name || code,
+                industry: info.industry || '-',
+                stockCode: info.stockCode || '-',
+                guarantee: info.guarantee || '-',
+                price: lastPrice?.close || 0,
+                change: lastPrice ? ((lastPrice.close - (prices[0]?.close || lastPrice.close)) / (prices[0]?.close || 1) * 100) : 0,
+                isSelected: MULTI_CODES.includes(code),
+                // 排序權重：代號完全匹配 > 代號開頭匹配 > 名稱匹配 > 產業匹配
+                weight: code.toLowerCase() === query ? 100 : 
+                        code.toLowerCase().startsWith(query) ? 50 : 
+                        codeMatch ? 30 : 
+                        nameMatch ? 20 : 10
+            });
+        }
+    });
+    
+    // 排序：權重 > 價格
+    results.sort((a, b) => b.weight - a.weight || b.price - a.price);
+    
+    multiSuggestionList = results.slice(0, 20);
+    multiSuggestionIndex = -1;
+    
+    renderMultiSuggestions();
+}
+
+function renderMultiSuggestions() {
+    const suggestionsEl = document.getElementById('multiSuggestions');
+    
+    if (multiSuggestionList.length === 0) {
+        suggestionsEl.innerHTML = '<div style="padding:20px;text-align:center;color:#999">找不到符合的CB</div>';
+        suggestionsEl.classList.add('show');
         return;
     }
     
-    MULTI_CODES = [...new Set(validCodes)].slice(0, 10); // 最多10檔
-    document.getElementById('multiCodesInput').value = '';
+    let html = `<div class="multi-suggestions-header">
+        <span>搜尋結果</span>
+        <span class="count">${multiSuggestionList.length} 檔</span>
+    </div>`;
+    
+    multiSuggestionList.forEach((item, i) => {
+        const priceClass = item.price < 100 ? 'down' : item.change >= 0 ? '' : '';
+        const selectedClass = item.isSelected ? 'selected' : '';
+        const activeClass = i === multiSuggestionIndex ? 'active' : '';
+        
+        html += `<div class="multi-suggestion-item ${selectedClass} ${activeClass}" 
+                      onclick="addMultiCode('${item.code}')" 
+                      data-index="${i}">
+            <span class="suggestion-code">${item.code}</span>
+            <div class="suggestion-info">
+                <div class="suggestion-name">${item.name}</div>
+                <div class="suggestion-meta">
+                    <span>📈 ${item.stockCode}</span>
+                    <span>🏭 ${item.industry}</span>
+                    <span>${item.guarantee === '有擔保' ? '🛡️有擔' : '📋無擔'}</span>
+                </div>
+            </div>
+            <div class="suggestion-price">
+                <div class="price ${priceClass}">${item.price > 0 ? item.price.toFixed(2) : '-'}</div>
+                <div class="label">收盤價</div>
+            </div>
+            <button class="suggestion-add-btn">+ 加入</button>
+        </div>`;
+    });
+    
+    suggestionsEl.innerHTML = html;
+    suggestionsEl.classList.add('show');
+}
+
+function updateSuggestionHighlight() {
+    document.querySelectorAll('.multi-suggestion-item').forEach((el, i) => {
+        el.classList.toggle('active', i === multiSuggestionIndex);
+    });
+    
+    // 滾動到可見區域
+    if (multiSuggestionIndex >= 0) {
+        const activeEl = document.querySelector('.multi-suggestion-item.active');
+        if (activeEl) activeEl.scrollIntoView({ block: 'nearest' });
+    }
+}
+
+function hideMultiSuggestions() {
+    const suggestionsEl = document.getElementById('multiSuggestions');
+    if (suggestionsEl) suggestionsEl.classList.remove('show');
+    multiSuggestionIndex = -1;
+}
+
+function addMultiCode(code) {
+    if (MULTI_CODES.includes(code)) {
+        // 已存在，移除
+        removeMultiCode(code);
+        return;
+    }
+    
+    if (MULTI_CODES.length >= 10) {
+        alert('最多只能加入10檔CB進行比較');
+        return;
+    }
+    
+    MULTI_CODES.push(code);
+    
+    // 更新建議列表中的選中狀態
+    multiSuggestionList.forEach(item => {
+        if (item.code === code) item.isSelected = true;
+    });
+    renderMultiSuggestions();
+    
+    // 清空輸入框
+    document.getElementById('multiSearchInput').value = '';
+    
+    renderMultiTags();
+    document.getElementById('multiControls').style.display = 'flex';
+    renderMultiContent();
+    
+    // 保持焦點在輸入框，方便繼續搜尋
+    setTimeout(() => {
+        document.getElementById('multiSearchInput').focus();
+        hideMultiSuggestions();
+    }, 100);
+}
+
+function addMultiByFilter(filterType) {
+    const targetCodes = LISTED_MODE === 'listed' ? Array.from(DB.listedCodes) : Object.keys(DB.cbInfo).filter(c => !DB.listedCodes.has(c));
+    
+    let filteredCodes = [];
+    
+    targetCodes.forEach(code => {
+        if (MULTI_CODES.includes(code)) return; // 跳過已加入的
+        
+        const info = DB.cbInfo[code] || {};
+        const prices = DB.cbPrice[code] || [];
+        const lastPrice = prices.length > 0 ? prices[prices.length - 1] : null;
+        
+        if (!lastPrice) return;
+        
+        let match = false;
+        switch(filterType) {
+            case 'discount':
+                match = lastPrice.close < 100;
+                break;
+            case 'lowPremium':
+                match = lastPrice.close >= 100 && lastPrice.close < 110;
+                break;
+            case 'highVolume':
+                match = lastPrice.vol > 100;
+                break;
+            case 'nearExpiry':
+                const days = daysUntil(info.expiryDate);
+                match = days > 0 && days <= 180;
+                break;
+            case 'guaranteed':
+                match = info.guarantee === '有擔保';
+                break;
+        }
+        
+        if (match) {
+            filteredCodes.push({ code, price: lastPrice.close });
+        }
+    });
+    
+    // 排序並取前幾檔
+    filteredCodes.sort((a, b) => filterType === 'discount' ? a.price - b.price : b.price - a.price);
+    const toAdd = filteredCodes.slice(0, Math.min(5, 10 - MULTI_CODES.length));
+    
+    if (toAdd.length === 0) {
+        alert('沒有符合條件的CB可加入，或已達到10檔上限');
+        return;
+    }
+    
+    toAdd.forEach(item => MULTI_CODES.push(item.code));
     
     renderMultiTags();
     document.getElementById('multiControls').style.display = 'flex';
@@ -3610,10 +4008,19 @@ function loadMultiQuery() {
 
 function removeMultiCode(code) {
     MULTI_CODES = MULTI_CODES.filter(c => c !== code);
+    
+    // 更新建議列表中的選中狀態
+    multiSuggestionList.forEach(item => {
+        if (item.code === code) item.isSelected = false;
+    });
+    if (document.getElementById('multiSuggestions').classList.contains('show')) {
+        renderMultiSuggestions();
+    }
+    
     renderMultiTags();
     if (MULTI_CODES.length === 0) {
         document.getElementById('multiControls').style.display = 'none';
-        document.getElementById('multiResult').innerHTML = '<div class="stock-placeholder"><div class="icon">📊</div><div>輸入多個CB代號進行比較分析</div></div>';
+        document.getElementById('multiResult').innerHTML = '<div class="stock-placeholder"><div class="icon">📊</div><div>搜尋CB代號或名稱，點選加入比較清單</div><div style="font-size:13px;margin-top:8px;color:#aaa">支援代號、名稱、產業、股票代號搜尋</div></div>';
     } else {
         renderMultiContent();
     }
@@ -3621,19 +4028,25 @@ function removeMultiCode(code) {
 
 function clearMultiQuery() {
     MULTI_CODES = [];
-    document.getElementById('multiCodesInput').value = '';
+    document.getElementById('multiSearchInput').value = '';
     document.getElementById('multiTags').innerHTML = '';
     document.getElementById('multiControls').style.display = 'none';
-    document.getElementById('multiResult').innerHTML = '<div class="stock-placeholder"><div class="icon">📊</div><div>輸入多個CB代號進行比較分析</div></div>';
+    document.getElementById('multiResult').innerHTML = '<div class="stock-placeholder"><div class="icon">📊</div><div>搜尋CB代號或名稱，點選加入比較清單</div><div style="font-size:13px;margin-top:8px;color:#aaa">支援代號、名稱、產業、股票代號搜尋</div></div>';
+    hideMultiSuggestions();
 }
 
 function renderMultiTags() {
     const tagsEl = document.getElementById('multiTags');
     tagsEl.innerHTML = MULTI_CODES.map((code, i) => {
         const info = DB.cbInfo[code] || {};
-        return `<span class="multi-tag" style="border-color:${MULTI_COLORS[i % MULTI_COLORS.length]}">
-            <span style="color:${MULTI_COLORS[i % MULTI_COLORS.length]}">${info.name || code}</span>
-            <span class="remove" onclick="removeMultiCode('${code}')">✕</span>
+        const prices = DB.cbPrice[code] || [];
+        const lastPrice = prices.length > 0 ? prices[prices.length - 1].close : 0;
+        const color = MULTI_COLORS[i % MULTI_COLORS.length];
+        return `<span class="multi-tag" style="border-color:${color};border-left:4px solid ${color}">
+            <span style="color:${color};font-weight:700">${code}</span>
+            <span style="color:#666">${info.name || ''}</span>
+            ${lastPrice > 0 ? `<span style="color:#999;font-size:11px;font-family:Menlo,monospace">${lastPrice.toFixed(1)}</span>` : ''}
+            <span class="remove" onclick="event.stopPropagation();removeMultiCode('${code}')">✕</span>
         </span>`;
     }).join('');
 }
@@ -3702,13 +4115,14 @@ function drawMultiChart() {
     const dpr = window.devicePixelRatio || 1;
     const rect = container.getBoundingClientRect();
     canvas.width = rect.width * dpr;
-    canvas.height = 350 * dpr;
+    canvas.height = 380 * dpr;
     canvas.style.width = rect.width + 'px';
-    canvas.style.height = '350px';
+    canvas.style.height = '380px';
     ctx.scale(dpr, dpr);
     
-    const width = rect.width, height = 350;
-    const chartLeft = 55, chartRight = width - 15, chartTop = 40, chartBottom = height - 40;
+    const width = rect.width, height = 380;
+    const isMobile = width < 500;
+    const chartLeft = isMobile ? 55 : 65, chartRight = width - 20, chartTop = 50, chartBottom = height - 45;
     const chartWidth = chartRight - chartLeft, chartHeight = chartBottom - chartTop;
     
     // 收集所有數據，以百分比變化呈現
@@ -3732,7 +4146,7 @@ function drawMultiChart() {
     });
     
     if (allData.length === 0) {
-        ctx.fillStyle = '#999'; ctx.font = '14px sans-serif'; ctx.textAlign = 'center';
+        ctx.fillStyle = '#666'; ctx.font = 'bold 16px sans-serif'; ctx.textAlign = 'center';
         ctx.fillText('無足夠資料繪製走勢圖', width/2, height/2);
         return;
     }
@@ -3746,29 +4160,33 @@ function drawMultiChart() {
     
     ctx.clearRect(0, 0, width, height);
     
-    // 標題
-    ctx.fillStyle = '#c96442'; ctx.font = 'bold 16px sans-serif'; ctx.textAlign = 'center';
-    ctx.fillText(`多檔CB走勢比較（${MULTI_CODES.length}檔）`, width/2, 24);
+    // 標題 - 更大更粗更深色
+    ctx.fillStyle = '#c96442'; 
+    ctx.font = isMobile ? 'bold 17px sans-serif' : 'bold 20px sans-serif'; 
+    ctx.textAlign = 'center';
+    ctx.fillText(`多檔CB走勢比較（${MULTI_CODES.length}檔）`, width/2, 28);
     
     // 格線
-    ctx.strokeStyle = '#e8e8e8'; ctx.lineWidth = 1;
+    ctx.strokeStyle = '#e0e0e0'; ctx.lineWidth = 1;
     for (let i = 0; i <= 4; i++) {
         const y = chartTop + (chartHeight / 4) * i;
         ctx.beginPath(); ctx.moveTo(chartLeft, y); ctx.lineTo(chartRight, y); ctx.stroke();
     }
     
-    // 0%基準線
+    // 0%基準線 - 更明顯
     const zeroY = chartTop + ((maxPct + padding) / (pctRange + padding * 2)) * chartHeight;
-    ctx.strokeStyle = '#999'; ctx.setLineDash([4, 4]);
+    ctx.strokeStyle = '#888'; ctx.lineWidth = 1.5; ctx.setLineDash([5, 4]);
     ctx.beginPath(); ctx.moveTo(chartLeft, zeroY); ctx.lineTo(chartRight, zeroY); ctx.stroke();
     ctx.setLineDash([]);
     
-    // Y軸標籤
-    ctx.fillStyle = '#666'; ctx.font = '11px Menlo, monospace'; ctx.textAlign = 'right';
+    // Y軸標籤 - 更大更黑
+    ctx.fillStyle = '#333'; 
+    ctx.font = isMobile ? 'bold 11px Menlo, monospace' : 'bold 13px Menlo, monospace'; 
+    ctx.textAlign = 'right';
     for (let i = 0; i <= 4; i++) {
         const pct = maxPct + padding - ((pctRange + padding * 2) / 4) * i;
         const y = chartTop + (chartHeight / 4) * i;
-        ctx.fillText((pct >= 0 ? '+' : '') + pct.toFixed(1) + '%', chartLeft - 5, y + 4);
+        ctx.fillText((pct >= 0 ? '+' : '') + pct.toFixed(1) + '%', chartLeft - 8, y + 5);
     }
     
     const getX = (dateNum) => {
@@ -3777,11 +4195,11 @@ function drawMultiChart() {
     };
     const getY = (pct) => chartTop + ((maxPct + padding - pct) / (pctRange + padding * 2)) * chartHeight;
     
-    // 繪製每條線
+    // 繪製每條線 - 線條更粗
     allData.forEach(item => {
         ctx.beginPath();
         ctx.strokeStyle = item.color;
-        ctx.lineWidth = 2;
+        ctx.lineWidth = 2.5;
         
         item.data.forEach((d, i) => {
             const x = getX(d.dateNum);
@@ -3791,34 +4209,36 @@ function drawMultiChart() {
         });
         ctx.stroke();
         
-        // 終點標記
+        // 終點標記 - 更大
         const last = item.data[item.data.length - 1];
         ctx.fillStyle = item.color;
         ctx.beginPath();
-        ctx.arc(getX(last.dateNum), getY(last.pct), 4, 0, Math.PI * 2);
+        ctx.arc(getX(last.dateNum), getY(last.pct), 5, 0, Math.PI * 2);
         ctx.fill();
     });
     
-    // X軸標籤
-    ctx.fillStyle = '#666'; ctx.font = '10px sans-serif'; ctx.textAlign = 'center';
-    const labelCount = Math.min(6, sortedDates.length);
+    // X軸標籤 - 更大更黑
+    ctx.fillStyle = '#333'; 
+    ctx.font = isMobile ? 'bold 10px sans-serif' : 'bold 12px sans-serif'; 
+    ctx.textAlign = 'center';
+    const labelCount = isMobile ? 4 : Math.min(6, sortedDates.length);
     for (let i = 0; i < labelCount; i++) {
         const idx = Math.floor((i / (labelCount - 1)) * (sortedDates.length - 1));
         const dateNum = sortedDates[idx];
         const dateStr = String(dateNum);
         const formatted = dateStr.substring(2, 4) + '/' + dateStr.substring(4, 6) + '/' + dateStr.substring(6, 8);
-        ctx.fillText(formatted, chartLeft + (idx / (sortedDates.length - 1)) * chartWidth, chartBottom + 15);
+        ctx.fillText(formatted, chartLeft + (idx / (sortedDates.length - 1)) * chartWidth, chartBottom + 20);
     }
     
-    // 圖例
+    // 圖例 - 更大更清楚
     const legendEl = document.getElementById('multiLegend');
     if (legendEl) {
         legendEl.innerHTML = allData.map(item => {
             const last = item.data[item.data.length - 1];
             return `<div class="multi-legend-item">
                 <div class="multi-legend-color" style="background:${item.color}"></div>
-                <span>${item.info.name || item.code}</span>
-                <span style="font-family:Menlo,monospace;color:${last.pct >= 0 ? 'var(--up)' : 'var(--down)'}">${last.pct >= 0 ? '+' : ''}${last.pct.toFixed(1)}%</span>
+                <span style="color:#333">${item.info.name || item.code}</span>
+                <span style="font-family:Menlo,monospace;font-weight:700;font-size:14px;color:${last.pct >= 0 ? '#e74c3c' : '#27ae60'}">${last.pct >= 0 ? '+' : ''}${last.pct.toFixed(1)}%</span>
             </div>`;
         }).join('');
     }
