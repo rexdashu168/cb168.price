@@ -127,7 +127,7 @@
         
         /* 剩餘天數 */
         .days-badge { display: inline-block; padding: 1px 4px; border-radius: 3px; font-size: 12px; font-weight: 600; }
-        .days-badge.urgent { background: #fff3cd; color: #856404; }
+        .days-badge.urgent { background: #ffe0e6; color: #c0392b; }
         .days-badge.warning { background: #ffeeba; color: #856404; }
         .days-badge.normal { background: #f8f9fa; color: #6c757d; }
         
@@ -457,7 +457,8 @@
                 <span class="stock-period" onclick="setStockPeriod('all')">全部</span>
             </div>
             <div class="stock-view-tabs">
-                <span class="stock-view-tab active" onclick="setStockView('table')">📋 表格</span>
+                <span class="stock-view-tab" onclick="setStockView('info')">📋 基本資料</span>
+                <span class="stock-view-tab active" onclick="setStockView('table')">💰 價格表</span>
                 <span class="stock-view-tab" onclick="setStockView('chart')">📈 走勢圖</span>
             </div>
         </div>
@@ -2740,7 +2741,9 @@ function renderScreener() {
             price: lastPrice,
             high,
             low,
-            upside: ((high - lastPrice) / lastPrice * 100)
+            upside: ((high - lastPrice) / lastPrice * 100),
+            expiryDate: info.expiryDate || '-',
+            daysLeft: daysUntil(info.expiryDate)
         });
     });
     
@@ -2813,12 +2816,15 @@ function renderScreener() {
                         <th class="text-right">收盤價</th>
                         <th class="text-right">歷史高點</th>
                         <th class="text-right">潛在空間</th>
+                        <th>到期日期</th>
+                        <th class="text-right">剩餘天數</th>
                         <th>擔保</th>
                     </tr>
                 </thead>
                 <tbody>
                     ${filtered.slice(0, 30).map(c => {
                         const isHighProb = highProbIndustries.some(ind => c.industry.includes(ind));
+                        const daysClass = c.daysLeft <= 180 ? 'urgent' : c.daysLeft <= 365 ? 'warning' : 'normal';
                         return `
                         <tr>
                             <td class="code" onclick="loadStockByCode('${c.code}')">${c.code}</td>
@@ -2827,6 +2833,8 @@ function renderScreener() {
                             <td class="text-right ${c.price < 100 ? 'down' : ''}">${c.price.toFixed(2)}</td>
                             <td class="text-right">${c.high.toFixed(2)}</td>
                             <td class="text-right ${c.upside > 30 ? 'up' : ''}">${c.upside > 0 ? '+' : ''}${c.upside.toFixed(1)}%</td>
+                            <td>${c.expiryDate}</td>
+                            <td class="text-right"><span class="days-badge ${daysClass}">${c.daysLeft === Infinity ? '-' : c.daysLeft + '天'}</span></td>
                             <td><span class="tag ${c.guarantee === '有擔保' ? 'guaranteed' : 'unguaranteed'}">${c.guarantee}</span></td>
                         </tr>`;
                     }).join('')}
@@ -3083,7 +3091,8 @@ function setStockView(v) {
     STOCK_VIEW = v;
     document.querySelectorAll('.stock-view-tab').forEach(t => {
         t.classList.toggle('active', 
-            (v === 'table' && t.textContent.includes('表格')) ||
+            (v === 'info' && t.textContent.includes('基本資料')) ||
+            (v === 'table' && t.textContent.includes('價格表')) ||
             (v === 'chart' && t.textContent.includes('走勢'))
         );
     });
@@ -3141,6 +3150,85 @@ function renderStockContent() {
     const guaranteeLabel = info.guarantee || '-';
     const guaranteeClass = guaranteeLabel === '有擔保' ? 'guarantee' : 'no-guarantee';
     
+    // 基本資料視圖
+    if (STOCK_VIEW === 'info') {
+        let html = `<div class="price-info-card">
+            <div class="price-info-header">
+                <div class="price-info-title">${info.name || code}<span class="code">${code}</span></div>
+                <div class="price-info-badge">
+                    <span class="${statusClass}">${statusLabel}</span>
+                    <span class="${guaranteeClass}">${guaranteeLabel}</span>
+                </div>
+            </div>
+        </div>`;
+        
+        // 產業地位
+        if (info.industryPosition) {
+            html += `<div class="industry-position"><div class="label">📌 產業地位</div><div class="value">${info.industryPosition}</div></div>`;
+        }
+        
+        // 發行資訊
+        html += `<div class="detail-section"><h4>📋 發行資訊</h4><div class="detail-grid">
+            <div class="detail-item"><div class="label">股票代號</div><div class="value">${info.stockCode || '-'}</div></div>
+            <div class="detail-item"><div class="label">產業分類</div><div class="value">${info.industry || '-'}</div></div>
+            <div class="detail-item"><div class="label">擔保</div><div class="value highlight">${info.guarantee || '-'}</div></div>
+            <div class="detail-item"><div class="label">${info.guarantee === '有擔保' ? '擔保銀行' : '信用評等'}</div><div class="value">${info.creditRating || '-'}</div></div>
+            <div class="detail-item"><div class="label">發行方式</div><div class="value">${info.method || '-'}</div></div>
+            <div class="detail-item"><div class="label">發行券商</div><div class="value">${info.issuer || '-'}</div></div>
+            <div class="detail-item"><div class="label">發行規模</div><div class="value highlight">${info.issueAmount ? info.issueAmount + '億' : '-'}</div></div>
+            <div class="detail-item"><div class="label">發行年期</div><div class="value">${info.issueTerm ? info.issueTerm + '年' : '-'}</div></div>
+            <div class="detail-item"><div class="label">股本</div><div class="value">${info.stockCapital ? info.stockCapital + '億' : '-'}</div></div>
+        </div></div>`;
+        
+        // 價格條件
+        html += `<div class="detail-section"><h4>💰 價格條件</h4><div class="detail-grid">
+            <div class="detail-item"><div class="label">轉換價格</div><div class="value highlight">${info.convPrice ? info.convPrice + '元' : '-'}</div></div>
+            <div class="detail-item"><div class="label">發行價格</div><div class="value">${info.issuePrice ? info.issuePrice + '元' : '-'}</div></div>
+            <div class="detail-item"><div class="label">到期還本價格</div><div class="value">${info.maturityPrice ? info.maturityPrice + '元' : '-'}</div></div>
+            <div class="detail-item"><div class="label">訂價溢價率</div><div class="value">${info.pricingPremium ? (info.pricingPremium * 100).toFixed(2) + '%' : '-'}</div></div>
+            <div class="detail-item"><div class="label">掛牌最高</div><div class="value">${info.highPrice ? info.highPrice.toFixed(2) : '-'}</div></div>
+            <div class="detail-item"><div class="label">掛牌最低</div><div class="value">${info.lowPrice ? info.lowPrice.toFixed(2) : '-'}</div></div>
+        </div></div>`;
+        
+        // 重要日期
+        html += `<div class="detail-section"><h4>📅 重要日期</h4><div class="detail-grid">
+            <div class="detail-item"><div class="label">掛牌日期</div><div class="value">${info.listDate || '-'}</div></div>
+            <div class="detail-item"><div class="label">到期日期</div><div class="value highlight">${info.expiryDate || '-'}</div></div>
+            ${isListed && info.expiryDate && info.expiryDate !== '-' ? `<div class="detail-item"><div class="label">距到期天數</div><div class="value highlight">${daysUntil(info.expiryDate)}天</div></div>` : ''}
+        </div></div>`;
+        
+        // 價格統計（如果有價格資料）
+        if (allPrices.length > 0) {
+            const sortedAll = [...allPrices].sort((a, b) => a.dateNum - b.dateNum);
+            const last = sortedAll[sortedAll.length - 1];
+            const high = Math.max(...sortedAll.map(p => p.high));
+            const low = Math.min(...sortedAll.map(p => p.low));
+            const first = sortedAll[0];
+            const chg = last.close - first.close;
+            const pct = first.close > 0 ? (chg / first.close * 100) : 0;
+            const priceLabel = isListed ? '最新收盤' : '最後收盤';
+            
+            // 計算多日漲跌幅
+            const chg5 = calcNDayChange(allPrices, 5);
+            const chg20 = calcNDayChange(allPrices, 20);
+            
+            html += `<div class="detail-section"><h4>📊 價格統計</h4>
+                <div class="modal-stats">
+                    <div class="modal-stat"><div class="val">${last.close.toFixed(2)}</div><div class="lbl">${priceLabel}</div></div>
+                    <div class="modal-stat"><div class="val" style="color:var(--up)">${high.toFixed(2)}</div><div class="lbl">掛牌最高</div></div>
+                    <div class="modal-stat"><div class="val" style="color:var(--down)">${low.toFixed(2)}</div><div class="lbl">掛牌最低</div></div>
+                    <div class="modal-stat"><div class="val" style="color:${chg >= 0 ? 'var(--up)' : 'var(--down)'}">${chg >= 0 ? '+' : ''}${pct.toFixed(1)}%</div><div class="lbl">掛牌漲跌</div></div>
+                    ${chg5 !== null ? `<div class="modal-stat"><div class="val" style="color:${chg5 >= 0 ? 'var(--up)' : 'var(--down)'}">${chg5 >= 0 ? '+' : ''}${chg5.toFixed(1)}%</div><div class="lbl">5日漲跌</div></div>` : ''}
+                    ${chg20 !== null ? `<div class="modal-stat"><div class="val" style="color:${chg20 >= 0 ? 'var(--up)' : 'var(--down)'}">${chg20 >= 0 ? '+' : ''}${chg20.toFixed(1)}%</div><div class="lbl">20日漲跌</div></div>` : ''}
+                </div>
+            </div>`;
+        }
+        
+        resultEl.innerHTML = html;
+        return;
+    }
+    
+    // 價格表和走勢圖的共同頭部
     let html = `<div class="price-info-card">
         <div class="price-info-header">
             <div class="price-info-title">${info.name || code}<span class="code">${code}</span></div>
@@ -3183,7 +3271,7 @@ function renderStockContent() {
         </div>`;
         
         if (STOCK_VIEW === 'table') {
-            // 表格視圖
+            // 價格表視圖
             const avgOpen = prices.reduce((s, p) => s + p.open, 0) / prices.length;
             const avgHigh = prices.reduce((s, p) => s + p.high, 0) / prices.length;
             const avgLow = prices.reduce((s, p) => s + p.low, 0) / prices.length;
