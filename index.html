@@ -35,6 +35,12 @@
     .analysis-btn:hover { border-color: var(--primary); background: linear-gradient(135deg, #ffe8d0, #ffd8b0); transform: translateY(-1px); box-shadow: 0 3px 8px rgba(230,126,34,0.2); }
     .analysis-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
 
+    /* 個股詳情內的分析標籤 */
+    .atab { padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid #ffd0a0; background: linear-gradient(135deg, #fff8f0, #fff0e5); color: #d35400; transition: all 0.2s; white-space: nowrap; }
+    .atab:hover { border-color: var(--primary); background: #ffe8d0; }
+    .atab.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .tab-content { min-height: 150px; }
+
     .stats-box { background: linear-gradient(135deg, #fff8f0 0%, #fff0e5 100%); border-radius: 14px; padding: 18px; margin-bottom: 18px; border: 1px solid #ffd8c0; }
     .section-title { font-size: 16px; font-weight: 700; color: #2c2c2c; margin: 16px 0 12px; padding-left: 10px; border-left: 4px solid var(--primary); }
     .section-title:first-child { margin-top: 0; }
@@ -172,15 +178,6 @@
     <div class="sub-tab" onclick="setMode('overall')">📊 整體查詢</div>
 </div>
 
-<!-- 分析工具按鈕 -->
-<div class="analysis-btns" id="analysisBtns">
-    <div class="analysis-btn" onclick="openAnalysis('convert')">🔄 轉換分析</div>
-    <div class="analysis-btn" onclick="openAnalysis('value')">📊 價值分析</div>
-    <div class="analysis-btn" onclick="openAnalysis('up')">📈 上漲情境</div>
-    <div class="analysis-btn" onclick="openAnalysis('down')">📉 下跌情境</div>
-    <div class="analysis-btn" onclick="openAnalysis('cbas')">🔢 CBAS拆解</div>
-</div>
-
 <div class="stats-box" id="statsBox">
     <!-- 動態渲染 -->
 </div>
@@ -257,18 +254,6 @@
             <button class="modal-close" onclick="closeModal()">✕</button>
         </div>
         <div class="modal-body" id="modalBody"></div>
-    </div>
-</div>
-
-<!-- 分析彈窗 -->
-
-<div class="modal" id="analysisModal" onclick="if(event.target===this)closeAnalysis()">
-    <div class="modal-content" style="max-width:600px">
-        <div class="modal-header">
-            <h3 id="analysisTitle">分析工具</h3>
-            <button class="modal-close" onclick="closeAnalysis()">✕</button>
-        </div>
-        <div class="modal-body" id="analysisBody"></div>
     </div>
 </div>
 
@@ -740,77 +725,202 @@ function renderTable() {
 }
 
 function openDetail(code) {
-    const allPrices = DB.cbPrice[code];
-    if(!allPrices) return;
-    
+    const allPrices = DB.cbPrice[code] || [];
     const p = filterByPeriod(allPrices);
-    if(p.length === 0) return;
-    
     const info = DB.cbInfo[code] || {};
-    const first = p[0], last = p[p.length - 1];
-    const high = Math.max(...p.map(x => x.high)), low = Math.min(...p.map(x => x.low));
+    
+    // 即使沒價格也可以開啟（只顯示基本資料和分析工具）
+    const hasPrice = p.length > 0;
+    const first = hasPrice ? p[0] : null;
+    const last = hasPrice ? p[p.length - 1] : null;
+    const high = hasPrice ? Math.max(...p.map(x => x.high)) : 0;
+    const low = hasPrice ? Math.min(...p.map(x => x.low)) : 0;
+    
+    // 轉換價值計算
+    const convPrice = info.convPrice || 0;
+    const lastClose = last ? last.close : 100;
     
     document.getElementById('modalTitle').innerText = info.name ? `${info.name} (${code})` : code;
     
+    // 儲存當前CB資訊供分析使用
+    window.currentCB = { code, info, lastClose, convPrice, high, low };
+    
     let html = `
+        <!-- 標籤列 -->
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
+            ${info.guarantee === '有擔保' ? '<span style="background:#27ae60;color:#fff;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:600">有擔保</span>' : '<span style="background:#666;color:#fff;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:600">無擔保</span>'}
+            ${info.industry ? `<span style="background:#e67e22;color:#fff;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:600">${info.industry}</span>` : ''}
+            ${info.method ? `<span style="background:#3498db;color:#fff;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:600">${info.method}</span>` : ''}
+        </div>
         <div style="font-size:13px;color:#666;margin-bottom:12px">
             ${info.stockName ? `標的: ${info.stockName}(${info.stockCode})` : ''}
-            ${info.industry ? ` | 產業: ${info.industry}` : ''}
-            ${info.convPrice ? ` | 轉換價: ${info.convPrice}元` : ''}
-            ${info.guarantee ? ` | ${info.guarantee}` : ''}
-        </div>
-        <div class="modal-stats">
-            <div class="modal-stat"><div class="val">${high.toFixed(2)}</div><div class="lbl">期間最高</div></div>
-            <div class="modal-stat"><div class="val">${low.toFixed(2)}</div><div class="lbl">期間最低</div></div>
-            <div class="modal-stat"><div class="val">${last.close.toFixed(2)}</div><div class="lbl">最新收盤</div></div>
-            <div class="modal-stat"><div class="val">${p.length}</div><div class="lbl">資料筆數</div></div>
+            ${convPrice ? ` | 轉換價: ${convPrice}元` : ''}
         </div>
         
-        <!-- 彈窗內的圖/表切換 -->
-        <div class="view-tabs" style="margin-bottom:12px">
-            <div class="view-tab active" onclick="showModalView('table','${code}')">📋 表格</div>
-            <div class="view-tab" onclick="showModalView('chart','${code}')">📈 走勢圖</div>
-        </div>
-        <div class="period-tabs" style="margin-bottom:12px">
-            <div class="period-tab ${PERIOD==='3m'?'active':''}" onclick="setModalPeriod('3m','${code}')">3個月</div>
-            <div class="period-tab ${PERIOD==='6m'?'active':''}" onclick="setModalPeriod('6m','${code}')">6個月</div>
-            <div class="period-tab ${PERIOD==='1y'?'active':''}" onclick="setModalPeriod('1y','${code}')">1年</div>
-            <div class="period-tab ${PERIOD==='2y'?'active':''}" onclick="setModalPeriod('2y','${code}')">2年</div>
-            <div class="period-tab ${PERIOD==='3y'?'active':''}" onclick="setModalPeriod('3y','${code}')">3年</div>
-            <div class="period-tab ${PERIOD==='all'?'active':''}" onclick="setModalPeriod('all','${code}')">全部</div>
+        <!-- 分析功能標籤 -->
+        <div class="analysis-tabs" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;overflow-x:auto;padding-bottom:4px">
+            <div class="atab active" onclick="showAnalysisTab('price','${code}')">📋 歷史價格</div>
+            <div class="atab" onclick="showAnalysisTab('convert','${code}')">🔄 轉換分析</div>
+            <div class="atab" onclick="showAnalysisTab('value','${code}')">📊 價值分析</div>
+            <div class="atab" onclick="showAnalysisTab('up','${code}')">📈 上漲情境</div>
+            <div class="atab" onclick="showAnalysisTab('down','${code}')">📉 下跌情境</div>
+            <div class="atab" onclick="showAnalysisTab('cbas','${code}')">🔢 CBAS拆解</div>
         </div>
         
-        <!-- 走勢圖佔位 -->
-        <div id="modalChart" class="chart-area hidden" style="min-height:200px;margin-bottom:12px">
-            <div class="chart-placeholder">
-                <div class="icon">📈</div>
-                <div>走勢圖功能開發中</div>
+        <!-- 各分析內容區域 -->
+        <div id="tabPrice" class="tab-content">
+            ${hasPrice ? `
+                <div class="modal-stats">
+                    <div class="modal-stat"><div class="val">${high.toFixed(2)}</div><div class="lbl">期間最高</div></div>
+                    <div class="modal-stat"><div class="val">${low.toFixed(2)}</div><div class="lbl">期間最低</div></div>
+                    <div class="modal-stat"><div class="val">${lastClose.toFixed(2)}</div><div class="lbl">最新收盤</div></div>
+                    <div class="modal-stat"><div class="val">${p.length}</div><div class="lbl">資料筆數</div></div>
+                </div>
+                <div class="period-tabs" style="margin-bottom:12px">
+                    <div class="period-tab ${PERIOD==='3m'?'active':''}" onclick="setModalPeriod('3m','${code}')">3個月</div>
+                    <div class="period-tab ${PERIOD==='6m'?'active':''}" onclick="setModalPeriod('6m','${code}')">6個月</div>
+                    <div class="period-tab ${PERIOD==='1y'?'active':''}" onclick="setModalPeriod('1y','${code}')">1年</div>
+                    <div class="period-tab ${PERIOD==='2y'?'active':''}" onclick="setModalPeriod('2y','${code}')">2年</div>
+                    <div class="period-tab ${PERIOD==='3y'?'active':''}" onclick="setModalPeriod('3y','${code}')">3年</div>
+                    <div class="period-tab ${PERIOD==='all'?'active':''}" onclick="setModalPeriod('all','${code}')">全部</div>
+                </div>
+                <div style="font-size:13px;color:#666;margin-bottom:10px">價格期間: ${first.date} ~ ${last.date}</div>
+                <div class="table-wrap" style="max-height:280px;overflow-y:auto"><table>
+                    <thead><tr><th>日期</th><th class="text-right">開盤</th><th class="text-right">最高</th><th class="text-right">最低</th><th class="text-right">收盤</th><th class="text-right">漲跌</th></tr></thead>
+                    <tbody>
+                        ${[...p].reverse().slice(0, 80).map(x => {
+                            const cls = x.change > 0 ? 'up' : x.change < 0 ? 'down' : '';
+                            return `<tr><td>${x.date}</td><td class="text-right">${x.open.toFixed(2)}</td><td class="text-right">${x.high.toFixed(2)}</td><td class="text-right">${x.low.toFixed(2)}</td><td class="text-right">${x.close.toFixed(2)}</td><td class="text-right ${cls}">${x.change > 0 ? '+' : ''}${x.change.toFixed(2)}</td></tr>`;
+                        }).join('')}
+                    </tbody>
+                </table></div>
+                ${p.length > 80 ? '<div style="text-align:center;padding:8px;color:#999;font-size:12px">僅顯示最近80筆</div>' : ''}
+            ` : '<div style="text-align:center;padding:40px;color:#999">尚未載入價格資料，請點擊年度按鈕載入</div>'}
+        </div>
+        
+        <div id="tabConvert" class="tab-content hidden">
+            <div class="analysis-panel">
+                <div class="analysis-input-row">
+                    <div class="analysis-input-group">
+                        <label>股票現價</label>
+                        <input type="number" id="inStockPrice" placeholder="股價" step="0.1">
+                    </div>
+                    <div class="analysis-input-group">
+                        <label>轉換價格</label>
+                        <input type="number" id="inConvPrice" value="${convPrice || ''}" step="0.1">
+                    </div>
+                    <div class="analysis-input-group">
+                        <label>CB現價</label>
+                        <input type="number" id="inCbPrice" value="${lastClose.toFixed(2)}" step="0.1">
+                    </div>
+                    <button class="analysis-calc-btn" onclick="calcConvert()">計算</button>
+                </div>
+                <div id="convertResult"></div>
+            </div>
+            <div style="font-size:12px;color:#888;margin-top:10px">轉換價值 = 股價 ÷ 轉換價 × 100 | 溢價率 = (CB價 - 轉換價值) ÷ 轉換價值</div>
+        </div>
+        
+        <div id="tabValue" class="tab-content hidden">
+            <div class="analysis-panel">
+                <div class="analysis-input-row">
+                    <div class="analysis-input-group">
+                        <label>CB現價</label>
+                        <input type="number" id="valCbPrice" value="${lastClose.toFixed(2)}" step="0.1">
+                    </div>
+                    <div class="analysis-input-group">
+                        <label>轉換價值</label>
+                        <input type="number" id="valConvValue" placeholder="輸入" step="0.1">
+                    </div>
+                    <div class="analysis-input-group">
+                        <label>剩餘年期</label>
+                        <input type="number" id="valYears" value="3" step="0.1">
+                    </div>
+                    <button class="analysis-calc-btn" onclick="calcValue()">分析</button>
+                </div>
+                <div id="valueResult"></div>
             </div>
         </div>
         
-        <!-- 表格 -->
-        <div id="modalTable">
-            <div style="font-size:13px;color:#666;margin-bottom:10px">價格期間: ${first.date} ~ ${last.date}</div>
-            <div class="table-wrap" style="max-height:300px;overflow-y:auto"><table>
-                <thead><tr><th>日期</th><th class="text-right">開盤</th><th class="text-right">最高</th><th class="text-right">最低</th><th class="text-right">收盤</th><th class="text-right">漲跌</th><th class="text-right">張數</th></tr></thead>
-                <tbody>`;
-    
-    [...p].reverse().slice(0, 100).forEach(x => {
-        const cls = x.change > 0 ? 'up' : x.change < 0 ? 'down' : '';
-        html += `<tr><td>${x.date}</td><td class="text-right">${x.open.toFixed(2)}</td><td class="text-right">${x.high.toFixed(2)}</td><td class="text-right">${x.low.toFixed(2)}</td><td class="text-right">${x.close.toFixed(2)}</td><td class="text-right ${cls}">${x.change > 0 ? '+' : ''}${x.change.toFixed(2)}</td><td class="text-right">${x.vol}</td></tr>`;
-    });
-    
-    html += '</tbody></table></div></div>';
-    if(p.length > 100) html += '<div style="text-align:center;padding:10px;color:#999;font-size:13px">僅顯示最近100筆</div>';
+        <div id="tabUp" class="tab-content hidden">
+            <div class="analysis-panel">
+                <div class="analysis-input-row">
+                    <div class="analysis-input-group">
+                        <label>股票現價</label>
+                        <input type="number" id="upStockPrice" placeholder="現價" step="0.1">
+                    </div>
+                    <div class="analysis-input-group">
+                        <label>轉換價格</label>
+                        <input type="number" id="upConvPrice" value="${convPrice || ''}" step="0.1">
+                    </div>
+                    <div class="analysis-input-group">
+                        <label>上漲%</label>
+                        <input type="number" id="upPercent" value="20" step="5">
+                    </div>
+                    <button class="analysis-calc-btn" onclick="calcUp()">模擬</button>
+                </div>
+                <div id="upResult"></div>
+            </div>
+        </div>
+        
+        <div id="tabDown" class="tab-content hidden">
+            <div class="analysis-panel">
+                <div class="analysis-input-row">
+                    <div class="analysis-input-group">
+                        <label>CB現價</label>
+                        <input type="number" id="downCbPrice" value="${lastClose.toFixed(2)}" step="0.1">
+                    </div>
+                    <div class="analysis-input-group">
+                        <label>轉換價值</label>
+                        <input type="number" id="downConvValue" placeholder="輸入" step="0.1">
+                    </div>
+                    <div class="analysis-input-group">
+                        <label>下跌%</label>
+                        <input type="number" id="downPercent" value="20" step="5">
+                    </div>
+                    <button class="analysis-calc-btn" onclick="calcDown()">模擬</button>
+                </div>
+                <div id="downResult"></div>
+            </div>
+            <div style="font-size:12px;color:#888;margin-top:10px">CB具有債券底價保護（約95-100元），下跌時損失有限</div>
+        </div>
+        
+        <div id="tabCbas" class="tab-content hidden">
+            <div class="analysis-panel">
+                <div class="analysis-input-row">
+                    <div class="analysis-input-group">
+                        <label>CB現價</label>
+                        <input type="number" id="cbasCbPrice" value="${lastClose.toFixed(2)}" step="0.1">
+                    </div>
+                    <div class="analysis-input-group">
+                        <label>純債價值</label>
+                        <input type="number" id="cbasBondValue" value="98" step="0.5">
+                    </div>
+                    <div class="analysis-input-group">
+                        <label>剩餘年期</label>
+                        <input type="number" id="cbasYears" value="3" step="0.1">
+                    </div>
+                    <button class="analysis-calc-btn" onclick="calcCBAS()">拆解</button>
+                </div>
+                <div id="cbasResult"></div>
+            </div>
+            <div style="font-size:12px;color:#888;margin-top:10px">CB價格 = 純債價值 + 選擇權價值</div>
+        </div>
+    `;
     
     document.getElementById('modalBody').innerHTML = html;
     document.getElementById('modal').classList.add('show');
 }
 
-function showModalView(v, code) {
-    document.getElementById('modalChart').classList.toggle('hidden', v !== 'chart');
-    document.getElementById('modalTable').classList.toggle('hidden', v !== 'table');
-    document.querySelectorAll('#modalBody .view-tab').forEach((t,i) => t.classList.toggle('active', ['table','chart'][i] === v));
+// 切換分析標籤
+function showAnalysisTab(tab, code) {
+    // 隱藏所有內容
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+    // 顯示選中的
+    const tabMap = { 'price': 'tabPrice', 'convert': 'tabConvert', 'value': 'tabValue', 'up': 'tabUp', 'down': 'tabDown', 'cbas': 'tabCbas' };
+    document.getElementById(tabMap[tab]).classList.remove('hidden');
+    // 更新標籤樣式
+    document.querySelectorAll('.atab').forEach(el => el.classList.remove('active'));
+    event.target.classList.add('active');
 }
 
 function setModalPeriod(p, code) {
@@ -829,160 +939,12 @@ function setModalPeriod(p, code) {
 
 function closeModal() { document.getElementById('modal').classList.remove('show'); }
 
-// ========== 分析功能 ==========
-function openAnalysis(type) {
-    const modal = document.getElementById('analysisModal');
-    const title = document.getElementById('analysisTitle');
-    const body = document.getElementById('analysisBody');
-    
-    const titles = {
-        'convert': '🔄 轉換分析',
-        'value': '📊 價值分析',
-        'up': '📈 上漲情境分析',
-        'down': '📉 下跌情境分析',
-        'cbas': '🔢 CBAS拆解'
-    };
-    title.textContent = titles[type] || '分析工具';
-    
-    let html = '';
-    
-    if(type === 'convert') {
-        html = `
-            <div class="analysis-panel">
-                <div class="panel-title">🔄 轉換價值計算</div>
-                <div class="analysis-input-row">
-                    <div class="analysis-input-group">
-                        <label>股票現價</label>
-                        <input type="number" id="stockPrice" placeholder="輸入股價" step="0.1">
-                    </div>
-                    <div class="analysis-input-group">
-                        <label>轉換價格</label>
-                        <input type="number" id="convPrice" placeholder="轉換價" step="0.1">
-                    </div>
-                    <div class="analysis-input-group">
-                        <label>CB現價</label>
-                        <input type="number" id="cbPrice" placeholder="CB價格" step="0.1" value="100">
-                    </div>
-                    <button class="analysis-calc-btn" onclick="calcConvert()">計算</button>
-                </div>
-                <div id="convertResult"></div>
-            </div>
-            <div style="font-size:13px;color:#888;margin-top:12px">
-                <b>說明：</b>轉換價值 = 股票現價 ÷ 轉換價格 × 100<br>
-                溢價率 = (CB現價 - 轉換價值) ÷ 轉換價值 × 100%
-            </div>
-        `;
-    } else if(type === 'value') {
-        html = `
-            <div class="analysis-panel">
-                <div class="panel-title">📊 CB價值評估</div>
-                <div class="analysis-input-row">
-                    <div class="analysis-input-group">
-                        <label>CB現價</label>
-                        <input type="number" id="valCbPrice" placeholder="CB價格" step="0.1" value="100">
-                    </div>
-                    <div class="analysis-input-group">
-                        <label>轉換價值</label>
-                        <input type="number" id="valConvValue" placeholder="轉換價值" step="0.1">
-                    </div>
-                    <div class="analysis-input-group">
-                        <label>到期年數</label>
-                        <input type="number" id="valYears" placeholder="年數" step="0.1" value="3">
-                    </div>
-                    <button class="analysis-calc-btn" onclick="calcValue()">分析</button>
-                </div>
-                <div id="valueResult"></div>
-            </div>
-        `;
-    } else if(type === 'up') {
-        html = `
-            <div class="analysis-panel">
-                <div class="panel-title">📈 股價上漲情境</div>
-                <div class="analysis-input-row">
-                    <div class="analysis-input-group">
-                        <label>股票現價</label>
-                        <input type="number" id="upStockPrice" placeholder="現價" step="0.1">
-                    </div>
-                    <div class="analysis-input-group">
-                        <label>轉換價格</label>
-                        <input type="number" id="upConvPrice" placeholder="轉換價" step="0.1">
-                    </div>
-                    <div class="analysis-input-group">
-                        <label>上漲幅度%</label>
-                        <input type="number" id="upPercent" placeholder="%" step="1" value="20">
-                    </div>
-                    <button class="analysis-calc-btn" onclick="calcUp()">模擬</button>
-                </div>
-                <div id="upResult"></div>
-            </div>
-            <div style="font-size:13px;color:#888;margin-top:12px">
-                <b>說明：</b>模擬股價上漲後，CB轉換價值的變化
-            </div>
-        `;
-    } else if(type === 'down') {
-        html = `
-            <div class="analysis-panel">
-                <div class="panel-title">📉 股價下跌情境</div>
-                <div class="analysis-input-row">
-                    <div class="analysis-input-group">
-                        <label>CB現價</label>
-                        <input type="number" id="downCbPrice" placeholder="CB現價" step="0.1" value="100">
-                    </div>
-                    <div class="analysis-input-group">
-                        <label>轉換價值</label>
-                        <input type="number" id="downConvValue" placeholder="轉換價值" step="0.1">
-                    </div>
-                    <div class="analysis-input-group">
-                        <label>下跌幅度%</label>
-                        <input type="number" id="downPercent" placeholder="%" step="1" value="20">
-                    </div>
-                    <button class="analysis-calc-btn" onclick="calcDown()">模擬</button>
-                </div>
-                <div id="downResult"></div>
-            </div>
-            <div style="font-size:13px;color:#888;margin-top:12px">
-                <b>說明：</b>模擬股價下跌後，CB的保護效果（債券底價約95-100元）
-            </div>
-        `;
-    } else if(type === 'cbas') {
-        html = `
-            <div class="analysis-panel">
-                <div class="panel-title">🔢 CBAS價值拆解</div>
-                <div class="analysis-input-row">
-                    <div class="analysis-input-group">
-                        <label>CB現價</label>
-                        <input type="number" id="cbasCbPrice" placeholder="CB現價" step="0.1" value="105">
-                    </div>
-                    <div class="analysis-input-group">
-                        <label>純債價值</label>
-                        <input type="number" id="cbasBondValue" placeholder="約95-100" step="0.1" value="98">
-                    </div>
-                    <div class="analysis-input-group">
-                        <label>剩餘年期</label>
-                        <input type="number" id="cbasYears" placeholder="年" step="0.1" value="3">
-                    </div>
-                    <button class="analysis-calc-btn" onclick="calcCBAS()">拆解</button>
-                </div>
-                <div id="cbasResult"></div>
-            </div>
-            <div style="font-size:13px;color:#888;margin-top:12px">
-                <b>說明：</b>CB價格 = 純債價值 + 選擇權價值<br>
-                選擇權價值 = CB現價 - 純債價值
-            </div>
-        `;
-    }
-    
-    body.innerHTML = html;
-    modal.classList.add('show');
-}
-
-function closeAnalysis() { document.getElementById('analysisModal').classList.remove('show'); }
-
+// ========== 分析計算函數 ==========
 // 轉換分析計算
 function calcConvert() {
-    const stockPrice = parseFloat(document.getElementById('stockPrice').value) || 0;
-    const convPrice = parseFloat(document.getElementById('convPrice').value) || 0;
-    const cbPrice = parseFloat(document.getElementById('cbPrice').value) || 100;
+    const stockPrice = parseFloat(document.getElementById('inStockPrice').value) || 0;
+    const convPrice = parseFloat(document.getElementById('inConvPrice').value) || 0;
+    const cbPrice = parseFloat(document.getElementById('inCbPrice').value) || 100;
     
     if(stockPrice <= 0 || convPrice <= 0) {
         document.getElementById('convertResult').innerHTML = '<div style="color:#e74c3c;padding:12px">請輸入有效的股價和轉換價格</div>';
