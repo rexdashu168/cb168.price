@@ -978,6 +978,7 @@ function drawIndustryChart() {
     ctx.scale(dpr, dpr);
     
     const width = rect.width, height = 350;
+    const isMobile = width < 500;
     
     // 取得符合篩選條件的CB代碼
     const filteredData = getFilteredData();
@@ -1026,45 +1027,56 @@ function drawIndustryChart() {
     const periodHigh = Math.max(...avgPrices);
     const periodLow = Math.min(...avgPrices);
     const amplitude = periodLow > 0 ? ((periodHigh / periodLow - 1) * 100) : 0;
+    const isUp = lastAvg >= firstAvg;
     
     const priceRange = maxPrice - minPrice || 1, padding = priceRange * 0.1;
-    const chartLeft = 55, chartRight = width - 15, chartTop = 80, chartBottom = height - 40;
+    const chartLeft = isMobile ? 45 : 55;
+    const chartRight = width - 15;
+    const chartTop = 80;
+    const chartBottom = height - 40;
     const chartWidth = chartRight - chartLeft, chartHeight = chartBottom - chartTop;
     
     ctx.clearRect(0, 0, width, height);
     
-    // 標題（置中、加大）
+    // 標題（置中）
     const industryName = FILTER.industry || '全部產業';
-    ctx.fillStyle = '#c96442'; ctx.font = 'bold 18px sans-serif'; ctx.textAlign = 'center';
-    ctx.fillText(`${industryName} 平均價格走勢（${codes.length}檔）`, width/2, 24);
+    ctx.fillStyle = '#c96442'; ctx.font = isMobile ? 'bold 15px sans-serif' : 'bold 18px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText(`${industryName} 平均價格走勢（${codes.length}檔）`, width/2, 22);
+    
+    // 漲跌幅（標題下方）
+    const change = lastAvg - firstAvg;
+    const pct = (change / firstAvg * 100).toFixed(2);
+    ctx.font = isMobile ? 'bold 12px Menlo, monospace' : 'bold 13px Menlo, monospace';
+    ctx.fillStyle = isUp ? '#e74c3c' : '#27ae60';
+    ctx.fillText(`${lastAvg.toFixed(2)} (${change >= 0 ? '+' : ''}${pct}%)`, width/2, 40);
     
     // 統計資訊
-    ctx.font = '13px sans-serif';
-    const statsY = 50;
-    const statsSpacing = 140;
-    const statsStartX = (width - statsSpacing * 3) / 2;
+    ctx.font = isMobile ? '11px sans-serif' : '13px sans-serif';
+    const statsY = 58;
+    const statsSpacing = isMobile ? 100 : 140;
+    const statsStartX = (width - statsSpacing * 2.5) / 2;
     
     ctx.fillStyle = '#666'; ctx.textAlign = 'center';
-    ctx.fillText(`最高 `, statsStartX, statsY);
-    ctx.fillStyle = '#e74c3c'; ctx.font = 'bold 13px Menlo, monospace';
-    ctx.fillText(periodHigh.toFixed(2), statsStartX + 40, statsY);
+    ctx.fillText(`最高`, statsStartX, statsY);
+    ctx.fillStyle = '#e74c3c'; ctx.font = isMobile ? 'bold 11px Menlo, monospace' : 'bold 13px Menlo, monospace';
+    ctx.fillText(periodHigh.toFixed(2), statsStartX + (isMobile ? 50 : 55), statsY);
     
-    ctx.fillStyle = '#666'; ctx.font = '13px sans-serif';
-    ctx.fillText(`最低 `, statsStartX + statsSpacing, statsY);
-    ctx.fillStyle = '#27ae60'; ctx.font = 'bold 13px Menlo, monospace';
-    ctx.fillText(periodLow.toFixed(2), statsStartX + statsSpacing + 40, statsY);
+    ctx.fillStyle = '#666'; ctx.font = isMobile ? '11px sans-serif' : '13px sans-serif';
+    ctx.fillText(`最低`, statsStartX + statsSpacing, statsY);
+    ctx.fillStyle = '#27ae60'; ctx.font = isMobile ? 'bold 11px Menlo, monospace' : 'bold 13px Menlo, monospace';
+    ctx.fillText(periodLow.toFixed(2), statsStartX + statsSpacing + (isMobile ? 50 : 55), statsY);
     
-    ctx.fillStyle = '#666'; ctx.font = '13px sans-serif';
-    ctx.fillText(`振幅 `, statsStartX + statsSpacing * 2, statsY);
-    ctx.fillStyle = '#333'; ctx.font = 'bold 13px Menlo, monospace';
-    ctx.fillText(amplitude.toFixed(2) + '%', statsStartX + statsSpacing * 2 + 45, statsY);
+    ctx.fillStyle = '#666'; ctx.font = isMobile ? '11px sans-serif' : '13px sans-serif';
+    ctx.fillText(`振幅`, statsStartX + statsSpacing * 2, statsY);
+    ctx.fillStyle = '#333'; ctx.font = isMobile ? 'bold 11px Menlo, monospace' : 'bold 13px Menlo, monospace';
+    ctx.fillText(amplitude.toFixed(2) + '%', statsStartX + statsSpacing * 2 + (isMobile ? 50 : 55), statsY);
     
     // 格線
     ctx.strokeStyle = '#e8e8e8'; ctx.lineWidth = 1;
     for (let i = 0; i <= 4; i++) { const y = chartTop + (chartHeight / 4) * i; ctx.beginPath(); ctx.moveTo(chartLeft, y); ctx.lineTo(chartRight, y); ctx.stroke(); }
     
     // Y軸標籤
-    ctx.fillStyle = '#666'; ctx.font = '11px Menlo, monospace'; ctx.textAlign = 'right';
+    ctx.fillStyle = '#666'; ctx.font = isMobile ? '10px Menlo, monospace' : '11px Menlo, monospace'; ctx.textAlign = 'right';
     for (let i = 0; i <= 4; i++) {
         const price = maxPrice + padding - ((priceRange + padding * 2) / 4) * i;
         ctx.fillText(price.toFixed(1), chartLeft - 5, chartTop + (chartHeight / 4) * i + 4);
@@ -1072,8 +1084,6 @@ function drawIndustryChart() {
     
     const getX = (i) => chartLeft + (i / (chartData.length - 1)) * chartWidth;
     const getY = (price) => chartTop + ((maxPrice + padding - price) / (priceRange + padding * 2)) * chartHeight;
-    
-    const isUp = lastAvg >= firstAvg;
     
     // 填充區域
     const gradient = ctx.createLinearGradient(0, chartTop, 0, chartBottom);
@@ -1122,22 +1132,23 @@ function drawIndustryChart() {
     });
     
     // 最高價標示（紅色框框）
-    const boxPadX = 6, boxPadY = 3;
+    const boxPadX = isMobile ? 4 : 6;
+    const boxHeight = isMobile ? 14 : 16;
     const maxX = getX(maxIdx), maxY = getY(chartData[maxIdx].avg);
     const maxText = chartData[maxIdx].avg.toFixed(2);
-    ctx.font = 'bold 11px Menlo, monospace';
+    ctx.font = isMobile ? 'bold 10px Menlo, monospace' : 'bold 11px Menlo, monospace';
     const maxTextWidth = ctx.measureText(maxText).width;
     let maxBoxX = maxX - maxTextWidth/2 - boxPadX;
-    let maxBoxY = maxY - 22;
+    let maxBoxY = maxY - 20;
     if (maxBoxX < chartLeft) maxBoxX = chartLeft;
     if (maxBoxX + maxTextWidth + boxPadX*2 > chartRight) maxBoxX = chartRight - maxTextWidth - boxPadX*2;
     if (maxBoxY < chartTop) maxBoxY = maxY + 5;
     ctx.fillStyle = '#e74c3c'; ctx.strokeStyle = '#e74c3c'; ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.roundRect(maxBoxX, maxBoxY, maxTextWidth + boxPadX*2, 16, 3); ctx.fill();
+    ctx.beginPath(); ctx.roundRect(maxBoxX, maxBoxY, maxTextWidth + boxPadX*2, boxHeight, 3); ctx.fill();
     ctx.fillStyle = '#fff'; ctx.textAlign = 'left';
-    ctx.fillText(maxText, maxBoxX + boxPadX, maxBoxY + 12);
+    ctx.fillText(maxText, maxBoxX + boxPadX, maxBoxY + (isMobile ? 10 : 12));
     ctx.strokeStyle = '#e74c3c'; ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.moveTo(maxX, maxY); ctx.lineTo(maxX, maxBoxY + 16); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(maxX, maxY); ctx.lineTo(maxX, maxBoxY + boxHeight); ctx.stroke();
     
     // 最低價標示（綠色框框）
     const minX = getX(minIdx), minY = getY(chartData[minIdx].avg);
@@ -1147,32 +1158,27 @@ function drawIndustryChart() {
     let minBoxY = minY + 5;
     if (minBoxX < chartLeft) minBoxX = chartLeft;
     if (minBoxX + minTextWidth + boxPadX*2 > chartRight) minBoxX = chartRight - minTextWidth - boxPadX*2;
-    if (minBoxY + 16 > chartBottom) minBoxY = minY - 22;
+    if (minBoxY + boxHeight > chartBottom) minBoxY = minY - 20;
     ctx.fillStyle = '#27ae60'; ctx.strokeStyle = '#27ae60'; ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.roundRect(minBoxX, minBoxY, minTextWidth + boxPadX*2, 16, 3); ctx.fill();
+    ctx.beginPath(); ctx.roundRect(minBoxX, minBoxY, minTextWidth + boxPadX*2, boxHeight, 3); ctx.fill();
     ctx.fillStyle = '#fff'; ctx.textAlign = 'left';
-    ctx.fillText(minText, minBoxX + boxPadX, minBoxY + 12);
+    ctx.fillText(minText, minBoxX + boxPadX, minBoxY + (isMobile ? 10 : 12));
     ctx.strokeStyle = '#27ae60'; ctx.lineWidth = 1;
     ctx.beginPath(); ctx.moveTo(minX, minY); ctx.lineTo(minX, minBoxY); ctx.stroke();
     
     // 圖例（13MA）
-    ctx.font = '11px sans-serif'; ctx.textAlign = 'left';
+    ctx.font = isMobile ? '10px sans-serif' : '11px sans-serif'; ctx.textAlign = 'left';
     ctx.fillStyle = '#f39c12';
-    ctx.fillText('— 13MA', chartLeft + 5, 68);
+    ctx.fillText('— 13MA', chartLeft + 5, chartTop - 5);
     
-    // X軸標籤
-    ctx.fillStyle = '#666'; ctx.font = '10px sans-serif'; ctx.textAlign = 'center';
-    const labelCount = Math.min(6, chartData.length);
+    // X軸標籤 - 手機版用更短格式避免重疊
+    ctx.fillStyle = '#666'; ctx.font = isMobile ? '9px sans-serif' : '10px sans-serif'; ctx.textAlign = 'center';
+    const labelCount = isMobile ? Math.min(4, chartData.length) : Math.min(6, chartData.length);
     for (let i = 0; i < labelCount; i++) {
         const idx = Math.floor((i / (labelCount - 1)) * (chartData.length - 1));
-        ctx.fillText(chartData[idx].date.substring(2), getX(idx), chartBottom + 15);
+        const dateStr = isMobile ? chartData[idx].date.substring(5) : chartData[idx].date.substring(2);
+        ctx.fillText(dateStr, getX(idx), chartBottom + 15);
     }
-    
-    // 右上角漲跌
-    const change = lastAvg - firstAvg;
-    const pct = (change / firstAvg * 100).toFixed(2);
-    ctx.font = 'bold 14px Menlo, monospace'; ctx.fillStyle = isUp ? '#e74c3c' : '#27ae60'; ctx.textAlign = 'right';
-    ctx.fillText(`${lastAvg.toFixed(2)} (${change >= 0 ? '+' : ''}${pct}%)`, chartRight, 24);
     
     // 儲存數據供tooltip使用
     canvas.chartData = chartData;
@@ -2212,14 +2218,18 @@ function drawStockChart(prices, name) {
     ctx.scale(dpr, dpr);
     
     const width = rect.width, height = 320;
-    const chartLeft = 55, chartRight = width - 15, chartTop = 30, chartBottom = height - 35;
+    const isMobile = width < 500;
+    const chartLeft = isMobile ? 45 : 55;
+    const chartRight = width - 15;
+    const chartTop = 35;
+    const chartBottom = height - 35;
     const chartWidth = chartRight - chartLeft, chartHeight = chartBottom - chartTop;
     
     const closes = prices.map(p => p.close);
     const maxPrice = Math.max(...prices.map(p => p.high));
     const minPrice = Math.min(...prices.map(p => p.low));
     const priceRange = maxPrice - minPrice || 1;
-    const padding = priceRange * 0.1;
+    const padding = priceRange * 0.12; // 增加padding給標示框空間
     
     // 計算13日均線
     const ma13 = [];
@@ -2249,7 +2259,7 @@ function drawStockChart(prices, name) {
     }
     
     // Y軸標籤
-    ctx.fillStyle = '#666'; ctx.font = '11px Menlo, monospace'; ctx.textAlign = 'right';
+    ctx.fillStyle = '#666'; ctx.font = isMobile ? '10px Menlo, monospace' : '11px Menlo, monospace'; ctx.textAlign = 'right';
     for (let i = 0; i <= 4; i++) {
         const price = maxPrice + padding - ((priceRange + padding * 2) / 4) * i;
         ctx.fillText(price.toFixed(1), chartLeft - 5, chartTop + (chartHeight / 4) * i + 4);
@@ -2294,24 +2304,25 @@ function drawStockChart(prices, name) {
     // 最高價標示（紅色框框）
     const maxX = getX(maxIdx), maxY = getY(prices[maxIdx].high);
     const maxText = prices[maxIdx].high.toFixed(2);
-    ctx.font = 'bold 11px Menlo, monospace';
+    ctx.font = isMobile ? 'bold 10px Menlo, monospace' : 'bold 11px Menlo, monospace';
     const maxTextWidth = ctx.measureText(maxText).width;
-    const boxPadX = 6, boxPadY = 3;
+    const boxPadX = isMobile ? 4 : 6;
     let maxBoxX = maxX - maxTextWidth/2 - boxPadX;
-    let maxBoxY = maxY - 22;
+    let maxBoxY = maxY - 20;
     // 確保不超出邊界
     if (maxBoxX < chartLeft) maxBoxX = chartLeft;
     if (maxBoxX + maxTextWidth + boxPadX*2 > chartRight) maxBoxX = chartRight - maxTextWidth - boxPadX*2;
     if (maxBoxY < chartTop) maxBoxY = maxY + 5;
     ctx.fillStyle = '#e74c3c'; ctx.strokeStyle = '#e74c3c'; ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.roundRect(maxBoxX, maxBoxY, maxTextWidth + boxPadX*2, 16, 3);
+    ctx.roundRect(maxBoxX, maxBoxY, maxTextWidth + boxPadX*2, isMobile ? 14 : 16, 3);
     ctx.fill();
     ctx.fillStyle = '#fff'; ctx.textAlign = 'left';
-    ctx.fillText(maxText, maxBoxX + boxPadX, maxBoxY + 12);
+    ctx.fillText(maxText, maxBoxX + boxPadX, maxBoxY + (isMobile ? 10 : 12));
     // 連接線
     ctx.strokeStyle = '#e74c3c'; ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.moveTo(maxX, maxY); ctx.lineTo(maxX, maxBoxY + 16); ctx.stroke();
+    const maxBoxBottom = maxBoxY + (isMobile ? 14 : 16);
+    ctx.beginPath(); ctx.moveTo(maxX, maxY); ctx.lineTo(maxX, maxBoxBottom); ctx.stroke();
     
     // 最低價標示（綠色框框）
     const minX = getX(minIdx), minY = getY(prices[minIdx].low);
@@ -2322,38 +2333,39 @@ function drawStockChart(prices, name) {
     // 確保不超出邊界
     if (minBoxX < chartLeft) minBoxX = chartLeft;
     if (minBoxX + minTextWidth + boxPadX*2 > chartRight) minBoxX = chartRight - minTextWidth - boxPadX*2;
-    if (minBoxY + 16 > chartBottom) minBoxY = minY - 22;
+    if (minBoxY + (isMobile ? 14 : 16) > chartBottom) minBoxY = minY - 20;
     ctx.fillStyle = '#27ae60'; ctx.strokeStyle = '#27ae60'; ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.roundRect(minBoxX, minBoxY, minTextWidth + boxPadX*2, 16, 3);
+    ctx.roundRect(minBoxX, minBoxY, minTextWidth + boxPadX*2, isMobile ? 14 : 16, 3);
     ctx.fill();
     ctx.fillStyle = '#fff'; ctx.textAlign = 'left';
-    ctx.fillText(minText, minBoxX + boxPadX, minBoxY + 12);
+    ctx.fillText(minText, minBoxX + boxPadX, minBoxY + (isMobile ? 10 : 12));
     // 連接線
     ctx.strokeStyle = '#27ae60'; ctx.lineWidth = 1;
     ctx.beginPath(); ctx.moveTo(minX, minY); ctx.lineTo(minX, minBoxY); ctx.stroke();
     
-    // 標題
-    ctx.fillStyle = '#c96442'; ctx.font = 'bold 14px sans-serif'; ctx.textAlign = 'center';
-    ctx.fillText(`${name} 收盤價走勢`, width/2, 18);
+    // 標題（置中）
+    ctx.fillStyle = '#c96442'; ctx.font = isMobile ? 'bold 13px sans-serif' : 'bold 14px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText(`${name} 收盤價走勢`, width/2, 16);
     
-    // 漲跌
+    // 漲跌（標題下方）
     const change = lastClose - firstClose;
     const pct = (change / firstClose * 100).toFixed(2);
-    ctx.font = '12px Menlo, monospace'; ctx.fillStyle = isUp ? '#e74c3c' : '#27ae60'; ctx.textAlign = 'right';
-    ctx.fillText(`${lastClose.toFixed(2)} (${change >= 0 ? '+' : ''}${pct}%)`, chartRight, 18);
+    ctx.font = isMobile ? '11px Menlo, monospace' : '12px Menlo, monospace'; ctx.fillStyle = isUp ? '#e74c3c' : '#27ae60'; ctx.textAlign = 'center';
+    ctx.fillText(`${lastClose.toFixed(2)} (${change >= 0 ? '+' : ''}${pct}%)`, width/2, 30);
     
-    // 圖例（13MA）
-    ctx.font = '11px sans-serif'; ctx.textAlign = 'left';
+    // 圖例（13MA）放在圖表左上角
+    ctx.font = isMobile ? '10px sans-serif' : '11px sans-serif'; ctx.textAlign = 'left';
     ctx.fillStyle = '#f39c12';
-    ctx.fillText('— 13MA', chartLeft + 5, 18);
+    ctx.fillText('— 13MA', chartLeft + 5, chartTop - 5);
     
     // X軸標籤
-    ctx.fillStyle = '#666'; ctx.font = '10px sans-serif'; ctx.textAlign = 'center';
-    const labelCount = Math.min(6, prices.length);
+    ctx.fillStyle = '#666'; ctx.font = isMobile ? '9px sans-serif' : '10px sans-serif'; ctx.textAlign = 'center';
+    const labelCount = isMobile ? Math.min(4, prices.length) : Math.min(6, prices.length);
     for (let i = 0; i < labelCount; i++) {
         const idx = Math.floor((i / (labelCount - 1)) * (prices.length - 1));
-        ctx.fillText(prices[idx].date.substring(2), getX(idx), chartBottom + 15);
+        const dateStr = isMobile ? prices[idx].date.substring(5) : prices[idx].date.substring(2);
+        ctx.fillText(dateStr, getX(idx), chartBottom + 15);
     }
 }
 
@@ -2838,15 +2850,22 @@ function drawKlineChart(prices) {
         });
     });
     
+    // 判斷是否為手機版
+    const isMobile = width < 500;
+    
     // X軸日期標籤
     ctx.fillStyle = '#666';
-    ctx.font = '10px sans-serif';
+    ctx.font = isMobile ? '9px sans-serif' : '10px sans-serif';
     ctx.textAlign = 'center';
-    const labelCount = Math.min(8, prices.length);
+    // 根據螢幕寬度和數據量決定標籤數量
+    const maxLabels = isMobile ? 4 : Math.min(6, Math.floor(chartWidth / 80));
+    const labelCount = Math.min(maxLabels, prices.length);
     for (let i = 0; i < labelCount; i++) {
         const idx = Math.floor((i / (labelCount - 1)) * (prices.length - 1));
         const x = getX(idx);
-        ctx.fillText(prices[idx].date.substring(2), x, chartBottom + 18);
+        // 手機版用更短的日期格式 MM/DD
+        const dateStr = isMobile ? prices[idx].date.substring(5) : prices[idx].date.substring(2);
+        ctx.fillText(dateStr, x, chartBottom + 18);
     }
     
     // 移除舊事件
