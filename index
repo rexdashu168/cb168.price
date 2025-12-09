@@ -226,12 +226,16 @@
 </div>
 
 <script>
-const FILES = { CBPRICE_BASE: 'data/cbprice/' };
+// 檔案路徑設定（符合 GitHub Pages 部署結構）
+const FILES = { 
+    CBPRICE_BASE: 'data/',           // 價格檔案在 data/ 目錄
+    CB_INFO: '00_CB.xlsx'            // CB基本資料在根目錄
+};
 const DB = { cbPrice: {}, cbPriceYears: {}, cbInfo: {} };
 const META = { industries: {}, guarantees: { '有擔保': 0, '無擔保': 0 }, cbInfoLoaded: false };
 const currentYear = new Date().getFullYear();
 const availableYears = [];
-for(let y = 2015; y <= currentYear; y++) availableYears.push(y);
+for(let y = 2011; y <= currentYear; y++) availableYears.push(y);
 
 let MODE = 'stock';      // stock, industry, overall
 let VIEW = 'table';      // table, chart
@@ -327,22 +331,30 @@ async function init() {
 }
 
 async function loadCbInfo() {
-    // 嘗試多個路徑
-    const paths = ['00_CB.xlsx', 'data/00_CB.xlsx', '../00_CB.xlsx'];
+    // 使用設定的路徑
+    const paths = [FILES.CB_INFO, 'data/00_CB.xlsx'];
     
     for(const path of paths) {
         try {
+            console.log('嘗試載入:', path);
             const res = await fetch(path);
-            if(!res.ok) continue;
+            if(!res.ok) {
+                console.log('檔案不存在:', path, res.status);
+                continue;
+            }
             const wb = XLSX.read(await res.arrayBuffer(), {type: 'array'});
+            console.log('工作表:', wb.SheetNames);
             
             // 工作表名稱：優先使用「01」
-            const sheetNames = ['01', '01_ALLCB基本資料', '02', wb.SheetNames[0]].filter(s => s && wb.Sheets[s]);
+            const sheetNames = ['01', '01_ALLCB基本資料', wb.SheetNames[0]].filter(s => s && wb.Sheets[s]);
             
             sheetNames.forEach(sn => {
                 const sheet = wb.Sheets[sn];
                 if(!sheet) return;
-                XLSX.utils.sheet_to_json(sheet).forEach(r => {
+                const rows = XLSX.utils.sheet_to_json(sheet);
+                console.log('讀取工作表:', sn, '筆數:', rows.length);
+                
+                rows.forEach(r => {
                     const code = String(r['CB代號'] || r['代號'] || '').trim();
                     if(!code || code.length < 4) return;
                     
@@ -375,13 +387,15 @@ async function loadCbInfo() {
             
             if(Object.keys(DB.cbInfo).length > 0) {
                 META.cbInfoLoaded = true;
-                console.log('CB資料載入成功:', path, Object.keys(DB.cbInfo).length, '筆');
+                console.log('✅ CB資料載入成功:', path, Object.keys(DB.cbInfo).length, '筆');
+                console.log('產業統計:', META.industries);
                 return;
             }
         } catch(e) { 
             console.log('載入失敗:', path, e.message);
         }
     }
+    console.log('⚠️ 00_CB.xlsx 未載入，請手動上傳');
 }
 
 // 產業名稱簡化對照（與主檔一致）
