@@ -178,6 +178,119 @@
     .avg-stat-item .val { font-size: 22px; font-weight: 700; color: var(--primary); font-family: 'Menlo', monospace; }
     .avg-stat-item .lbl { font-size: 13px; color: #666; margin-top: 4px; }
 
+    /* 個股查詢區塊 */
+    .stock-query-area { background: #fff; border-radius: 14px; padding: 20px; border: 1px solid var(--border); }
+    .stock-search-row { display: flex; gap: 10px; margin-bottom: 16px; align-items: center; flex-wrap: wrap; }
+    .stock-search-input { flex: 1; max-width: 250px; padding: 12px 16px; border-radius: 10px; border: 2px solid var(--border); font-size: 16px; outline: none; }
+    .stock-search-input:focus { border-color: var(--primary); }
+    .stock-search-btn { padding: 12px 24px; border-radius: 10px; border: none; background: var(--primary); color: #fff; font-size: 15px; font-weight: 600; cursor: pointer; }
+    .stock-search-btn:hover { background: #b55a3a; }
+    .stock-period-tabs { display: flex; gap: 6px; }
+    .stock-period { padding: 6px 14px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; background: #f0f0f0; color: #666; }
+    .stock-period:hover { background: #e0e0e0; }
+    .stock-period.active { background: #3498db; color: #fff; }
+    .stock-view-tabs { display: flex; gap: 6px; margin-left: auto; }
+    .stock-view-tab { padding: 6px 14px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; background: #f0f0f0; color: #666; }
+    .stock-view-tab:hover { background: #e0e0e0; }
+    .stock-view-tab.active { background: #e67e22; color: #fff; }
+    .stock-result { min-height: 200px; }
+    .stock-placeholder { text-align: center; padding: 60px 20px; color: #999; }
+    .stock-placeholder .icon { font-size: 48px; margin-bottom: 12px; }
+    .stock-chart-container { background: #fafafa; border-radius: 10px; padding: 15px; margin-top: 16px; position: relative; }
+    .stock-chart-container canvas { width: 100%; height: 300px; }
+
+    /* 多檔查詢區塊 */
+    .multi-query-area { background: #fff; border-radius: 14px; padding: 20px; border: 1px solid var(--border); }
+    .multi-input-row { display: flex; gap: 10px; margin-bottom: 12px; align-items: flex-start; flex-wrap: wrap; }
+    .multi-codes-input { flex: 1; min-width: 200px; max-width: 400px; padding: 12px 16px; border-radius: 10px; border: 2px solid var(--border); font-size: 15px; outline: none; min-height: 80px; resize: vertical; font-family: inherit; }
+    .multi-codes-input:focus { border-color: var(--primary); }
+    .multi-codes-input::placeholder { color: #aaa; }
+    .multi-btn-group { display: flex; flex-direction: column; gap: 8px; }
+    .multi-search-btn { padding: 12px 24px; border-radius: 10px; border: none; background: var(--primary); color: #fff; font-size: 15px; font-weight: 600; cursor: pointer; }
+    .multi-search-btn:hover { background: #b55a3a; }
+    .multi-clear-btn { padding: 8px 16px; border-radius: 8px; border: 1px solid var(--border); background: #fff; color: #666; font-size: 13px; cursor: pointer; }
+    .multi-clear-btn:hover { background: #f5f5f5; }
+    .multi-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+    .multi-tag { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; background: linear-gradient(135deg, #fff8f0, #fff0e5); border: 1px solid #ffd8c0; border-radius: 16px; font-size: 13px; font-weight: 600; color: var(--primary); }
+    .multi-tag .remove { cursor: pointer; opacity: 0.6; font-size: 14px; }
+    .multi-tag .remove:hover { opacity: 1; }
+    .multi-controls { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
+    .multi-result { min-height: 200px; }
+    .multi-chart-container { background: #fafafa; border-radius: 10px; padding: 15px; margin-top: 16px; position: relative; }
+    .multi-chart-container canvas { width: 100%; height: 350px; }
+    .multi-legend { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 12px; justify-content: center; }
+    .multi-legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; }
+    .multi-legend-color { width: 20px; height: 3px; border-radius: 2px; }
+
+    /* 價格表區塊 */
+    .price-table-area { background: #fff; border-radius: 14px; padding: 20px; border: 1px solid var(--border); }
+    .price-search-box { display: flex; gap: 10px; margin-bottom: 20px; }
+    .price-search-input { flex: 1; max-width: 300px; padding: 12px 16px; border-radius: 10px; border: 2px solid var(--border); font-size: 16px; outline: none; }
+    .price-search-input:focus { border-color: var(--primary); }
+    .price-search-btn { padding: 12px 24px; border-radius: 10px; border: none; background: var(--primary); color: #fff; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .price-search-btn:hover { background: #b55a3a; }
+    .price-placeholder { text-align: center; padding: 60px 20px; color: #999; }
+    .price-placeholder .icon { font-size: 48px; margin-bottom: 12px; }
+    
+    .price-info-card { background: linear-gradient(135deg, #fff8f0 0%, #fff0e5 100%); border-radius: 12px; padding: 20px; margin-bottom: 20px; border: 1px solid #ffd8c0; }
+    .price-info-header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; }
+    .price-info-title { font-size: 22px; font-weight: 800; color: var(--primary); }
+    .price-info-title .code { font-size: 16px; color: #666; font-weight: 600; margin-left: 8px; }
+    .price-info-badge { display: flex; gap: 8px; }
+    .price-info-badge span { padding: 4px 12px; border-radius: 12px; font-size: 13px; font-weight: 600; }
+    .price-info-badge .listed { background: rgba(39,174,96,0.15); color: #27ae60; }
+    .price-info-badge .delisted { background: rgba(149,165,166,0.15); color: #95a5a6; }
+    .price-info-badge .guarantee { background: rgba(231,76,60,0.15); color: #e74c3c; }
+    .price-info-badge .no-guarantee { background: rgba(52,152,219,0.15); color: #3498db; }
+    
+    .price-info-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
+    .price-info-item { background: #fff; padding: 10px 14px; border-radius: 8px; }
+    .price-info-item .label { font-size: 12px; color: #888; margin-bottom: 2px; }
+    .price-info-item .value { font-size: 15px; font-weight: 600; color: #333; }
+    .price-info-item .value.highlight { color: var(--primary); }
+    
+    .price-stats-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; }
+    .price-stat-card { background: #fff; border-radius: 10px; padding: 14px 18px; border: 1px solid var(--border); text-align: center; min-width: 100px; }
+    .price-stat-card .val { font-size: 20px; font-weight: 700; color: var(--primary); font-family: 'Menlo', monospace; }
+    .price-stat-card .lbl { font-size: 12px; color: #666; margin-top: 4px; }
+    
+    .price-table-container { max-height: 500px; overflow-y: auto; border-radius: 10px; border: 1px solid var(--border); }
+    .price-table-container table { font-size: 14px; }
+    .price-table-container th { position: sticky; top: 0; background: #f8f8f8; z-index: 1; }
+    .price-table-container td { font-family: 'Menlo', monospace; }
+
+    /* K線圖區塊 */
+    .kline-area { background: #fff; border-radius: 14px; padding: 20px; border: 1px solid var(--border); }
+    .kline-period-tabs { display: flex; gap: 6px; margin-left: 20px; }
+    .kline-period { padding: 6px 12px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; background: #f0f0f0; color: #666; transition: all 0.2s; }
+    .kline-period:hover { background: #e0e0e0; }
+    .kline-period.active { background: var(--primary); color: #fff; }
+    .kline-info-card { background: linear-gradient(135deg, #fff8f0 0%, #fff0e5 100%); border-radius: 12px; padding: 16px 20px; margin-bottom: 16px; border: 1px solid #ffd8c0; }
+    .kline-title { font-size: 20px; font-weight: 800; color: var(--primary); text-align: center; margin-bottom: 12px; }
+    .kline-stats { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
+    .kline-stat { text-align: center; }
+    .kline-stat .val { font-size: 18px; font-weight: 700; font-family: 'Menlo', monospace; }
+    .kline-stat .val.up { color: var(--up); }
+    .kline-stat .val.down { color: var(--down); }
+    .kline-stat .lbl { font-size: 12px; color: #666; }
+    .kline-chart-container { background: #fafafa; border-radius: 10px; padding: 15px; position: relative; }
+    .kline-chart-container canvas { width: 100%; height: 400px; }
+    .kline-tooltip { position: absolute; background: rgba(0,0,0,0.85); color: #fff; padding: 10px 14px; border-radius: 8px; font-size: 12px; pointer-events: none; z-index: 100; display: none; }
+    .kline-tooltip .date { font-weight: 700; margin-bottom: 6px; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 4px; }
+    .kline-tooltip .row { display: flex; justify-content: space-between; gap: 20px; margin: 2px 0; }
+    .kline-tooltip .label { color: #aaa; }
+    .kline-tooltip .value { font-family: 'Menlo', monospace; }
+    .kline-tooltip .value.up { color: #ff6b6b; }
+    .kline-tooltip .value.down { color: #51cf66; }
+    
+    /* 產業走勢圖tooltip */
+    .industry-tooltip { position: absolute; background: rgba(0,0,0,0.85); color: #fff; padding: 10px 14px; border-radius: 8px; font-size: 12px; pointer-events: none; z-index: 100; display: none; }
+    .industry-chart-title { font-size: 18px; font-weight: 800; color: var(--primary); text-align: center; margin-bottom: 12px; }
+    .industry-chart-stats { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; margin-bottom: 12px; }
+    .industry-chart-stat { background: #fff; padding: 8px 14px; border-radius: 8px; text-align: center; border: 1px solid var(--border); }
+    .industry-chart-stat .val { font-size: 16px; font-weight: 700; color: var(--primary); font-family: 'Menlo', monospace; }
+    .industry-chart-stat .lbl { font-size: 11px; color: #666; }
+
     .pagination { display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 16px; }
     .pagination button { padding: 8px 16px; border-radius: 6px; border: 1px solid var(--border); background: #fff; cursor: pointer; font-size: 14px; }
     .pagination button:hover:not(:disabled) { border-color: var(--primary); background: var(--clickable); }
@@ -213,12 +326,72 @@
 
 <div class="sub-tabs" id="subTabs">
     <div class="sub-tab active" onclick="setMode('stock')">🔍 個股查詢</div>
+    <div class="sub-tab" onclick="setMode('multi')">📊 多檔查詢</div>
     <div class="sub-tab" onclick="setMode('industry')">🏭 產業查詢</div>
-    <div class="sub-tab" onclick="setMode('overall')">📊 整體查詢</div>
+    <div class="sub-tab" onclick="setMode('overall')">📋 整體查詢</div>
     <div class="sub-tab" onclick="setMode('avgPrice')">📈 均價走勢</div>
+    <div class="sub-tab" onclick="setMode('kline')">🕯️ K線圖</div>
 </div>
 
 <div class="stats-box" id="statsBox"></div>
+
+<!-- 個股查詢區塊 -->
+<div class="stock-query-area hidden" id="stockQueryArea">
+    <div class="stock-search-row">
+        <input type="text" class="stock-search-input" id="stockCodeInput" placeholder="輸入CB代號，例如：49232" onkeyup="if(event.key==='Enter')loadStockDetail()">
+        <button class="stock-search-btn" onclick="loadStockDetail()">🔍 查詢</button>
+        <div class="stock-period-tabs" id="stockPeriodTabs">
+            <span class="stock-period" onclick="setStockPeriod('3m')">3個月</span>
+            <span class="stock-period" onclick="setStockPeriod('6m')">6個月</span>
+            <span class="stock-period active" onclick="setStockPeriod('1y')">1年</span>
+            <span class="stock-period" onclick="setStockPeriod('2y')">2年</span>
+            <span class="stock-period" onclick="setStockPeriod('all')">全部</span>
+        </div>
+        <div class="stock-view-tabs">
+            <span class="stock-view-tab active" onclick="setStockView('table')">📋 表格</span>
+            <span class="stock-view-tab" onclick="setStockView('chart')">📈 走勢圖</span>
+        </div>
+    </div>
+    <div class="stock-result" id="stockResult">
+        <div class="stock-placeholder">
+            <div class="icon">🔍</div>
+            <div>輸入CB代號查詢個股詳細資料</div>
+            <div style="font-size:13px;margin-top:8px;color:#aaa">包含基本資料、價格統計、歷史價格表格與走勢圖</div>
+        </div>
+    </div>
+</div>
+
+<!-- 多檔查詢區塊 -->
+<div class="multi-query-area hidden" id="multiQueryArea">
+    <div class="multi-input-row">
+        <textarea class="multi-codes-input" id="multiCodesInput" placeholder="輸入多個CB代號，用逗號、空格或換行分隔&#10;例如：49232, 49231, 38aboratory&#10;或每行一個代號"></textarea>
+        <div class="multi-btn-group">
+            <button class="multi-search-btn" onclick="loadMultiQuery()">🔍 查詢</button>
+            <button class="multi-clear-btn" onclick="clearMultiQuery()">清除全部</button>
+        </div>
+    </div>
+    <div class="multi-tags" id="multiTags"></div>
+    <div class="multi-controls" id="multiControls" style="display:none">
+        <div class="stock-period-tabs">
+            <span class="stock-period" onclick="setMultiPeriod('3m')">3個月</span>
+            <span class="stock-period" onclick="setMultiPeriod('6m')">6個月</span>
+            <span class="stock-period active" onclick="setMultiPeriod('1y')">1年</span>
+            <span class="stock-period" onclick="setMultiPeriod('2y')">2年</span>
+            <span class="stock-period" onclick="setMultiPeriod('all')">全部</span>
+        </div>
+        <div class="stock-view-tabs" style="margin-left:auto">
+            <span class="stock-view-tab active" onclick="setMultiView('table')">📋 比較表</span>
+            <span class="stock-view-tab" onclick="setMultiView('chart')">📈 疊加圖</span>
+        </div>
+    </div>
+    <div class="multi-result" id="multiResult">
+        <div class="stock-placeholder">
+            <div class="icon">📊</div>
+            <div>輸入多個CB代號進行比較分析</div>
+            <div style="font-size:13px;margin-top:8px;color:#aaa">可同時比較多檔CB的價格走勢</div>
+        </div>
+    </div>
+</div>
 
 <div class="avg-price-area hidden" id="avgPriceArea">
     <div class="avg-type-tabs">
@@ -236,6 +409,26 @@
     </div>
     <div class="avg-chart-container"><canvas id="avgPriceChart"></canvas></div>
     <div class="avg-stats" id="avgStats"></div>
+</div>
+
+<!-- K線圖區塊 -->
+<div class="kline-area hidden" id="klineArea">
+    <div class="price-search-box">
+        <input type="text" class="price-search-input" id="klineCodeInput" placeholder="輸入CB代號，例如：49232" onkeyup="if(event.key==='Enter')loadKlineChart()">
+        <button class="price-search-btn" onclick="loadKlineChart()">🔍 查詢</button>
+        <div class="kline-period-tabs">
+            <span class="kline-period active" onclick="setKlinePeriod('3m')">3個月</span>
+            <span class="kline-period" onclick="setKlinePeriod('6m')">6個月</span>
+            <span class="kline-period" onclick="setKlinePeriod('1y')">1年</span>
+            <span class="kline-period" onclick="setKlinePeriod('all')">全部</span>
+        </div>
+    </div>
+    <div class="kline-result" id="klineResult">
+        <div class="price-placeholder">
+            <div class="icon">🕯️</div>
+            <div>輸入CB代號查看K線圖</div>
+        </div>
+    </div>
 </div>
 
 <div class="quick-filters" id="quickFilters">
@@ -456,7 +649,7 @@ async function backgroundUpdate() {
 function showToast(msg) { const t = document.getElementById('updateToast'); t.textContent = msg; t.classList.add('show'); }
 function hideToast() { document.getElementById('updateToast').classList.remove('show'); }
 function hideLoading() { const l = document.getElementById('loading'); l.classList.add('hidden'); setTimeout(() => l.classList.add('removed'), 300); }
-function updateUI() { updateCounts(); renderStatsBox(); updateQuickFilterCounts(); renderTable(); }
+function updateUI() { updateCounts(); setMode(MODE); }
 
 async function loadFromNetwork() {
     await loadCbInfo();
@@ -693,7 +886,8 @@ function setListedMode(mode) {
         t.classList.remove('active');
         if ((mode === 'listed' && t.classList.contains('listed')) || (mode === 'delisted' && t.classList.contains('delisted'))) t.classList.add('active');
     });
-    document.getElementById('quickFilters').classList.toggle('hidden', mode === 'delisted' || MODE === 'avgPrice' || MODE === 'industry');
+    const showQuickFilters = MODE === 'overall' && mode !== 'delisted';
+    document.getElementById('quickFilters').classList.toggle('hidden', !showQuickFilters);
     PAGE.current = 1;
     clearFilter();
     renderStatsBox();
@@ -704,35 +898,45 @@ function setListedMode(mode) {
 function setMode(m) {
     MODE = m;
     document.querySelectorAll('.sub-tab').forEach(t => t.classList.toggle('active', t.textContent.includes(
-        m === 'stock' ? '個股' : m === 'industry' ? '產業' : m === 'overall' ? '整體' : '均價'
+        m === 'stock' ? '個股' : m === 'multi' ? '多檔' : m === 'industry' ? '產業' : m === 'overall' ? '整體' : m === 'avgPrice' ? '均價' : 'K線'
     )));
     
-    if (m === 'stock') FILTER = { industry: '', guarantee: '', method: '', quickFilter: '' };
+    if (m === 'overall') FILTER = { industry: '', guarantee: '', method: '', quickFilter: '' };
     else if (m === 'industry') { FILTER.quickFilter = ''; }
-    else if (m === 'overall') { FILTER.industry = ''; FILTER.method = ''; FILTER.quickFilter = ''; }
     
+    const isStockMode = m === 'stock';
+    const isMultiMode = m === 'multi';
     const isAvgMode = m === 'avgPrice';
+    const isKlineMode = m === 'kline';
     const isIndustryMode = m === 'industry';
+    const isOverallMode = m === 'overall';
     
+    // 隱藏/顯示各區塊
+    document.getElementById('stockQueryArea').classList.toggle('hidden', !isStockMode);
+    document.getElementById('multiQueryArea').classList.toggle('hidden', !isMultiMode);
     document.getElementById('avgPriceArea').classList.toggle('hidden', !isAvgMode);
-    document.getElementById('statsBox').classList.toggle('hidden', isAvgMode);
-    document.getElementById('quickFilters').classList.toggle('hidden', isAvgMode || LISTED_MODE === 'delisted' || isIndustryMode);
-    document.getElementById('filterStatus').classList.toggle('hidden', isAvgMode || !hasActiveFilter());
-    document.querySelector('.search-box').classList.toggle('hidden', isAvgMode);
-    document.getElementById('controlRow').classList.toggle('hidden', isAvgMode);
-    document.getElementById('tableArea').classList.toggle('hidden', isAvgMode);
-    document.getElementById('pagination').classList.toggle('hidden', isAvgMode);
+    document.getElementById('klineArea').classList.toggle('hidden', !isKlineMode);
+    
+    // 整體查詢和產業查詢使用statsBox和表格
+    const showMainUI = isIndustryMode || isOverallMode;
+    document.getElementById('statsBox').classList.toggle('hidden', !showMainUI);
+    document.getElementById('quickFilters').classList.toggle('hidden', !isOverallMode || LISTED_MODE === 'delisted');
+    document.getElementById('filterStatus').classList.toggle('hidden', !showMainUI || !hasActiveFilter());
+    document.querySelector('.search-box').classList.toggle('hidden', !showMainUI);
+    document.getElementById('controlRow').classList.toggle('hidden', !showMainUI);
+    document.getElementById('tableArea').classList.toggle('hidden', !showMainUI);
+    document.getElementById('pagination').classList.toggle('hidden', !showMainUI);
     document.getElementById('chartArea').classList.toggle('hidden', true);
     
-    // 個股查詢隱藏走勢圖按鈕，產業查詢顯示
+    // 產業查詢顯示走勢圖按鈕
     const chartTab = document.getElementById('chartViewTab');
-    if (chartTab) chartTab.classList.toggle('hidden', m === 'stock' || m === 'overall');
+    if (chartTab) chartTab.classList.toggle('hidden', !isIndustryMode);
     
     VIEW = 'table';
     document.querySelectorAll('.view-tab').forEach((t,i) => t.classList.toggle('active', i === 0));
     
     if (isAvgMode) renderAvgPriceChart();
-    else { PAGE.current = 1; renderStatsBox(); updateFilterStatus(); renderTable(); }
+    else if (showMainUI) { PAGE.current = 1; renderStatsBox(); updateFilterStatus(); renderTable(); }
 }
 
 function hasActiveFilter() { return FILTER.industry || FILTER.guarantee || FILTER.method || FILTER.quickFilter; }
@@ -759,12 +963,12 @@ function drawIndustryChart() {
     const dpr = window.devicePixelRatio || 1;
     const rect = container.getBoundingClientRect();
     canvas.width = rect.width * dpr;
-    canvas.height = 300 * dpr;
+    canvas.height = 350 * dpr;
     canvas.style.width = rect.width + 'px';
-    canvas.style.height = '300px';
+    canvas.style.height = '350px';
     ctx.scale(dpr, dpr);
     
-    const width = rect.width, height = 300;
+    const width = rect.width, height = 350;
     
     // 取得符合篩選條件的CB代碼
     const filteredData = getFilteredData();
@@ -781,8 +985,10 @@ function drawIndustryChart() {
     codes.forEach(code => {
         const prices = filterByPeriod(DB.cbPrice[code] || []);
         prices.forEach(p => {
-            if (!dailyPrices[p.dateNum]) dailyPrices[p.dateNum] = { date: p.date, prices: [] };
+            if (!dailyPrices[p.dateNum]) dailyPrices[p.dateNum] = { date: p.date, prices: [], highs: [], lows: [] };
             dailyPrices[p.dateNum].prices.push(p.close);
+            dailyPrices[p.dateNum].highs.push(p.high);
+            dailyPrices[p.dateNum].lows.push(p.low);
         });
     });
     
@@ -791,7 +997,9 @@ function drawIndustryChart() {
     const chartData = sortedDates.map(dateNum => {
         const day = dailyPrices[dateNum];
         const avg = day.prices.reduce((a,b) => a+b, 0) / day.prices.length;
-        return { dateNum, date: day.date, avg, count: day.prices.length };
+        const avgHigh = day.highs.reduce((a,b) => a+b, 0) / day.highs.length;
+        const avgLow = day.lows.reduce((a,b) => a+b, 0) / day.lows.length;
+        return { dateNum, date: day.date, avg, avgHigh, avgLow, count: day.prices.length };
     });
     
     if (chartData.length < 2) {
@@ -800,18 +1008,47 @@ function drawIndustryChart() {
         return;
     }
     
+    // 計算統計
     const avgPrices = chartData.map(d => d.avg);
-    const maxPrice = Math.max(...avgPrices), minPrice = Math.min(...avgPrices);
+    const maxPrice = Math.max(...chartData.map(d => d.avgHigh));
+    const minPrice = Math.min(...chartData.map(d => d.avgLow));
+    const lastAvg = chartData[chartData.length - 1].avg;
+    const firstAvg = chartData[0].avg;
+    const periodHigh = Math.max(...avgPrices);
+    const periodLow = Math.min(...avgPrices);
+    const amplitude = periodLow > 0 ? ((periodHigh / periodLow - 1) * 100) : 0;
+    
     const priceRange = maxPrice - minPrice || 1, padding = priceRange * 0.1;
-    const chartLeft = 55, chartRight = width - 15, chartTop = 30, chartBottom = height - 40;
+    const chartLeft = 55, chartRight = width - 15, chartTop = 80, chartBottom = height - 40;
     const chartWidth = chartRight - chartLeft, chartHeight = chartBottom - chartTop;
     
     ctx.clearRect(0, 0, width, height);
     
-    // 標題
-    const title = FILTER.industry ? `${FILTER.industry} 平均價格走勢 (${codes.length}檔)` : `全部產業平均價格走勢 (${codes.length}檔)`;
-    ctx.fillStyle = '#333'; ctx.font = 'bold 14px sans-serif'; ctx.textAlign = 'left';
-    ctx.fillText(title, chartLeft, 18);
+    // 標題（置中、加大）
+    const industryName = FILTER.industry || '全部產業';
+    ctx.fillStyle = '#c96442'; ctx.font = 'bold 18px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText(`${industryName} 平均價格走勢（${codes.length}檔）`, width/2, 24);
+    
+    // 統計資訊
+    ctx.font = '13px sans-serif';
+    const statsY = 50;
+    const statsSpacing = 140;
+    const statsStartX = (width - statsSpacing * 3) / 2;
+    
+    ctx.fillStyle = '#666'; ctx.textAlign = 'center';
+    ctx.fillText(`最高 `, statsStartX, statsY);
+    ctx.fillStyle = '#e74c3c'; ctx.font = 'bold 13px Menlo, monospace';
+    ctx.fillText(periodHigh.toFixed(2), statsStartX + 40, statsY);
+    
+    ctx.fillStyle = '#666'; ctx.font = '13px sans-serif';
+    ctx.fillText(`最低 `, statsStartX + statsSpacing, statsY);
+    ctx.fillStyle = '#27ae60'; ctx.font = 'bold 13px Menlo, monospace';
+    ctx.fillText(periodLow.toFixed(2), statsStartX + statsSpacing + 40, statsY);
+    
+    ctx.fillStyle = '#666'; ctx.font = '13px sans-serif';
+    ctx.fillText(`振幅 `, statsStartX + statsSpacing * 2, statsY);
+    ctx.fillStyle = '#333'; ctx.font = 'bold 13px Menlo, monospace';
+    ctx.fillText(amplitude.toFixed(2) + '%', statsStartX + statsSpacing * 2 + 45, statsY);
     
     // 格線
     ctx.strokeStyle = '#e8e8e8'; ctx.lineWidth = 1;
@@ -827,7 +1064,6 @@ function drawIndustryChart() {
     const getX = (i) => chartLeft + (i / (chartData.length - 1)) * chartWidth;
     const getY = (price) => chartTop + ((maxPrice + padding - price) / (priceRange + padding * 2)) * chartHeight;
     
-    const lastAvg = chartData[chartData.length - 1].avg, firstAvg = chartData[0].avg;
     const isUp = lastAvg >= firstAvg;
     
     // 填充區域
@@ -845,7 +1081,7 @@ function drawIndustryChart() {
     
     // 終點
     ctx.fillStyle = isUp ? '#e74c3c' : '#27ae60'; ctx.beginPath();
-    ctx.arc(getX(chartData.length - 1), getY(lastAvg), 4, 0, Math.PI * 2); ctx.fill();
+    ctx.arc(getX(chartData.length - 1), getY(lastAvg), 5, 0, Math.PI * 2); ctx.fill();
     
     // X軸標籤
     ctx.fillStyle = '#666'; ctx.font = '10px sans-serif'; ctx.textAlign = 'center';
@@ -855,11 +1091,70 @@ function drawIndustryChart() {
         ctx.fillText(chartData[idx].date.substring(2), getX(idx), chartBottom + 15);
     }
     
-    // 右上角顯示漲跌
+    // 右上角漲跌
     const change = lastAvg - firstAvg;
     const pct = (change / firstAvg * 100).toFixed(2);
-    ctx.font = '12px Menlo, monospace'; ctx.fillStyle = isUp ? '#e74c3c' : '#27ae60'; ctx.textAlign = 'right';
-    ctx.fillText(`${lastAvg.toFixed(2)} (${change >= 0 ? '+' : ''}${pct}%)`, chartRight, 18);
+    ctx.font = 'bold 14px Menlo, monospace'; ctx.fillStyle = isUp ? '#e74c3c' : '#27ae60'; ctx.textAlign = 'right';
+    ctx.fillText(`${lastAvg.toFixed(2)} (${change >= 0 ? '+' : ''}${pct}%)`, chartRight, 24);
+    
+    // 儲存數據供tooltip使用
+    canvas.chartData = chartData;
+    canvas.getX = getX;
+    canvas.getY = getY;
+    canvas.chartLeft = chartLeft;
+    canvas.chartRight = chartRight;
+    canvas.chartTop = chartTop;
+    canvas.chartBottom = chartBottom;
+    
+    // 移除舊的事件監聽器
+    canvas.onmousemove = null;
+    canvas.onmouseleave = null;
+    
+    // 添加tooltip
+    canvas.onmousemove = function(e) {
+        const rect = canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        if (x < chartLeft || x > chartRight || y < chartTop || y > chartBottom) {
+            hideIndustryTooltip();
+            return;
+        }
+        
+        // 找到最近的數據點
+        const ratio = (x - chartLeft) / (chartRight - chartLeft);
+        const idx = Math.round(ratio * (chartData.length - 1));
+        if (idx >= 0 && idx < chartData.length) {
+            const d = chartData[idx];
+            showIndustryTooltip(e.clientX, e.clientY, d);
+        }
+    };
+    
+    canvas.onmouseleave = function() {
+        hideIndustryTooltip();
+    };
+}
+
+let industryTooltipEl = null;
+function showIndustryTooltip(x, y, data) {
+    if (!industryTooltipEl) {
+        industryTooltipEl = document.createElement('div');
+        industryTooltipEl.className = 'industry-tooltip';
+        document.body.appendChild(industryTooltipEl);
+    }
+    
+    industryTooltipEl.innerHTML = `
+        <div style="font-weight:700;margin-bottom:4px">${data.date}</div>
+        <div>均價: <span style="font-family:Menlo,monospace">${data.avg.toFixed(2)}</span></div>
+        <div>檔數: <span style="font-family:Menlo,monospace">${data.count}</span></div>
+    `;
+    industryTooltipEl.style.display = 'block';
+    industryTooltipEl.style.left = (x + 15) + 'px';
+    industryTooltipEl.style.top = (y - 10) + 'px';
+}
+
+function hideIndustryTooltip() {
+    if (industryTooltipEl) industryTooltipEl.style.display = 'none';
 }
 
 function setPeriod(p) {
@@ -1521,6 +1816,851 @@ function updateAvgStats(dailyData) {
         <div class="avg-stat-item"><div class="val" style="color:${change >= 0 ? '#e74c3c' : '#27ae60'}">${change >= 0 ? '+' : ''}${pct}%</div><div class="lbl">期間漲跌</div></div>
         <div class="avg-stat-item"><div class="val">${last.count}</div><div class="lbl">最新檔數</div></div>
         <div class="avg-stat-item"><div class="val">${dailyData.length}</div><div class="lbl">交易天數</div></div>`;
+}
+
+// ========== 個股查詢功能 ==========
+let STOCK_PERIOD = '1y';
+let STOCK_VIEW = 'table';
+let STOCK_CODE = '';
+let stockTableData = [];
+let stockTableSort = { field: '', dir: '' };
+
+function setStockPeriod(p) {
+    STOCK_PERIOD = p;
+    document.querySelectorAll('#stockPeriodTabs .stock-period').forEach(t => {
+        t.classList.toggle('active', 
+            (p === '3m' && t.textContent === '3個月') ||
+            (p === '6m' && t.textContent === '6個月') ||
+            (p === '1y' && t.textContent === '1年') ||
+            (p === '2y' && t.textContent === '2年') ||
+            (p === 'all' && t.textContent === '全部')
+        );
+    });
+    if (STOCK_CODE) renderStockContent();
+}
+
+function setStockView(v) {
+    STOCK_VIEW = v;
+    document.querySelectorAll('.stock-view-tab').forEach(t => {
+        t.classList.toggle('active', 
+            (v === 'table' && t.textContent.includes('表格')) ||
+            (v === 'chart' && t.textContent.includes('走勢'))
+        );
+    });
+    if (STOCK_CODE) renderStockContent();
+}
+
+function filterStockPeriod(prices) {
+    if (STOCK_PERIOD === 'all' || !prices.length) return prices;
+    const now = new Date();
+    let cutoffDate;
+    switch(STOCK_PERIOD) {
+        case '3m': cutoffDate = new Date(now.setMonth(now.getMonth() - 3)); break;
+        case '6m': cutoffDate = new Date(now.setMonth(now.getMonth() - 6)); break;
+        case '1y': cutoffDate = new Date(now.setFullYear(now.getFullYear() - 1)); break;
+        case '2y': cutoffDate = new Date(now.setFullYear(now.getFullYear() - 2)); break;
+        default: return prices;
+    }
+    const cutoffNum = parseInt(cutoffDate.toISOString().slice(0,10).replace(/-/g, ''));
+    return prices.filter(p => p.dateNum >= cutoffNum);
+}
+
+function loadStockDetail() {
+    const code = document.getElementById('stockCodeInput').value.trim();
+    const resultEl = document.getElementById('stockResult');
+    
+    if (!code) {
+        resultEl.innerHTML = '<div class="stock-placeholder"><div class="icon">⚠️</div><div>請輸入CB代號</div></div>';
+        return;
+    }
+    
+    const info = DB.cbInfo[code];
+    const prices = DB.cbPrice[code];
+    
+    if (!info && !prices) {
+        resultEl.innerHTML = `<div class="stock-placeholder"><div class="icon">❌</div><div>找不到代號 ${code} 的資料</div><div style="font-size:13px;margin-top:8px;color:#999">請確認代號是否正確</div></div>`;
+        return;
+    }
+    
+    STOCK_CODE = code;
+    renderStockContent();
+}
+
+function renderStockContent() {
+    const code = STOCK_CODE;
+    const resultEl = document.getElementById('stockResult');
+    const info = DB.cbInfo[code] || {};
+    const allPrices = DB.cbPrice[code] || [];
+    const prices = filterStockPeriod([...allPrices].sort((a, b) => a.dateNum - b.dateNum));
+    
+    const isListed = DB.listedCodes.has(code);
+    const statusLabel = isListed ? '掛牌中' : '已下市';
+    const statusClass = isListed ? 'listed' : 'delisted';
+    const guaranteeLabel = info.guarantee || '-';
+    const guaranteeClass = guaranteeLabel === '有擔保' ? 'guarantee' : 'no-guarantee';
+    
+    let html = `<div class="price-info-card">
+        <div class="price-info-header">
+            <div class="price-info-title">${info.name || code}<span class="code">${code}</span></div>
+            <div class="price-info-badge">
+                <span class="${statusClass}">${statusLabel}</span>
+                <span class="${guaranteeClass}">${guaranteeLabel}</span>
+            </div>
+        </div>
+        <div class="price-info-grid">
+            <div class="price-info-item"><div class="label">股票代號</div><div class="value">${info.stockCode || '-'}</div></div>
+            <div class="price-info-item"><div class="label">產業</div><div class="value">${info.industry || '-'}</div></div>
+            <div class="price-info-item"><div class="label">轉換價格</div><div class="value highlight">${info.convPrice ? info.convPrice + '元' : '-'}</div></div>
+            <div class="price-info-item"><div class="label">發行規模</div><div class="value">${info.issueAmount ? info.issueAmount + '億' : '-'}</div></div>
+            <div class="price-info-item"><div class="label">發行方式</div><div class="value">${info.method || '-'}</div></div>
+            <div class="price-info-item"><div class="label">信用評等</div><div class="value">${info.creditRating || '-'}</div></div>
+            <div class="price-info-item"><div class="label">掛牌日期</div><div class="value">${info.listDate || '-'}</div></div>
+            <div class="price-info-item"><div class="label">到期日期</div><div class="value highlight">${info.expiryDate || '-'}</div></div>
+        </div>
+    </div>`;
+    
+    if (prices.length > 0) {
+        const sortedPrices = [...prices].sort((a, b) => b.dateNum - a.dateNum);
+        const high = Math.max(...prices.map(p => p.high));
+        const low = Math.min(...prices.map(p => p.low));
+        const last = sortedPrices[0];
+        const first = sortedPrices[sortedPrices.length - 1];
+        const totalVol = prices.reduce((sum, p) => sum + (p.vol || 0), 0);
+        const change = last.close - first.close;
+        const pct = first.close > 0 ? (change / first.close * 100) : 0;
+        const amplitude = low > 0 ? ((high / low - 1) * 100) : 0;
+        
+        html += `<div class="price-stats-row">
+            <div class="price-stat-card"><div class="val">${last.close.toFixed(2)}</div><div class="lbl">${isListed ? '最新收盤' : '最後收盤'}</div></div>
+            <div class="price-stat-card"><div class="val" style="color:var(--up)">${high.toFixed(2)}</div><div class="lbl">期間最高</div></div>
+            <div class="price-stat-card"><div class="val" style="color:var(--down)">${low.toFixed(2)}</div><div class="lbl">期間最低</div></div>
+            <div class="price-stat-card"><div class="val" style="color:${pct >= 0 ? 'var(--up)' : 'var(--down)'}">${pct >= 0 ? '+' : ''}${pct.toFixed(1)}%</div><div class="lbl">期間漲跌</div></div>
+            <div class="price-stat-card"><div class="val">${amplitude.toFixed(1)}%</div><div class="lbl">振幅</div></div>
+            <div class="price-stat-card"><div class="val">${totalVol.toLocaleString()}</div><div class="lbl">成交(張)</div></div>
+            <div class="price-stat-card"><div class="val">${prices.length}</div><div class="lbl">交易天數</div></div>
+        </div>`;
+        
+        if (STOCK_VIEW === 'table') {
+            // 表格視圖
+            const avgOpen = prices.reduce((s, p) => s + p.open, 0) / prices.length;
+            const avgHigh = prices.reduce((s, p) => s + p.high, 0) / prices.length;
+            const avgLow = prices.reduce((s, p) => s + p.low, 0) / prices.length;
+            const avgClose = prices.reduce((s, p) => s + p.close, 0) / prices.length;
+            
+            stockTableData = sortedPrices.map((p, idx) => {
+                const prevClose = idx < sortedPrices.length - 1 ? sortedPrices[idx + 1].close : p.open;
+                const dayChange = p.close - prevClose;
+                const dayPct = prevClose > 0 ? (dayChange / prevClose * 100) : 0;
+                const amp = p.low > 0 ? ((p.high / p.low - 1) * 100) : 0;
+                return { ...p, dayChange, dayPct, amplitude: amp };
+            });
+            
+            html += `<div class="price-table-container"><table>
+                <thead><tr>
+                    <th onclick="sortStockTable('date')" style="cursor:pointer;text-align:center">日期 ↕</th>
+                    <th onclick="sortStockTable('open')" style="cursor:pointer;text-align:right">開盤 ↕</th>
+                    <th onclick="sortStockTable('high')" style="cursor:pointer;text-align:right">最高 ↕</th>
+                    <th onclick="sortStockTable('low')" style="cursor:pointer;text-align:right">最低 ↕</th>
+                    <th onclick="sortStockTable('close')" style="cursor:pointer;text-align:right">收盤 ↕</th>
+                    <th onclick="sortStockTable('dayChange')" style="cursor:pointer;text-align:right">漲跌 ↕</th>
+                    <th onclick="sortStockTable('dayPct')" style="cursor:pointer;text-align:right">漲跌% ↕</th>
+                    <th onclick="sortStockTable('vol')" style="cursor:pointer;text-align:right">成交量 ↕</th>
+                    <th onclick="sortStockTable('amplitude')" style="cursor:pointer;text-align:right">振幅% ↕</th>
+                </tr></thead>
+                <tbody id="stockTableBody"></tbody>
+                <tfoot><tr style="background:#f5f5f5;font-weight:600">
+                    <td style="text-align:center">平均/合計</td>
+                    <td style="text-align:right">${avgOpen.toFixed(2)}</td>
+                    <td style="text-align:right">${avgHigh.toFixed(2)}</td>
+                    <td style="text-align:right">${avgLow.toFixed(2)}</td>
+                    <td style="text-align:right">${avgClose.toFixed(2)}</td>
+                    <td style="text-align:right">-</td><td style="text-align:right">-</td>
+                    <td style="text-align:right;color:var(--primary)">${totalVol.toLocaleString()}</td>
+                    <td style="text-align:right">-</td>
+                </tr></tfoot>
+            </table></div>`;
+            
+            resultEl.innerHTML = html;
+            renderStockTableBody();
+        } else {
+            // 走勢圖視圖
+            html += `<div class="stock-chart-container"><canvas id="stockChart"></canvas></div>`;
+            resultEl.innerHTML = html;
+            setTimeout(() => drawStockChart(prices, info.name || code), 50);
+        }
+    } else {
+        html += '<div class="stock-placeholder" style="padding:30px"><div class="icon">📭</div><div>該期間暫無價格資料</div></div>';
+        resultEl.innerHTML = html;
+    }
+}
+
+function sortStockTable(field) {
+    if (stockTableSort.field === field) {
+        stockTableSort.dir = stockTableSort.dir === 'asc' ? 'desc' : 'asc';
+    } else {
+        stockTableSort.field = field;
+        stockTableSort.dir = 'desc';
+    }
+    
+    stockTableData.sort((a, b) => {
+        let valA, valB;
+        switch(field) {
+            case 'date': valA = a.dateNum; valB = b.dateNum; break;
+            case 'open': valA = a.open; valB = b.open; break;
+            case 'high': valA = a.high; valB = b.high; break;
+            case 'low': valA = a.low; valB = b.low; break;
+            case 'close': valA = a.close; valB = b.close; break;
+            case 'dayChange': valA = a.dayChange; valB = b.dayChange; break;
+            case 'dayPct': valA = a.dayPct; valB = b.dayPct; break;
+            case 'vol': valA = a.vol || 0; valB = b.vol || 0; break;
+            case 'amplitude': valA = a.amplitude; valB = b.amplitude; break;
+            default: return 0;
+        }
+        return stockTableSort.dir === 'asc' ? valA - valB : valB - valA;
+    });
+    renderStockTableBody();
+}
+
+function renderStockTableBody() {
+    const tbody = document.getElementById('stockTableBody');
+    if (!tbody) return;
+    
+    tbody.innerHTML = stockTableData.map(p => {
+        const cls = p.dayChange > 0 ? 'up' : p.dayChange < 0 ? 'down' : '';
+        return `<tr>
+            <td style="text-align:center">${p.date}</td>
+            <td style="text-align:right">${p.open.toFixed(2)}</td>
+            <td style="text-align:right">${p.high.toFixed(2)}</td>
+            <td style="text-align:right">${p.low.toFixed(2)}</td>
+            <td style="text-align:right;font-weight:600">${p.close.toFixed(2)}</td>
+            <td style="text-align:right" class="${cls}">${p.dayChange >= 0 ? '+' : ''}${p.dayChange.toFixed(2)}</td>
+            <td style="text-align:right" class="${cls}">${p.dayPct >= 0 ? '+' : ''}${p.dayPct.toFixed(2)}%</td>
+            <td style="text-align:right">${p.vol || 0}</td>
+            <td style="text-align:right">${p.amplitude.toFixed(2)}%</td>
+        </tr>`;
+    }).join('');
+}
+
+function drawStockChart(prices, name) {
+    const canvas = document.getElementById('stockChart');
+    if (!canvas || prices.length < 2) return;
+    
+    const ctx = canvas.getContext('2d');
+    const container = canvas.parentElement;
+    const dpr = window.devicePixelRatio || 1;
+    const rect = container.getBoundingClientRect();
+    canvas.width = rect.width * dpr;
+    canvas.height = 300 * dpr;
+    canvas.style.width = rect.width + 'px';
+    canvas.style.height = '300px';
+    ctx.scale(dpr, dpr);
+    
+    const width = rect.width, height = 300;
+    const chartLeft = 55, chartRight = width - 15, chartTop = 30, chartBottom = height - 35;
+    const chartWidth = chartRight - chartLeft, chartHeight = chartBottom - chartTop;
+    
+    const closes = prices.map(p => p.close);
+    const maxPrice = Math.max(...prices.map(p => p.high));
+    const minPrice = Math.min(...prices.map(p => p.low));
+    const priceRange = maxPrice - minPrice || 1;
+    const padding = priceRange * 0.1;
+    
+    ctx.clearRect(0, 0, width, height);
+    
+    // 格線
+    ctx.strokeStyle = '#e8e8e8'; ctx.lineWidth = 1;
+    for (let i = 0; i <= 4; i++) {
+        const y = chartTop + (chartHeight / 4) * i;
+        ctx.beginPath(); ctx.moveTo(chartLeft, y); ctx.lineTo(chartRight, y); ctx.stroke();
+    }
+    
+    // Y軸標籤
+    ctx.fillStyle = '#666'; ctx.font = '11px Menlo, monospace'; ctx.textAlign = 'right';
+    for (let i = 0; i <= 4; i++) {
+        const price = maxPrice + padding - ((priceRange + padding * 2) / 4) * i;
+        ctx.fillText(price.toFixed(1), chartLeft - 5, chartTop + (chartHeight / 4) * i + 4);
+    }
+    
+    const getX = (i) => chartLeft + (i / (prices.length - 1)) * chartWidth;
+    const getY = (price) => chartTop + ((maxPrice + padding - price) / (priceRange + padding * 2)) * chartHeight;
+    
+    const lastClose = closes[closes.length - 1], firstClose = closes[0];
+    const isUp = lastClose >= firstClose;
+    
+    // 填充
+    const gradient = ctx.createLinearGradient(0, chartTop, 0, chartBottom);
+    gradient.addColorStop(0, isUp ? 'rgba(231,76,60,0.15)' : 'rgba(39,174,96,0.15)');
+    gradient.addColorStop(1, isUp ? 'rgba(231,76,60,0.02)' : 'rgba(39,174,96,0.02)');
+    ctx.beginPath(); ctx.moveTo(getX(0), chartBottom);
+    prices.forEach((p, i) => ctx.lineTo(getX(i), getY(p.close)));
+    ctx.lineTo(getX(prices.length - 1), chartBottom); ctx.closePath(); ctx.fillStyle = gradient; ctx.fill();
+    
+    // 折線
+    ctx.beginPath(); ctx.strokeStyle = isUp ? '#e74c3c' : '#27ae60'; ctx.lineWidth = 2;
+    prices.forEach((p, i) => { if (i === 0) ctx.moveTo(getX(i), getY(p.close)); else ctx.lineTo(getX(i), getY(p.close)); });
+    ctx.stroke();
+    
+    // 終點
+    ctx.fillStyle = isUp ? '#e74c3c' : '#27ae60';
+    ctx.beginPath(); ctx.arc(getX(prices.length - 1), getY(lastClose), 4, 0, Math.PI * 2); ctx.fill();
+    
+    // 標題
+    ctx.fillStyle = '#c96442'; ctx.font = 'bold 14px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText(`${name} 收盤價走勢`, width/2, 18);
+    
+    // 漲跌
+    const change = lastClose - firstClose;
+    const pct = (change / firstClose * 100).toFixed(2);
+    ctx.font = '12px Menlo, monospace'; ctx.fillStyle = isUp ? '#e74c3c' : '#27ae60'; ctx.textAlign = 'right';
+    ctx.fillText(`${lastClose.toFixed(2)} (${change >= 0 ? '+' : ''}${pct}%)`, chartRight, 18);
+    
+    // X軸標籤
+    ctx.fillStyle = '#666'; ctx.font = '10px sans-serif'; ctx.textAlign = 'center';
+    const labelCount = Math.min(6, prices.length);
+    for (let i = 0; i < labelCount; i++) {
+        const idx = Math.floor((i / (labelCount - 1)) * (prices.length - 1));
+        ctx.fillText(prices[idx].date.substring(2), getX(idx), chartBottom + 15);
+    }
+}
+
+// ========== 多檔查詢功能 ==========
+let MULTI_CODES = [];
+let MULTI_PERIOD = '1y';
+let MULTI_VIEW = 'table';
+const MULTI_COLORS = ['#e74c3c', '#3498db', '#27ae60', '#9b59b6', '#f39c12', '#1abc9c', '#e67e22', '#34495e', '#e91e63', '#00bcd4'];
+
+function setMultiPeriod(p) {
+    MULTI_PERIOD = p;
+    document.querySelectorAll('#multiControls .stock-period').forEach(t => {
+        t.classList.toggle('active', 
+            (p === '3m' && t.textContent === '3個月') ||
+            (p === '6m' && t.textContent === '6個月') ||
+            (p === '1y' && t.textContent === '1年') ||
+            (p === '2y' && t.textContent === '2年') ||
+            (p === 'all' && t.textContent === '全部')
+        );
+    });
+    if (MULTI_CODES.length > 0) renderMultiContent();
+}
+
+function setMultiView(v) {
+    MULTI_VIEW = v;
+    document.querySelectorAll('#multiControls .stock-view-tab').forEach(t => {
+        t.classList.toggle('active', 
+            (v === 'table' && t.textContent.includes('比較')) ||
+            (v === 'chart' && t.textContent.includes('疊加'))
+        );
+    });
+    if (MULTI_CODES.length > 0) renderMultiContent();
+}
+
+function filterMultiPeriod(prices) {
+    if (MULTI_PERIOD === 'all' || !prices.length) return prices;
+    const now = new Date();
+    let cutoffDate;
+    switch(MULTI_PERIOD) {
+        case '3m': cutoffDate = new Date(now.setMonth(now.getMonth() - 3)); break;
+        case '6m': cutoffDate = new Date(now.setMonth(now.getMonth() - 6)); break;
+        case '1y': cutoffDate = new Date(now.setFullYear(now.getFullYear() - 1)); break;
+        case '2y': cutoffDate = new Date(now.setFullYear(now.getFullYear() - 2)); break;
+        default: return prices;
+    }
+    const cutoffNum = parseInt(cutoffDate.toISOString().slice(0,10).replace(/-/g, ''));
+    return prices.filter(p => p.dateNum >= cutoffNum);
+}
+
+function loadMultiQuery() {
+    const input = document.getElementById('multiCodesInput').value.trim();
+    if (!input) return;
+    
+    // 解析代碼
+    const codes = input.split(/[\s,，\n]+/).map(c => c.trim()).filter(c => c.length >= 4);
+    const validCodes = codes.filter(c => DB.cbInfo[c] || DB.cbPrice[c]);
+    
+    if (validCodes.length === 0) {
+        document.getElementById('multiResult').innerHTML = '<div class="stock-placeholder"><div class="icon">❌</div><div>找不到有效的CB代號</div></div>';
+        return;
+    }
+    
+    MULTI_CODES = [...new Set(validCodes)].slice(0, 10); // 最多10檔
+    document.getElementById('multiCodesInput').value = '';
+    
+    renderMultiTags();
+    document.getElementById('multiControls').style.display = 'flex';
+    renderMultiContent();
+}
+
+function removeMultiCode(code) {
+    MULTI_CODES = MULTI_CODES.filter(c => c !== code);
+    renderMultiTags();
+    if (MULTI_CODES.length === 0) {
+        document.getElementById('multiControls').style.display = 'none';
+        document.getElementById('multiResult').innerHTML = '<div class="stock-placeholder"><div class="icon">📊</div><div>輸入多個CB代號進行比較分析</div></div>';
+    } else {
+        renderMultiContent();
+    }
+}
+
+function clearMultiQuery() {
+    MULTI_CODES = [];
+    document.getElementById('multiCodesInput').value = '';
+    document.getElementById('multiTags').innerHTML = '';
+    document.getElementById('multiControls').style.display = 'none';
+    document.getElementById('multiResult').innerHTML = '<div class="stock-placeholder"><div class="icon">📊</div><div>輸入多個CB代號進行比較分析</div></div>';
+}
+
+function renderMultiTags() {
+    const tagsEl = document.getElementById('multiTags');
+    tagsEl.innerHTML = MULTI_CODES.map((code, i) => {
+        const info = DB.cbInfo[code] || {};
+        return `<span class="multi-tag" style="border-color:${MULTI_COLORS[i % MULTI_COLORS.length]}">
+            <span style="color:${MULTI_COLORS[i % MULTI_COLORS.length]}">${info.name || code}</span>
+            <span class="remove" onclick="removeMultiCode('${code}')">✕</span>
+        </span>`;
+    }).join('');
+}
+
+function renderMultiContent() {
+    const resultEl = document.getElementById('multiResult');
+    
+    if (MULTI_VIEW === 'table') {
+        // 比較表視圖
+        let html = '<div class="price-table-container" style="max-height:600px"><table><thead><tr>';
+        html += '<th style="text-align:center">代號</th><th>名稱</th><th style="text-align:center">產業</th>';
+        html += '<th style="text-align:right">最新收盤</th><th style="text-align:right">期間最高</th><th style="text-align:right">期間最低</th>';
+        html += '<th style="text-align:right">期間漲跌%</th><th style="text-align:right">振幅%</th><th style="text-align:right">交易天數</th>';
+        html += '</tr></thead><tbody>';
+        
+        MULTI_CODES.forEach((code, i) => {
+            const info = DB.cbInfo[code] || {};
+            const allPrices = DB.cbPrice[code] || [];
+            const prices = filterMultiPeriod([...allPrices].sort((a, b) => a.dateNum - b.dateNum));
+            
+            if (prices.length === 0) {
+                html += `<tr><td style="text-align:center;color:${MULTI_COLORS[i % MULTI_COLORS.length]};font-weight:600">${code}</td>
+                    <td>${info.name || '-'}</td><td style="text-align:center">${info.industry || '-'}</td>
+                    <td colspan="6" style="text-align:center;color:#999">無資料</td></tr>`;
+                return;
+            }
+            
+            const high = Math.max(...prices.map(p => p.high));
+            const low = Math.min(...prices.map(p => p.low));
+            const last = prices[prices.length - 1];
+            const first = prices[0];
+            const change = last.close - first.close;
+            const pct = first.close > 0 ? (change / first.close * 100) : 0;
+            const amplitude = low > 0 ? ((high / low - 1) * 100) : 0;
+            
+            html += `<tr>
+                <td style="text-align:center;color:${MULTI_COLORS[i % MULTI_COLORS.length]};font-weight:600">${code}</td>
+                <td>${info.name || '-'}</td>
+                <td style="text-align:center">${info.industry || '-'}</td>
+                <td style="text-align:right;font-family:Menlo,monospace">${last.close.toFixed(2)}</td>
+                <td style="text-align:right;font-family:Menlo,monospace;color:var(--up)">${high.toFixed(2)}</td>
+                <td style="text-align:right;font-family:Menlo,monospace;color:var(--down)">${low.toFixed(2)}</td>
+                <td style="text-align:right;font-family:Menlo,monospace" class="${pct >= 0 ? 'up' : 'down'}">${pct >= 0 ? '+' : ''}${pct.toFixed(2)}%</td>
+                <td style="text-align:right;font-family:Menlo,monospace">${amplitude.toFixed(2)}%</td>
+                <td style="text-align:right">${prices.length}</td>
+            </tr>`;
+        });
+        
+        html += '</tbody></table></div>';
+        resultEl.innerHTML = html;
+    } else {
+        // 疊加走勢圖視圖
+        let html = '<div class="multi-chart-container"><canvas id="multiChart"></canvas></div>';
+        html += '<div class="multi-legend" id="multiLegend"></div>';
+        resultEl.innerHTML = html;
+        setTimeout(() => drawMultiChart(), 50);
+    }
+}
+
+function drawMultiChart() {
+    const canvas = document.getElementById('multiChart');
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    const container = canvas.parentElement;
+    const dpr = window.devicePixelRatio || 1;
+    const rect = container.getBoundingClientRect();
+    canvas.width = rect.width * dpr;
+    canvas.height = 350 * dpr;
+    canvas.style.width = rect.width + 'px';
+    canvas.style.height = '350px';
+    ctx.scale(dpr, dpr);
+    
+    const width = rect.width, height = 350;
+    const chartLeft = 55, chartRight = width - 15, chartTop = 40, chartBottom = height - 40;
+    const chartWidth = chartRight - chartLeft, chartHeight = chartBottom - chartTop;
+    
+    // 收集所有數據，以百分比變化呈現
+    const allData = [];
+    let allDates = new Set();
+    
+    MULTI_CODES.forEach((code, i) => {
+        const allPrices = DB.cbPrice[code] || [];
+        const prices = filterMultiPeriod([...allPrices].sort((a, b) => a.dateNum - b.dateNum));
+        if (prices.length < 2) return;
+        
+        const firstClose = prices[0].close;
+        const data = prices.map(p => ({
+            dateNum: p.dateNum,
+            date: p.date,
+            pct: ((p.close / firstClose - 1) * 100)
+        }));
+        
+        data.forEach(d => allDates.add(d.dateNum));
+        allData.push({ code, info: DB.cbInfo[code] || {}, data, color: MULTI_COLORS[i % MULTI_COLORS.length] });
+    });
+    
+    if (allData.length === 0) {
+        ctx.fillStyle = '#999'; ctx.font = '14px sans-serif'; ctx.textAlign = 'center';
+        ctx.fillText('無足夠資料繪製走勢圖', width/2, height/2);
+        return;
+    }
+    
+    const sortedDates = [...allDates].sort((a, b) => a - b);
+    const allPcts = allData.flatMap(d => d.data.map(p => p.pct));
+    const maxPct = Math.max(...allPcts, 0);
+    const minPct = Math.min(...allPcts, 0);
+    const pctRange = maxPct - minPct || 1;
+    const padding = pctRange * 0.1;
+    
+    ctx.clearRect(0, 0, width, height);
+    
+    // 標題
+    ctx.fillStyle = '#c96442'; ctx.font = 'bold 16px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText(`多檔CB走勢比較（${MULTI_CODES.length}檔）`, width/2, 24);
+    
+    // 格線
+    ctx.strokeStyle = '#e8e8e8'; ctx.lineWidth = 1;
+    for (let i = 0; i <= 4; i++) {
+        const y = chartTop + (chartHeight / 4) * i;
+        ctx.beginPath(); ctx.moveTo(chartLeft, y); ctx.lineTo(chartRight, y); ctx.stroke();
+    }
+    
+    // 0%基準線
+    const zeroY = chartTop + ((maxPct + padding) / (pctRange + padding * 2)) * chartHeight;
+    ctx.strokeStyle = '#999'; ctx.setLineDash([4, 4]);
+    ctx.beginPath(); ctx.moveTo(chartLeft, zeroY); ctx.lineTo(chartRight, zeroY); ctx.stroke();
+    ctx.setLineDash([]);
+    
+    // Y軸標籤
+    ctx.fillStyle = '#666'; ctx.font = '11px Menlo, monospace'; ctx.textAlign = 'right';
+    for (let i = 0; i <= 4; i++) {
+        const pct = maxPct + padding - ((pctRange + padding * 2) / 4) * i;
+        const y = chartTop + (chartHeight / 4) * i;
+        ctx.fillText((pct >= 0 ? '+' : '') + pct.toFixed(1) + '%', chartLeft - 5, y + 4);
+    }
+    
+    const getX = (dateNum) => {
+        const idx = sortedDates.indexOf(dateNum);
+        return chartLeft + (idx / (sortedDates.length - 1)) * chartWidth;
+    };
+    const getY = (pct) => chartTop + ((maxPct + padding - pct) / (pctRange + padding * 2)) * chartHeight;
+    
+    // 繪製每條線
+    allData.forEach(item => {
+        ctx.beginPath();
+        ctx.strokeStyle = item.color;
+        ctx.lineWidth = 2;
+        
+        item.data.forEach((d, i) => {
+            const x = getX(d.dateNum);
+            const y = getY(d.pct);
+            if (i === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+        });
+        ctx.stroke();
+        
+        // 終點標記
+        const last = item.data[item.data.length - 1];
+        ctx.fillStyle = item.color;
+        ctx.beginPath();
+        ctx.arc(getX(last.dateNum), getY(last.pct), 4, 0, Math.PI * 2);
+        ctx.fill();
+    });
+    
+    // X軸標籤
+    ctx.fillStyle = '#666'; ctx.font = '10px sans-serif'; ctx.textAlign = 'center';
+    const labelCount = Math.min(6, sortedDates.length);
+    for (let i = 0; i < labelCount; i++) {
+        const idx = Math.floor((i / (labelCount - 1)) * (sortedDates.length - 1));
+        const dateNum = sortedDates[idx];
+        const dateStr = String(dateNum);
+        const formatted = dateStr.substring(2, 4) + '/' + dateStr.substring(4, 6) + '/' + dateStr.substring(6, 8);
+        ctx.fillText(formatted, chartLeft + (idx / (sortedDates.length - 1)) * chartWidth, chartBottom + 15);
+    }
+    
+    // 圖例
+    const legendEl = document.getElementById('multiLegend');
+    if (legendEl) {
+        legendEl.innerHTML = allData.map(item => {
+            const last = item.data[item.data.length - 1];
+            return `<div class="multi-legend-item">
+                <div class="multi-legend-color" style="background:${item.color}"></div>
+                <span>${item.info.name || item.code}</span>
+                <span style="font-family:Menlo,monospace;color:${last.pct >= 0 ? 'var(--up)' : 'var(--down)'}">${last.pct >= 0 ? '+' : ''}${last.pct.toFixed(1)}%</span>
+            </div>`;
+        }).join('');
+    }
+}
+
+// ========== K線圖功能 ==========
+let KLINE_PERIOD = '3m';
+let klineTooltipEl = null;
+
+function setKlinePeriod(p) {
+    KLINE_PERIOD = p;
+    document.querySelectorAll('.kline-period').forEach(t => {
+        t.classList.toggle('active', 
+            (p === '3m' && t.textContent === '3個月') ||
+            (p === '6m' && t.textContent === '6個月') ||
+            (p === '1y' && t.textContent === '1年') ||
+            (p === 'all' && t.textContent === '全部')
+        );
+    });
+    loadKlineChart();
+}
+
+function filterKlinePeriod(prices) {
+    if (KLINE_PERIOD === 'all' || !prices.length) return prices;
+    const now = new Date();
+    let cutoffDate;
+    switch(KLINE_PERIOD) {
+        case '3m': cutoffDate = new Date(now.setMonth(now.getMonth() - 3)); break;
+        case '6m': cutoffDate = new Date(now.setMonth(now.getMonth() - 6)); break;
+        case '1y': cutoffDate = new Date(now.setFullYear(now.getFullYear() - 1)); break;
+        default: return prices;
+    }
+    const cutoffNum = parseInt(cutoffDate.toISOString().slice(0,10).replace(/-/g, ''));
+    return prices.filter(p => p.dateNum >= cutoffNum);
+}
+
+function loadKlineChart() {
+    const code = document.getElementById('klineCodeInput').value.trim();
+    const resultEl = document.getElementById('klineResult');
+    
+    if (!code) {
+        resultEl.innerHTML = '<div class="price-placeholder"><div class="icon">⚠️</div><div>請輸入CB代號</div></div>';
+        return;
+    }
+    
+    const info = DB.cbInfo[code];
+    const allPrices = DB.cbPrice[code];
+    
+    if (!allPrices || allPrices.length === 0) {
+        resultEl.innerHTML = `<div class="price-placeholder"><div class="icon">❌</div><div>找不到代號 ${code} 的價格資料</div></div>`;
+        return;
+    }
+    
+    const prices = filterKlinePeriod([...allPrices].sort((a, b) => a.dateNum - b.dateNum));
+    
+    if (prices.length < 2) {
+        resultEl.innerHTML = '<div class="price-placeholder"><div class="icon">📭</div><div>該期間資料不足</div></div>';
+        return;
+    }
+    
+    // 計算統計
+    const high = Math.max(...prices.map(p => p.high));
+    const low = Math.min(...prices.map(p => p.low));
+    const last = prices[prices.length - 1];
+    const first = prices[0];
+    const change = last.close - first.close;
+    const pct = first.close > 0 ? (change / first.close * 100) : 0;
+    const amplitude = low > 0 ? ((high / low - 1) * 100) : 0;
+    
+    const isUp = change >= 0;
+    const name = info?.name || code;
+    
+    let html = `
+        <div class="kline-info-card">
+            <div class="kline-title">${name} (${code}) K線走勢圖</div>
+            <div class="kline-stats">
+                <div class="kline-stat"><div class="val">${last.close.toFixed(2)}</div><div class="lbl">最新收盤</div></div>
+                <div class="kline-stat"><div class="val up">${high.toFixed(2)}</div><div class="lbl">期間最高</div></div>
+                <div class="kline-stat"><div class="val down">${low.toFixed(2)}</div><div class="lbl">期間最低</div></div>
+                <div class="kline-stat"><div class="val ${isUp ? 'up' : 'down'}">${isUp ? '+' : ''}${pct.toFixed(2)}%</div><div class="lbl">期間漲跌</div></div>
+                <div class="kline-stat"><div class="val">${amplitude.toFixed(2)}%</div><div class="lbl">振幅</div></div>
+                <div class="kline-stat"><div class="val">${prices.length}</div><div class="lbl">交易天數</div></div>
+            </div>
+        </div>
+        <div class="kline-chart-container">
+            <canvas id="klineCanvas"></canvas>
+            <div class="kline-tooltip" id="klineTooltip"></div>
+        </div>
+    `;
+    
+    resultEl.innerHTML = html;
+    
+    // 繪製K線圖
+    setTimeout(() => drawKlineChart(prices), 50);
+}
+
+function drawKlineChart(prices) {
+    const canvas = document.getElementById('klineCanvas');
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    const container = canvas.parentElement;
+    const dpr = window.devicePixelRatio || 1;
+    const rect = container.getBoundingClientRect();
+    
+    canvas.width = rect.width * dpr;
+    canvas.height = 400 * dpr;
+    canvas.style.width = rect.width + 'px';
+    canvas.style.height = '400px';
+    ctx.scale(dpr, dpr);
+    
+    const width = rect.width, height = 400;
+    const chartLeft = 60, chartRight = width - 20, chartTop = 20, chartBottom = height - 50;
+    const chartWidth = chartRight - chartLeft, chartHeight = chartBottom - chartTop;
+    
+    // 計算價格範圍
+    const allHighs = prices.map(p => p.high);
+    const allLows = prices.map(p => p.low);
+    const maxPrice = Math.max(...allHighs);
+    const minPrice = Math.min(...allLows);
+    const priceRange = maxPrice - minPrice || 1;
+    const padding = priceRange * 0.08;
+    
+    ctx.clearRect(0, 0, width, height);
+    
+    // 繪製背景格線
+    ctx.strokeStyle = '#e8e8e8';
+    ctx.lineWidth = 1;
+    for (let i = 0; i <= 5; i++) {
+        const y = chartTop + (chartHeight / 5) * i;
+        ctx.beginPath();
+        ctx.moveTo(chartLeft, y);
+        ctx.lineTo(chartRight, y);
+        ctx.stroke();
+    }
+    
+    // Y軸價格標籤
+    ctx.fillStyle = '#666';
+    ctx.font = '11px Menlo, monospace';
+    ctx.textAlign = 'right';
+    for (let i = 0; i <= 5; i++) {
+        const price = maxPrice + padding - ((priceRange + padding * 2) / 5) * i;
+        const y = chartTop + (chartHeight / 5) * i;
+        ctx.fillText(price.toFixed(2), chartLeft - 8, y + 4);
+    }
+    
+    // 計算K線寬度
+    const candleWidth = Math.max(2, Math.min(12, (chartWidth / prices.length) * 0.7));
+    const candleGap = (chartWidth - candleWidth * prices.length) / (prices.length + 1);
+    
+    const getY = (price) => chartTop + ((maxPrice + padding - price) / (priceRange + padding * 2)) * chartHeight;
+    const getX = (i) => chartLeft + candleGap + i * (candleWidth + candleGap) + candleWidth / 2;
+    
+    // 儲存位置資訊供tooltip使用
+    const candlePositions = [];
+    
+    // 繪製K線
+    prices.forEach((p, i) => {
+        const x = getX(i);
+        const isUp = p.close >= p.open;
+        const bodyTop = getY(Math.max(p.open, p.close));
+        const bodyBottom = getY(Math.min(p.open, p.close));
+        const bodyHeight = Math.max(1, bodyBottom - bodyTop);
+        
+        // 上下影線
+        ctx.strokeStyle = isUp ? '#e74c3c' : '#27ae60';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(x, getY(p.high));
+        ctx.lineTo(x, bodyTop);
+        ctx.moveTo(x, bodyBottom);
+        ctx.lineTo(x, getY(p.low));
+        ctx.stroke();
+        
+        // K線實體
+        ctx.fillStyle = isUp ? '#e74c3c' : '#27ae60';
+        if (isUp) {
+            ctx.strokeStyle = '#e74c3c';
+            ctx.lineWidth = 1;
+            ctx.strokeRect(x - candleWidth/2, bodyTop, candleWidth, bodyHeight);
+            ctx.fillStyle = '#fff';
+            ctx.fillRect(x - candleWidth/2 + 0.5, bodyTop + 0.5, candleWidth - 1, bodyHeight - 1);
+        } else {
+            ctx.fillRect(x - candleWidth/2, bodyTop, candleWidth, bodyHeight);
+        }
+        
+        candlePositions.push({
+            x: x - candleWidth/2,
+            width: candleWidth,
+            data: p
+        });
+    });
+    
+    // X軸日期標籤
+    ctx.fillStyle = '#666';
+    ctx.font = '10px sans-serif';
+    ctx.textAlign = 'center';
+    const labelCount = Math.min(8, prices.length);
+    for (let i = 0; i < labelCount; i++) {
+        const idx = Math.floor((i / (labelCount - 1)) * (prices.length - 1));
+        const x = getX(idx);
+        ctx.fillText(prices[idx].date.substring(2), x, chartBottom + 18);
+    }
+    
+    // 移除舊事件
+    canvas.onmousemove = null;
+    canvas.onmouseleave = null;
+    
+    // Tooltip功能
+    const tooltip = document.getElementById('klineTooltip');
+    
+    canvas.onmousemove = function(e) {
+        const canvasRect = canvas.getBoundingClientRect();
+        const mouseX = e.clientX - canvasRect.left;
+        const mouseY = e.clientY - canvasRect.top;
+        
+        // 找到對應的K線
+        let found = null;
+        for (let i = 0; i < candlePositions.length; i++) {
+            const cp = candlePositions[i];
+            if (mouseX >= cp.x - 5 && mouseX <= cp.x + cp.width + 5) {
+                found = cp.data;
+                break;
+            }
+        }
+        
+        if (found && mouseY >= chartTop && mouseY <= chartBottom) {
+            const isUp = found.close >= found.open;
+            const change = found.close - found.open;
+            const pct = found.open > 0 ? (change / found.open * 100) : 0;
+            
+            tooltip.innerHTML = `
+                <div class="date">${found.date}</div>
+                <div class="row"><span class="label">開盤</span><span class="value">${found.open.toFixed(2)}</span></div>
+                <div class="row"><span class="label">最高</span><span class="value up">${found.high.toFixed(2)}</span></div>
+                <div class="row"><span class="label">最低</span><span class="value down">${found.low.toFixed(2)}</span></div>
+                <div class="row"><span class="label">收盤</span><span class="value ${isUp ? 'up' : 'down'}">${found.close.toFixed(2)}</span></div>
+                <div class="row"><span class="label">漲跌</span><span class="value ${isUp ? 'up' : 'down'}">${change >= 0 ? '+' : ''}${change.toFixed(2)} (${pct >= 0 ? '+' : ''}${pct.toFixed(2)}%)</span></div>
+                <div class="row"><span class="label">成交量</span><span class="value">${found.vol || 0} 張</span></div>
+            `;
+            tooltip.style.display = 'block';
+            
+            // 計算tooltip位置
+            let left = e.clientX - canvasRect.left + 15;
+            let top = e.clientY - canvasRect.top - 10;
+            
+            // 防止超出右邊
+            if (left + 180 > rect.width) left = e.clientX - canvasRect.left - 190;
+            if (top < 0) top = 10;
+            
+            tooltip.style.left = left + 'px';
+            tooltip.style.top = top + 'px';
+        } else {
+            tooltip.style.display = 'none';
+        }
+    };
+    
+    canvas.onmouseleave = function() {
+        tooltip.style.display = 'none';
+    };
 }
 
 window.onload = init;
