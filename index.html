@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CB價格一頁通 v3.2 | Rex大叔投資研究室</title>
+    <title>CB價格一頁通 v3.3 | Rex大叔投資研究室</title>
     <script src="https://unpkg.com/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <style>
         :root { 
@@ -297,6 +297,52 @@
     .pagination button:disabled { opacity: 0.5; cursor: not-allowed; }
     .pagination .page-info { font-size: 14px; color: #666; }
 
+    /* 價格分析區塊 */
+    .price-analysis-area { background: #fff; border-radius: 14px; padding: 20px; border: 1px solid var(--border); }
+    .analysis-section { margin-bottom: 28px; padding-bottom: 24px; border-bottom: 1px solid #eee; }
+    .analysis-section:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+    .analysis-title { font-size: 18px; font-weight: 700; color: var(--primary); margin-bottom: 6px; }
+    .analysis-subtitle { font-size: 13px; color: #888; margin-bottom: 16px; }
+    
+    .distribution-chart-container { background: #fafafa; border-radius: 10px; padding: 15px; margin-bottom: 12px; }
+    .distribution-chart-container canvas { width: 100%; height: 200px; }
+    .distribution-legend { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+    .legend-item { display: flex; align-items: center; gap: 6px; font-size: 13px; padding: 6px 12px; background: #f8f8f8; border-radius: 16px; cursor: pointer; transition: all 0.2s; }
+    .legend-item:hover { background: #eee; }
+    .legend-color { width: 14px; height: 14px; border-radius: 3px; }
+    .legend-label { color: #555; }
+    .legend-count { font-weight: 700; color: var(--primary); font-family: 'Menlo', monospace; }
+    
+    .percentile-container { background: linear-gradient(135deg, #fff8f0 0%, #fff0e5 100%); border-radius: 12px; padding: 20px; }
+    .percentile-gauge { margin-bottom: 20px; }
+    .gauge-bar { position: relative; height: 24px; background: linear-gradient(to right, #27ae60, #f1c40f, #e67e22, #e74c3c); border-radius: 12px; overflow: visible; }
+    .gauge-fill { position: absolute; left: 0; top: 0; height: 100%; background: rgba(255,255,255,0.3); border-radius: 12px 0 0 12px; }
+    .gauge-marker { position: absolute; top: -8px; width: 4px; height: 40px; background: #2c2c2c; border-radius: 2px; transform: translateX(-50%); box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+    .gauge-marker::after { content: ''; position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%); border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 8px solid #2c2c2c; }
+    .gauge-labels { display: flex; justify-content: space-between; margin-top: 8px; font-size: 11px; color: #666; }
+    .percentile-stats { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+    .percentile-stat { background: #fff; padding: 14px 20px; border-radius: 10px; text-align: center; min-width: 120px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+    .percentile-stat .val { font-size: 24px; font-weight: 800; color: var(--primary); font-family: 'Menlo', monospace; }
+    .percentile-stat .lbl { font-size: 12px; color: #666; margin-top: 4px; }
+    
+    .bias-container { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+    .bias-card { background: linear-gradient(135deg, #fff 0%, #f8f8f8 100%); border: 1px solid #e0e0e0; border-radius: 12px; padding: 16px 24px; text-align: center; min-width: 140px; transition: all 0.2s; }
+    .bias-card:hover { border-color: var(--primary); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+    .bias-card .ma-label { font-size: 14px; font-weight: 600; color: #555; margin-bottom: 8px; }
+    .bias-card .ma-value { font-size: 13px; color: #888; margin-bottom: 6px; font-family: 'Menlo', monospace; }
+    .bias-card .bias-value { font-size: 22px; font-weight: 800; font-family: 'Menlo', monospace; }
+    .bias-card .bias-value.positive { color: #e74c3c; }
+    .bias-card .bias-value.negative { color: #27ae60; }
+    .bias-card .bias-label { font-size: 11px; color: #999; margin-top: 4px; }
+    
+    @media(max-width: 600px) {
+        .analysis-title { font-size: 16px; }
+        .percentile-stat { min-width: 100px; padding: 12px 16px; }
+        .percentile-stat .val { font-size: 20px; }
+        .bias-card { min-width: 120px; padding: 12px 16px; }
+        .bias-card .bias-value { font-size: 18px; }
+    }
+
     .hidden { display: none !important; }
     .chart-area { background: #fff; border-radius: 10px; border: 1px solid var(--border); padding: 16px; margin-bottom: 16px; min-height: 280px; }
 </style>
@@ -314,7 +360,7 @@
 
 <div class="container">
     <div class="header">
-        <h1>📈 CB價格一頁通 <span class="version">v3.2</span></h1>
+        <h1>📈 CB價格一頁通 <span class="version">v3.3</span></h1>
         <div class="subtitle">可轉債歷史價格查詢系統 | Rex大叔投資研究室</div>
     </div>
 
@@ -330,6 +376,7 @@
     <div class="sub-tab" onclick="setMode('industry')">🏭 產業查詢</div>
     <div class="sub-tab" onclick="setMode('overall')">📋 整體查詢</div>
     <div class="sub-tab" onclick="setMode('avgPrice')">📈 均價走勢</div>
+    <div class="sub-tab" onclick="setMode('priceAnalysis')">💹 價格分析</div>
     <div class="sub-tab" onclick="setMode('kline')">🕯️ K線圖</div>
 </div>
 
@@ -414,6 +461,45 @@
     </div>
     <div class="avg-chart-container"><canvas id="avgPriceChart"></canvas></div>
     <div class="avg-stats" id="avgStats"></div>
+</div>
+
+<!-- 價格分析區塊 -->
+<div class="price-analysis-area hidden" id="priceAnalysisArea">
+    <div class="analysis-section">
+        <div class="analysis-title">📊 價格區間分布</div>
+        <div class="analysis-subtitle">目前掛牌中CB依最新收盤價分布</div>
+        <div class="distribution-chart-container">
+            <canvas id="distributionChart"></canvas>
+        </div>
+        <div class="distribution-legend" id="distributionLegend"></div>
+    </div>
+    
+    <div class="analysis-section">
+        <div class="analysis-title">📈 市場均價歷史百分位</div>
+        <div class="analysis-subtitle">目前均價在歷史上的相對位置</div>
+        <div class="percentile-container" id="percentileContainer">
+            <div class="percentile-gauge">
+                <div class="gauge-bar">
+                    <div class="gauge-fill" id="gaugeFill"></div>
+                    <div class="gauge-marker" id="gaugeMarker"></div>
+                </div>
+                <div class="gauge-labels">
+                    <span>便宜</span>
+                    <span>偏低</span>
+                    <span>中等</span>
+                    <span>偏高</span>
+                    <span>昂貴</span>
+                </div>
+            </div>
+            <div class="percentile-stats" id="percentileStats"></div>
+        </div>
+    </div>
+    
+    <div class="analysis-section">
+        <div class="analysis-title">📉 均線乖離率</div>
+        <div class="analysis-subtitle">目前均價與移動平均線的偏離程度</div>
+        <div class="bias-container" id="biasContainer"></div>
+    </div>
 </div>
 
 <!-- K線圖區塊 -->
@@ -907,7 +993,7 @@ function setListedMode(mode) {
 function setMode(m) {
     MODE = m;
     document.querySelectorAll('.sub-tab').forEach(t => t.classList.toggle('active', t.textContent.includes(
-        m === 'stock' ? '個股' : m === 'multi' ? '多檔' : m === 'industry' ? '產業' : m === 'overall' ? '整體' : m === 'avgPrice' ? '均價' : 'K線'
+        m === 'stock' ? '個股' : m === 'multi' ? '多檔' : m === 'industry' ? '產業' : m === 'overall' ? '整體' : m === 'avgPrice' ? '均價' : m === 'priceAnalysis' ? '價格分析' : 'K線'
     )));
     
     if (m === 'overall') FILTER = { industry: '', guarantee: '', method: '', quickFilter: '' };
@@ -919,12 +1005,14 @@ function setMode(m) {
     const isKlineMode = m === 'kline';
     const isIndustryMode = m === 'industry';
     const isOverallMode = m === 'overall';
+    const isPriceAnalysisMode = m === 'priceAnalysis';
     
     // 隱藏/顯示各區塊
     document.getElementById('stockQueryArea').classList.toggle('hidden', !isStockMode);
     document.getElementById('multiQueryArea').classList.toggle('hidden', !isMultiMode);
     document.getElementById('avgPriceArea').classList.toggle('hidden', !isAvgMode);
     document.getElementById('klineArea').classList.toggle('hidden', !isKlineMode);
+    document.getElementById('priceAnalysisArea').classList.toggle('hidden', !isPriceAnalysisMode);
     
     // 整體查詢和產業查詢使用statsBox和表格
     const showMainUI = isIndustryMode || isOverallMode;
@@ -945,6 +1033,7 @@ function setMode(m) {
     document.querySelectorAll('.view-tab').forEach((t,i) => t.classList.toggle('active', i === 0));
     
     if (isAvgMode) renderAvgPriceChart();
+    else if (isPriceAnalysisMode) renderPriceAnalysis();
     else if (showMainUI) { PAGE.current = 1; renderStatsBox(); updateFilterStatus(); renderTable(); }
 }
 
@@ -1785,11 +1874,18 @@ function getDailyAvgData() {
     const cutoffNum = getCutoffDateNum();
     const filteredDates = cutoffNum ? dateNums.filter(d => d >= cutoffNum) : dateNums;
     
+    // 最小樣本數：有擔保/無擔保至少要5檔以上才計入，避免極端值影響
+    const MIN_SAMPLE_SIZE = 5;
+    
     // 取得原始日線數據
     const rawData = filteredDates.map(dateNum => {
         const day = DB.dailyAvg[dateNum];
         const prices = AVG_TYPE === 'all' ? day.all : AVG_TYPE === 'guaranteed' ? day.guaranteed : day.unguaranteed;
+        
+        // 如果是有擔保或無擔保模式，且樣本數太少則跳過
+        if (AVG_TYPE !== 'all' && prices.length < MIN_SAMPLE_SIZE) return null;
         if (prices.length === 0) return null;
+        
         return { dateNum, date: day.date, avg: prices.reduce((a, b) => a + b, 0) / prices.length, count: prices.length };
     }).filter(d => d !== null);
     
@@ -1887,6 +1983,276 @@ function getCutoffDateNum() {
     return parseInt(cutoffDate.toISOString().slice(0,10).replace(/-/g, ''));
 }
 
+// ========== 價格分析功能 ==========
+function renderPriceAnalysis() {
+    // 1. 繪製價格區間分布圖
+    drawDistributionChart();
+    
+    // 2. 計算並顯示歷史百分位
+    renderPercentile();
+    
+    // 3. 計算並顯示均線乖離率
+    renderBiasAnalysis();
+}
+
+// 價格區間分布圖
+function drawDistributionChart() {
+    const canvas = document.getElementById('distributionChart');
+    if (!canvas) return;
+    
+    // 取得所有掛牌中CB的最新收盤價
+    const priceData = [];
+    DB.listedCodes.forEach(code => {
+        const prices = DB.cbPrice[code];
+        if (prices && prices.length > 0) {
+            const lastPrice = prices[prices.length - 1].close;
+            if (lastPrice > 0) priceData.push({ code, price: lastPrice });
+        }
+    });
+    
+    // 價格區間定義
+    const ranges = [
+        { min: 0, max: 90, label: '<90', color: '#27ae60', desc: '深度折價' },
+        { min: 90, max: 100, label: '90-100', color: '#2ecc71', desc: '折價區' },
+        { min: 100, max: 110, label: '100-110', color: '#f1c40f', desc: '平價區' },
+        { min: 110, max: 130, label: '110-130', color: '#e67e22', desc: '小溢價' },
+        { min: 130, max: 150, label: '130-150', color: '#e74c3c', desc: '中溢價' },
+        { min: 150, max: Infinity, label: '>150', color: '#c0392b', desc: '高溢價' }
+    ];
+    
+    // 統計各區間數量
+    ranges.forEach(r => r.count = 0);
+    priceData.forEach(d => {
+        const range = ranges.find(r => d.price >= r.min && d.price < r.max);
+        if (range) range.count++;
+    });
+    
+    const total = priceData.length;
+    const maxCount = Math.max(...ranges.map(r => r.count));
+    
+    // 繪製
+    const ctx = canvas.getContext('2d');
+    const container = canvas.parentElement;
+    const dpr = window.devicePixelRatio || 1;
+    const rect = container.getBoundingClientRect();
+    const width = rect.width;
+    const height = 200;
+    
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+    canvas.style.width = width + 'px';
+    canvas.style.height = height + 'px';
+    ctx.scale(dpr, dpr);
+    ctx.clearRect(0, 0, width, height);
+    
+    const barWidth = (width - 80) / ranges.length - 10;
+    const chartLeft = 50;
+    const chartBottom = height - 30;
+    const chartHeight = height - 50;
+    
+    // 繪製Y軸
+    ctx.fillStyle = '#666';
+    ctx.font = '11px sans-serif';
+    ctx.textAlign = 'right';
+    for (let i = 0; i <= 4; i++) {
+        const val = Math.round(maxCount * i / 4);
+        const y = chartBottom - (chartHeight * i / 4);
+        ctx.fillText(val, 40, y + 4);
+        ctx.strokeStyle = '#e8e8e8';
+        ctx.beginPath();
+        ctx.moveTo(chartLeft, y);
+        ctx.lineTo(width - 20, y);
+        ctx.stroke();
+    }
+    
+    // 繪製長條圖
+    ranges.forEach((r, i) => {
+        const x = chartLeft + i * (barWidth + 10);
+        const barHeight = maxCount > 0 ? (r.count / maxCount) * chartHeight : 0;
+        const y = chartBottom - barHeight;
+        
+        // 長條
+        ctx.fillStyle = r.color;
+        ctx.beginPath();
+        ctx.roundRect(x, y, barWidth, barHeight, 4);
+        ctx.fill();
+        
+        // 數量標籤
+        if (r.count > 0) {
+            ctx.fillStyle = '#333';
+            ctx.font = 'bold 12px Menlo, monospace';
+            ctx.textAlign = 'center';
+            ctx.fillText(r.count, x + barWidth / 2, y - 6);
+        }
+        
+        // X軸標籤
+        ctx.fillStyle = '#555';
+        ctx.font = '11px sans-serif';
+        ctx.fillText(r.label, x + barWidth / 2, chartBottom + 16);
+    });
+    
+    // 更新圖例
+    const legendEl = document.getElementById('distributionLegend');
+    if (legendEl) {
+        legendEl.innerHTML = ranges.map(r => {
+            const pct = total > 0 ? (r.count / total * 100).toFixed(1) : 0;
+            return `<div class="legend-item">
+                <div class="legend-color" style="background:${r.color}"></div>
+                <span class="legend-label">${r.desc}</span>
+                <span class="legend-count">${r.count}檔 (${pct}%)</span>
+            </div>`;
+        }).join('');
+    }
+}
+
+// 歷史百分位計算
+function renderPercentile() {
+    const container = document.getElementById('percentileContainer');
+    if (!container) return;
+    
+    // 取得所有歷史均價資料
+    const allAvgPrices = [];
+    Object.values(DB.dailyAvg).forEach(day => {
+        if (day.all && day.all.length >= 5) {
+            const avg = day.all.reduce((a, b) => a + b, 0) / day.all.length;
+            allAvgPrices.push(avg);
+        }
+    });
+    
+    if (allAvgPrices.length < 10) {
+        document.getElementById('percentileStats').innerHTML = '<div style="color:#999;text-align:center">歷史資料不足</div>';
+        return;
+    }
+    
+    // 取得目前均價（最新一天）
+    const sortedDates = Object.keys(DB.dailyAvg).map(Number).sort((a, b) => b - a);
+    const latestDay = DB.dailyAvg[sortedDates[0]];
+    const currentAvg = latestDay.all.reduce((a, b) => a + b, 0) / latestDay.all.length;
+    
+    // 排序計算百分位
+    const sorted = [...allAvgPrices].sort((a, b) => a - b);
+    let rank = 0;
+    for (let i = 0; i < sorted.length; i++) {
+        if (sorted[i] <= currentAvg) rank = i + 1;
+    }
+    const percentile = (rank / sorted.length * 100).toFixed(1);
+    
+    // 歷史最高、最低、中位數
+    const historyMax = Math.max(...allAvgPrices);
+    const historyMin = Math.min(...allAvgPrices);
+    const historyMedian = sorted[Math.floor(sorted.length / 2)];
+    
+    // 更新儀表
+    const gaugeFill = document.getElementById('gaugeFill');
+    const gaugeMarker = document.getElementById('gaugeMarker');
+    if (gaugeFill) gaugeFill.style.width = percentile + '%';
+    if (gaugeMarker) gaugeMarker.style.left = percentile + '%';
+    
+    // 更新統計
+    const statsEl = document.getElementById('percentileStats');
+    if (statsEl) {
+        let levelText, levelColor;
+        if (percentile < 20) { levelText = '歷史低檔區'; levelColor = '#27ae60'; }
+        else if (percentile < 40) { levelText = '相對偏低'; levelColor = '#2ecc71'; }
+        else if (percentile < 60) { levelText = '歷史中等'; levelColor = '#f1c40f'; }
+        else if (percentile < 80) { levelText = '相對偏高'; levelColor = '#e67e22'; }
+        else { levelText = '歷史高檔區'; levelColor = '#e74c3c'; }
+        
+        statsEl.innerHTML = `
+            <div class="percentile-stat">
+                <div class="val">${currentAvg.toFixed(2)}</div>
+                <div class="lbl">目前均價</div>
+            </div>
+            <div class="percentile-stat">
+                <div class="val" style="color:${levelColor}">${percentile}%</div>
+                <div class="lbl">歷史百分位</div>
+            </div>
+            <div class="percentile-stat">
+                <div class="val" style="color:${levelColor}">${levelText}</div>
+                <div class="lbl">相對位置</div>
+            </div>
+            <div class="percentile-stat">
+                <div class="val">${historyMin.toFixed(2)}</div>
+                <div class="lbl">歷史最低</div>
+            </div>
+            <div class="percentile-stat">
+                <div class="val">${historyMedian.toFixed(2)}</div>
+                <div class="lbl">歷史中位數</div>
+            </div>
+            <div class="percentile-stat">
+                <div class="val">${historyMax.toFixed(2)}</div>
+                <div class="lbl">歷史最高</div>
+            </div>
+        `;
+    }
+}
+
+// 均線乖離率計算
+function renderBiasAnalysis() {
+    const container = document.getElementById('biasContainer');
+    if (!container) return;
+    
+    // 取得最近的均價資料
+    const sortedDates = Object.keys(DB.dailyAvg).map(Number).sort((a, b) => a - b);
+    const recentData = sortedDates.slice(-250).map(d => {
+        const day = DB.dailyAvg[d];
+        if (day.all && day.all.length >= 5) {
+            return day.all.reduce((a, b) => a + b, 0) / day.all.length;
+        }
+        return null;
+    }).filter(x => x !== null);
+    
+    if (recentData.length < 60) {
+        container.innerHTML = '<div style="color:#999;text-align:center">資料不足</div>';
+        return;
+    }
+    
+    const currentPrice = recentData[recentData.length - 1];
+    
+    // 計算各均線和乖離率
+    const maConfigs = [
+        { period: 5, label: '5日均線' },
+        { period: 10, label: '10日均線' },
+        { period: 20, label: '20日均線' },
+        { period: 60, label: '60日均線' }
+    ];
+    
+    const results = maConfigs.map(config => {
+        if (recentData.length < config.period) return null;
+        
+        const maData = recentData.slice(-config.period);
+        const ma = maData.reduce((a, b) => a + b, 0) / config.period;
+        const bias = ((currentPrice - ma) / ma * 100);
+        
+        return {
+            label: config.label,
+            ma: ma,
+            bias: bias
+        };
+    }).filter(x => x !== null);
+    
+    container.innerHTML = results.map(r => {
+        const biasClass = r.bias >= 0 ? 'positive' : 'negative';
+        const biasSign = r.bias >= 0 ? '+' : '';
+        
+        let biasLabel = '';
+        if (Math.abs(r.bias) < 2) biasLabel = '接近均線';
+        else if (r.bias >= 5) biasLabel = '明顯正乖離';
+        else if (r.bias >= 2) biasLabel = '小幅正乖離';
+        else if (r.bias <= -5) biasLabel = '明顯負乖離';
+        else biasLabel = '小幅負乖離';
+        
+        return `
+            <div class="bias-card">
+                <div class="ma-label">${r.label}</div>
+                <div class="ma-value">${r.ma.toFixed(2)}</div>
+                <div class="bias-value ${biasClass}">${biasSign}${r.bias.toFixed(2)}%</div>
+                <div class="bias-label">${biasLabel}</div>
+            </div>
+        `;
+    }).join('');
+}
+
 function renderAvgPriceChart() {
     const canvas = document.getElementById('avgPriceChart');
     if (!canvas) return;
@@ -1930,10 +2296,13 @@ function renderAvgPriceChart() {
     ctx.fillStyle = '#333'; ctx.font = isMobile ? 'bold 13px sans-serif' : 'bold 14px sans-serif'; ctx.textAlign = 'left';
     ctx.fillText(`${typeLabel} 明日參價均價走勢`, chartLeft, 16);
     
-    // 採樣模式標籤（灰色小字）
+    // 採樣模式標籤（灰色小字）+ 有擔保/無擔保加註
     ctx.fillStyle = '#999'; ctx.font = isMobile ? '10px sans-serif' : '11px sans-serif';
     const titleWidth = ctx.measureText(`${typeLabel} 明日參價均價走勢`).width;
-    ctx.fillText(`(${samplingLabel})`, chartLeft + titleWidth + 8, 16);
+    let labelText = `(${samplingLabel}`;
+    if (AVG_TYPE !== 'all') labelText += '，≥5檔';
+    labelText += ')';
+    ctx.fillText(labelText, chartLeft + titleWidth + 8, 16);
     
     ctx.strokeStyle = '#e8e8e8'; ctx.lineWidth = 1;
     for (let i = 0; i <= 4; i++) { const y = chartTop + (chartHeight / 4) * i; ctx.beginPath(); ctx.moveTo(chartLeft, y); ctx.lineTo(chartRight, y); ctx.stroke(); }
@@ -2094,6 +2463,300 @@ function updateAvgStats(dailyData) {
         <div class="avg-stat-item"><div class="val" style="color:${change >= 0 ? '#e74c3c' : '#27ae60'}">${change >= 0 ? '+' : ''}${pct}%</div><div class="lbl">期間漲跌</div></div>
         <div class="avg-stat-item"><div class="val">${last.count}</div><div class="lbl">最新檔數</div></div>
         <div class="avg-stat-item"><div class="val">${dailyData.length}</div><div class="lbl">${countLabel}</div></div>`;
+}
+
+// ========== 價格分析功能 ==========
+function renderPriceAnalysis() {
+    renderDistributionChart();
+    renderPercentileGauge();
+    renderBiasCards();
+}
+
+// 1. 價格區間分布圖
+function renderDistributionChart() {
+    const canvas = document.getElementById('distributionChart');
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    const container = canvas.parentElement;
+    const dpr = window.devicePixelRatio || 1;
+    const rect = container.getBoundingClientRect();
+    canvas.width = rect.width * dpr;
+    canvas.height = 200 * dpr;
+    canvas.style.width = rect.width + 'px';
+    canvas.style.height = '200px';
+    ctx.scale(dpr, dpr);
+    
+    const width = rect.width;
+    const height = 200;
+    
+    // 取得掛牌中CB的最新收盤價
+    const priceRanges = [
+        { label: '90以下', min: 0, max: 90, color: '#27ae60', desc: '深度折價' },
+        { label: '90-100', min: 90, max: 100, color: '#2ecc71', desc: '折價區' },
+        { label: '100-110', min: 100, max: 110, color: '#f39c12', desc: '平價區' },
+        { label: '110-130', min: 110, max: 130, color: '#e67e22', desc: '小溢價' },
+        { label: '130-150', min: 130, max: 150, color: '#e74c3c', desc: '溢價區' },
+        { label: '150以上', min: 150, max: Infinity, color: '#c0392b', desc: '高溢價' }
+    ];
+    
+    // 統計各區間的CB數量
+    let totalCount = 0;
+    priceRanges.forEach(r => r.count = 0);
+    
+    DB.listedCodes.forEach(code => {
+        const prices = DB.cbPrice[code];
+        if (!prices || prices.length === 0) return;
+        const lastPrice = prices[prices.length - 1].close;
+        
+        for (const range of priceRanges) {
+            if (lastPrice >= range.min && lastPrice < range.max) {
+                range.count++;
+                totalCount++;
+                break;
+            }
+        }
+    });
+    
+    if (totalCount === 0) {
+        ctx.fillStyle = '#999';
+        ctx.font = '14px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('無價格資料', width / 2, height / 2);
+        return;
+    }
+    
+    // 繪製長條圖
+    ctx.clearRect(0, 0, width, height);
+    
+    const chartLeft = 60;
+    const chartRight = width - 20;
+    const chartTop = 20;
+    const chartBottom = height - 40;
+    const chartWidth = chartRight - chartLeft;
+    const chartHeight = chartBottom - chartTop;
+    
+    const maxCount = Math.max(...priceRanges.map(r => r.count));
+    const barWidth = chartWidth / priceRanges.length - 10;
+    
+    priceRanges.forEach((range, i) => {
+        const x = chartLeft + i * (chartWidth / priceRanges.length) + 5;
+        const barHeight = maxCount > 0 ? (range.count / maxCount) * chartHeight : 0;
+        const y = chartBottom - barHeight;
+        
+        // 繪製長條
+        ctx.fillStyle = range.color;
+        ctx.beginPath();
+        ctx.roundRect(x, y, barWidth, barHeight, [4, 4, 0, 0]);
+        ctx.fill();
+        
+        // 繪製數量標籤
+        if (range.count > 0) {
+            ctx.fillStyle = '#333';
+            ctx.font = 'bold 12px Menlo, monospace';
+            ctx.textAlign = 'center';
+            ctx.fillText(range.count.toString(), x + barWidth / 2, y - 5);
+        }
+        
+        // 繪製X軸標籤
+        ctx.fillStyle = '#666';
+        ctx.font = '11px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(range.label, x + barWidth / 2, chartBottom + 15);
+        
+        // 繪製百分比
+        const pct = ((range.count / totalCount) * 100).toFixed(1);
+        ctx.fillStyle = '#999';
+        ctx.font = '10px sans-serif';
+        ctx.fillText(`${pct}%`, x + barWidth / 2, chartBottom + 28);
+    });
+    
+    // Y軸標籤
+    ctx.fillStyle = '#888';
+    ctx.font = '10px sans-serif';
+    ctx.textAlign = 'right';
+    for (let i = 0; i <= 4; i++) {
+        const val = Math.round(maxCount * (1 - i / 4));
+        const y = chartTop + (chartHeight / 4) * i;
+        ctx.fillText(val.toString(), chartLeft - 8, y + 4);
+        
+        ctx.strokeStyle = '#eee';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(chartLeft, y);
+        ctx.lineTo(chartRight, y);
+        ctx.stroke();
+    }
+    
+    // 更新圖例
+    const legendEl = document.getElementById('distributionLegend');
+    if (legendEl) {
+        legendEl.innerHTML = priceRanges.map(r => `
+            <div class="legend-item">
+                <div class="legend-color" style="background:${r.color}"></div>
+                <span class="legend-label">${r.desc}</span>
+                <span class="legend-count">${r.count}</span>
+            </div>
+        `).join('');
+    }
+}
+
+// 2. 歷史百分位
+function renderPercentileGauge() {
+    // 取得所有歷史日均價（使用全部時間區間）
+    const dateNums = Object.keys(DB.dailyAvg).map(Number).sort((a, b) => a - b);
+    
+    const historicalAvgs = dateNums.map(dateNum => {
+        const day = DB.dailyAvg[dateNum];
+        if (day.all.length < 5) return null; // 最少5檔才計入
+        return day.all.reduce((a, b) => a + b, 0) / day.all.length;
+    }).filter(v => v !== null);
+    
+    if (historicalAvgs.length < 30) {
+        document.getElementById('percentileStats').innerHTML = '<div style="color:#999;text-align:center;padding:20px">歷史資料不足</div>';
+        return;
+    }
+    
+    // 取得目前均價（最新一天）
+    const lastDateNum = dateNums[dateNums.length - 1];
+    const lastDay = DB.dailyAvg[lastDateNum];
+    const currentAvg = lastDay.all.reduce((a, b) => a + b, 0) / lastDay.all.length;
+    
+    // 計算百分位
+    const sortedAvgs = [...historicalAvgs].sort((a, b) => a - b);
+    let percentile = 0;
+    for (let i = 0; i < sortedAvgs.length; i++) {
+        if (currentAvg <= sortedAvgs[i]) {
+            percentile = (i / sortedAvgs.length) * 100;
+            break;
+        }
+        if (i === sortedAvgs.length - 1) {
+            percentile = 100;
+        }
+    }
+    
+    // 計算統計數據
+    const minAvg = Math.min(...historicalAvgs);
+    const maxAvg = Math.max(...historicalAvgs);
+    const median = sortedAvgs[Math.floor(sortedAvgs.length / 2)];
+    const p25 = sortedAvgs[Math.floor(sortedAvgs.length * 0.25)];
+    const p75 = sortedAvgs[Math.floor(sortedAvgs.length * 0.75)];
+    
+    // 更新儀表板
+    const gaugeFill = document.getElementById('gaugeFill');
+    const gaugeMarker = document.getElementById('gaugeMarker');
+    
+    if (gaugeFill && gaugeMarker) {
+        gaugeFill.style.width = `${percentile}%`;
+        gaugeMarker.style.left = `${percentile}%`;
+    }
+    
+    // 判斷區間描述
+    let levelDesc, levelColor;
+    if (percentile < 20) { levelDesc = '歷史低檔區'; levelColor = '#27ae60'; }
+    else if (percentile < 40) { levelDesc = '偏低位置'; levelColor = '#2ecc71'; }
+    else if (percentile < 60) { levelDesc = '中等水平'; levelColor = '#f39c12'; }
+    else if (percentile < 80) { levelDesc = '偏高位置'; levelColor = '#e67e22'; }
+    else { levelDesc = '歷史高檔區'; levelColor = '#e74c3c'; }
+    
+    // 更新統計資訊
+    const statsEl = document.getElementById('percentileStats');
+    if (statsEl) {
+        statsEl.innerHTML = `
+            <div class="percentile-stat">
+                <div class="val" style="color:${levelColor}">${percentile.toFixed(0)}%</div>
+                <div class="lbl">歷史百分位</div>
+            </div>
+            <div class="percentile-stat">
+                <div class="val">${currentAvg.toFixed(2)}</div>
+                <div class="lbl">目前均價</div>
+            </div>
+            <div class="percentile-stat">
+                <div class="val">${median.toFixed(2)}</div>
+                <div class="lbl">歷史中位數</div>
+            </div>
+            <div class="percentile-stat">
+                <div class="val">${minAvg.toFixed(2)}</div>
+                <div class="lbl">歷史最低</div>
+            </div>
+            <div class="percentile-stat">
+                <div class="val">${maxAvg.toFixed(2)}</div>
+                <div class="lbl">歷史最高</div>
+            </div>
+            <div class="percentile-stat">
+                <div class="val" style="font-size:14px">${levelDesc}</div>
+                <div class="lbl">位置判斷</div>
+            </div>
+        `;
+    }
+}
+
+// 3. 均線乖離率
+function renderBiasCards() {
+    const biasContainer = document.getElementById('biasContainer');
+    if (!biasContainer) return;
+    
+    // 取得每日均價資料（日線）
+    const dateNums = Object.keys(DB.dailyAvg).map(Number).sort((a, b) => a - b);
+    
+    const dailyAvgs = dateNums.map(dateNum => {
+        const day = DB.dailyAvg[dateNum];
+        if (day.all.length < 5) return null;
+        return { dateNum, avg: day.all.reduce((a, b) => a + b, 0) / day.all.length };
+    }).filter(v => v !== null);
+    
+    if (dailyAvgs.length < 60) {
+        biasContainer.innerHTML = '<div style="color:#999;text-align:center;padding:20px;width:100%">資料不足，需至少60個交易日</div>';
+        return;
+    }
+    
+    const currentAvg = dailyAvgs[dailyAvgs.length - 1].avg;
+    
+    // 計算各均線
+    const maConfigs = [
+        { period: 5, label: '5日均線' },
+        { period: 10, label: '10日均線' },
+        { period: 20, label: '20日均線' },
+        { period: 60, label: '60日均線' }
+    ];
+    
+    const cards = maConfigs.map(config => {
+        if (dailyAvgs.length < config.period) return null;
+        
+        // 計算均線值
+        const maValues = dailyAvgs.slice(-config.period).map(d => d.avg);
+        const maValue = maValues.reduce((a, b) => a + b, 0) / maValues.length;
+        
+        // 計算乖離率
+        const bias = ((currentAvg - maValue) / maValue) * 100;
+        
+        return {
+            label: config.label,
+            maValue: maValue,
+            bias: bias
+        };
+    }).filter(c => c !== null);
+    
+    // 渲染卡片
+    biasContainer.innerHTML = cards.map(card => {
+        const biasClass = card.bias >= 0 ? 'positive' : 'negative';
+        const biasSign = card.bias >= 0 ? '+' : '';
+        
+        // 乖離程度判斷
+        let biasLevel = '';
+        const absBias = Math.abs(card.bias);
+        if (absBias > 5) biasLevel = card.bias > 0 ? '（偏高）' : '（偏低）';
+        else if (absBias > 10) biasLevel = card.bias > 0 ? '（過熱）' : '（超跌）';
+        
+        return `
+            <div class="bias-card">
+                <div class="ma-label">${card.label}</div>
+                <div class="ma-value">${card.maValue.toFixed(2)}</div>
+                <div class="bias-value ${biasClass}">${biasSign}${card.bias.toFixed(2)}%</div>
+                <div class="bias-label">乖離率${biasLevel}</div>
+            </div>
+        `;
+    }).join('');
 }
 
 // ========== 個股查詢功能 ==========
