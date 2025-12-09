@@ -1428,10 +1428,14 @@ function getFilteredData() {
         const prices = DB.cbPrice[c] || [];
         const lastPrice = prices.length > 0 ? prices[prices.length - 1] : null;
         
+        // 產業要用預設值，確保和 renderStatsBox 統計一致
+        const cbIndustry = info.industry || '其他傳產';
+        const cbGuarantee = info.guarantee || '無擔保';
+        
         const matchSearch = !q || c.toLowerCase().includes(q) || (info.name||'').toLowerCase().includes(q) ||
-            (info.industry||'').toLowerCase().includes(q) || (info.industryPosition||'').toLowerCase().includes(q);
-        const matchIndustry = !FILTER.industry || info.industry === FILTER.industry;
-        const matchGuarantee = !FILTER.guarantee || info.guarantee === FILTER.guarantee;
+            cbIndustry.toLowerCase().includes(q) || (info.industryPosition||'').toLowerCase().includes(q);
+        const matchIndustry = !FILTER.industry || cbIndustry === FILTER.industry;
+        const matchGuarantee = !FILTER.guarantee || cbGuarantee === FILTER.guarantee;
         const matchMethod = !FILTER.method || info.method === FILTER.method;
         
         let matchQuick = true;
