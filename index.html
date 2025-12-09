@@ -408,38 +408,39 @@
         .stat-bar-item .stars { width: 40px; font-size: 11px; color: #f1c40f; }
         
         /* 篩選器標籤 */
-        .screener-tabs { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
-        .screener-tab { padding: 10px 20px; border-radius: 20px; font-size: 14px; font-weight: 600; cursor: pointer; border: 2px solid var(--clickable-border); background: var(--clickable); color: #333; transition: all 0.2s; }
+        .screener-tabs { display: flex; gap: 10px; margin-bottom: 18px; flex-wrap: wrap; }
+        .screener-tab { padding: 12px 22px; border-radius: 22px; font-size: 15px; font-weight: 700; cursor: pointer; border: 2px solid var(--clickable-border); background: var(--clickable); color: #333; transition: all 0.2s; }
         .screener-tab:hover { border-color: var(--primary); background: var(--clickable-hover); }
         .screener-tab.active { background: #e74c3c; color: #fff; border-color: #e74c3c; }
         
         /* 篩選結果 */
         .screener-result { background: #fff; border-radius: 12px; border: 1px solid var(--border); overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
-        .screener-header { background: linear-gradient(135deg, #fff8f0 0%, #fff0e5 100%); padding: 16px 20px; border-bottom: 1px solid #ffd8c0; }
-        .screener-header .title { font-size: 16px; font-weight: 700; color: var(--primary); }
-        .screener-header .desc { font-size: 13px; color: #666; margin-top: 6px; line-height: 1.5; }
-        .screener-header .stats { display: flex; gap: 16px; margin-top: 12px; flex-wrap: wrap; }
-        .screener-header .stat-badge { background: #fff; padding: 8px 16px; border-radius: 20px; font-size: 13px; border: 1px solid #ffd8c0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        .screener-header .stat-badge b { color: var(--primary); font-family: 'Menlo', monospace; font-size: 15px; }
-        .screener-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-        .screener-table th { background: linear-gradient(135deg, #f8f8f8 0%, #f0f0f0 100%); padding: 12px 14px; text-align: left; font-weight: 700; border-bottom: 2px solid #e0e0e0; position: sticky; top: 0; color: #444; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
-        .screener-table td { padding: 12px 14px; border-bottom: 1px solid #f0f0f0; vertical-align: middle; }
-        .screener-table tr:nth-child(even) { background: #fafafa; }
+        .screener-header { background: linear-gradient(135deg, #fff8f0 0%, #fff0e5 100%); padding: 18px 22px; border-bottom: 1px solid #ffd8c0; }
+        .screener-header .title { font-size: 18px; font-weight: 800; color: var(--primary); }
+        .screener-header .desc { font-size: 14px; color: #444; margin-top: 8px; line-height: 1.6; }
+        .screener-header .stats { display: flex; gap: 16px; margin-top: 14px; flex-wrap: wrap; }
+        .screener-header .stat-badge { background: #fff; padding: 10px 18px; border-radius: 20px; font-size: 14px; border: 1px solid #ffd8c0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); color: #333; }
+        .screener-header .stat-badge b { color: var(--primary); font-family: 'Menlo', monospace; font-size: 16px; }
+        .screener-table { width: 100%; border-collapse: collapse; font-size: 16px; color: #111; }
+        .screener-table th { background: linear-gradient(135deg, #f5f5f5 0%, #eaeaea 100%); padding: 16px 18px; text-align: left; font-weight: 800; border-bottom: 2px solid #ccc; position: sticky; top: 0; color: #222; font-size: 15px; }
+        .screener-table td { padding: 16px 18px; border-bottom: 1px solid #ddd; vertical-align: middle; color: #111; font-weight: 500; }
+        .screener-table tr:nth-child(even) { background: #f8f8f8; }
         .screener-table tr:hover { background: linear-gradient(135deg, #fff8f0 0%, #fff5eb 100%); }
         .screener-table tr:hover td { border-bottom-color: #ffd8c0; }
-        .screener-table .code { color: var(--primary); font-weight: 700; cursor: pointer; font-family: 'Menlo', monospace; font-size: 14px; }
+        .screener-table .code { color: var(--primary); font-weight: 800; cursor: pointer; font-family: 'Menlo', monospace; font-size: 16px; }
         .screener-table .code:hover { text-decoration: underline; background: rgba(201,100,66,0.1); padding: 2px 6px; margin: -2px -6px; border-radius: 4px; }
-        .screener-table .up { color: #e74c3c; font-weight: 600; }
-        .screener-table .down { color: #27ae60; font-weight: 600; }
-        .screener-table .text-right { text-align: right; font-family: 'Menlo', monospace; }
-        .screener-table .tag { display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; }
-        .screener-table .tag.guaranteed { background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); color: #2e7d32; border: 1px solid #a5d6a7; }
-        .screener-table .tag.unguaranteed { background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%); color: #e65100; border: 1px solid #ffcc80; }
-        .screener-table .tag.high-prob { background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%); color: #c62828; border: 1px solid #ef9a9a; }
-        .screener-table .days-badge { display: inline-block; padding: 3px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; font-family: 'Menlo', monospace; }
-        .screener-table .days-badge.urgent { background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%); color: #c62828; border: 1px solid #ef9a9a; }
-        .screener-table .days-badge.warning { background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%); color: #f57f17; border: 1px solid #ffd54f; }
-        .screener-table .days-badge.normal { background: #f5f5f5; color: #616161; border: 1px solid #e0e0e0; }
+        .screener-table .name { font-weight: 700; color: #000; font-size: 15px; }
+        .screener-table .up { color: #c62828; font-weight: 800; }
+        .screener-table .down { color: #1b5e20; font-weight: 800; }
+        .screener-table .text-right { text-align: right; font-family: 'Menlo', monospace; font-weight: 700; font-size: 15px; }
+        .screener-table .tag { display: inline-block; padding: 6px 14px; border-radius: 14px; font-size: 13px; font-weight: 800; }
+        .screener-table .tag.guaranteed { background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); color: #1b5e20; border: 1px solid #a5d6a7; }
+        .screener-table .tag.unguaranteed { background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%); color: #bf360c; border: 1px solid #ffcc80; }
+        .screener-table .tag.high-prob { background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%); color: #b71c1c; border: 1px solid #ef9a9a; }
+        .screener-table .days-badge { display: inline-block; padding: 6px 12px; border-radius: 12px; font-size: 14px; font-weight: 800; font-family: 'Menlo', monospace; }
+        .screener-table .days-badge.urgent { background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%); color: #b71c1c; border: 1px solid #ef9a9a; }
+        .screener-table .days-badge.warning { background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%); color: #e65100; border: 1px solid #ffd54f; }
+        .screener-table .days-badge.normal { background: #eeeeee; color: #333; border: 1px solid #bdbdbd; }
         
         @media(max-width: 600px) {
             .analysis-title { font-size: 16px; }
@@ -1939,17 +1940,6 @@ function renderModalDynamicContent() {
     
     let html = '';
     
-    // 時間區間切換標籤
-    html += `<div class="period-tabs" style="margin: 16px 0 12px; justify-content: flex-start;">
-        <div class="period-tab ${MODAL_PERIOD === '3m' ? 'active' : ''}" onclick="setModalPeriod('3m')">3個月</div>
-        <div class="period-tab ${MODAL_PERIOD === '6m' ? 'active' : ''}" onclick="setModalPeriod('6m')">6個月</div>
-        <div class="period-tab ${MODAL_PERIOD === '1y' ? 'active' : ''}" onclick="setModalPeriod('1y')">1年</div>
-        <div class="period-tab ${MODAL_PERIOD === '2y' ? 'active' : ''}" onclick="setModalPeriod('2y')">2年</div>
-        <div class="period-tab ${MODAL_PERIOD === '3y' ? 'active' : ''}" onclick="setModalPeriod('3y')">3年</div>
-        <div class="period-tab ${MODAL_PERIOD === '5y' ? 'active' : ''}" onclick="setModalPeriod('5y')">5年</div>
-        <div class="period-tab ${MODAL_PERIOD === 'all' ? 'active' : ''}" onclick="setModalPeriod('all')">全部</div>
-    </div>`;
-    
     if (p.length > 0) {
         const first = p[0], last = p[p.length - 1];
         const high = Math.max(...p.map(x => x.high)), low = Math.min(...p.map(x => x.low));
@@ -1968,13 +1958,27 @@ function renderModalDynamicContent() {
             ${chg5 !== null ? `<div class="modal-stat"><div class="val" style="color:${chg5 >= 0 ? 'var(--up)' : 'var(--down)'}">${chg5 >= 0 ? '+' : ''}${chg5.toFixed(1)}%</div><div class="lbl">5日漲跌</div></div>` : ''}
             ${chg20 !== null ? `<div class="modal-stat"><div class="val" style="color:${chg20 >= 0 ? 'var(--up)' : 'var(--down)'}">${chg20 >= 0 ? '+' : ''}${chg20.toFixed(1)}%</div><div class="lbl">20日漲跌</div></div>` : ''}
         </div>
-        <div class="view-tabs" style="margin-bottom:12px">
-            <div class="view-tab ${MODAL_VIEW === 'table' ? 'active' : ''}" onclick="setModalView('table')">📋 表格</div>
-            <div class="view-tab ${MODAL_VIEW === 'chart' ? 'active' : ''}" onclick="setModalView('chart')">📈 走勢圖</div>
+        
+        <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:12px; margin-bottom:16px; padding:12px; background:#f8f8f8; border-radius:10px;">
+            <div class="view-tabs" style="margin:0">
+                <div class="view-tab ${MODAL_VIEW === 'table' ? 'active' : ''}" onclick="setModalView('table')">📋 表格</div>
+                <div class="view-tab ${MODAL_VIEW === 'chart' ? 'active' : ''}" onclick="setModalView('chart')">📈 走勢圖</div>
+            </div>
+            <div style="width:1px;height:24px;background:#ddd;margin:0 4px"></div>
+            <div class="period-tabs" style="margin:0; justify-content:center;">
+                <div class="period-tab ${MODAL_PERIOD === '3m' ? 'active' : ''}" onclick="setModalPeriod('3m')">3個月</div>
+                <div class="period-tab ${MODAL_PERIOD === '6m' ? 'active' : ''}" onclick="setModalPeriod('6m')">6個月</div>
+                <div class="period-tab ${MODAL_PERIOD === '1y' ? 'active' : ''}" onclick="setModalPeriod('1y')">1年</div>
+                <div class="period-tab ${MODAL_PERIOD === '2y' ? 'active' : ''}" onclick="setModalPeriod('2y')">2年</div>
+                <div class="period-tab ${MODAL_PERIOD === '3y' ? 'active' : ''}" onclick="setModalPeriod('3y')">3年</div>
+                <div class="period-tab ${MODAL_PERIOD === '5y' ? 'active' : ''}" onclick="setModalPeriod('5y')">5年</div>
+                <div class="period-tab ${MODAL_PERIOD === 'all' ? 'active' : ''}" onclick="setModalPeriod('all')">全部</div>
+            </div>
         </div>
+        
         <div id="modalChart" class="chart-area ${MODAL_VIEW !== 'chart' ? 'hidden' : ''}" style="min-height:280px;margin-bottom:12px"><canvas id="priceChart" style="width:100%;height:260px"></canvas></div>
         <div id="modalTable" class="${MODAL_VIEW !== 'table' ? 'hidden' : ''}">
-            <div style="font-size:13px;color:#666;margin-bottom:10px">價格期間: ${first.date} ~ ${last.date}（共 ${p.length} 筆）</div>
+            <div style="font-size:14px;color:#444;margin-bottom:10px;font-weight:600">價格期間: ${first.date} ~ ${last.date}（共 ${p.length} 筆）</div>
             <div class="table-wrap" style="max-height:250px;overflow-y:auto"><table><thead><tr><th>日期</th><th class="text-right">開盤</th><th class="text-right">最高</th><th class="text-right">最低</th><th class="text-right">收盤</th><th class="text-right">漲跌</th><th class="text-right">張數</th></tr></thead><tbody>`;
         
         [...p].reverse().slice(0, 100).forEach(x => {
@@ -3084,31 +3088,31 @@ function renderScreener() {
     
     container.innerHTML = `
         <div class="screener-header">
-            <div class="title">${title}</div>
-            <div class="desc">${desc}</div>
-            <div class="stats">
-                <span class="stat-badge">🎯 符合 <b>${filtered.length}</b> 檔</span>
-                <span class="stat-badge">📈 歷史翻倍率 <b>${historyRate}</b></span>
+            <div class="title" style="font-size:22px;font-weight:800;color:#c96442">${title}</div>
+            <div class="desc" style="font-size:16px;color:#333;margin-top:8px">${desc}</div>
+            <div class="stats" style="margin-top:14px">
+                <span class="stat-badge" style="font-size:16px;padding:10px 18px">🎯 符合 <b style="font-size:20px;color:#c96442">${filtered.length}</b> 檔</span>
+                <span class="stat-badge" style="font-size:16px;padding:10px 18px">📈 歷史翻倍率 <b style="font-size:20px;color:#c96442">${historyRate}</b></span>
             </div>
         </div>
         <div style="overflow-x:auto">
             <table class="screener-table" style="min-width:1100px">
                 <thead>
                     <tr>
-                        <th style="width:35px;text-align:center">#</th>
-                        <th style="width:60px;text-align:center">CB代號</th>
-                        <th style="width:80px">名稱</th>
-                        <th style="width:55px;text-align:center">股票</th>
-                        <th style="width:75px">產業</th>
-                        <th style="width:70px;text-align:right">收盤價</th>
-                        <th style="width:65px;text-align:right">轉換價</th>
-                        <th style="width:55px;text-align:right">規模</th>
-                        <th style="width:70px;text-align:right">歷史高</th>
-                        <th style="width:70px;text-align:right">潛在空間</th>
-                        <th style="width:85px;text-align:center">到期日</th>
-                        <th style="width:70px;text-align:right">剩餘天數</th>
-                        <th style="width:60px;text-align:center">擔保</th>
-                        <th style="width:70px;text-align:center">評等</th>
+                        <th style="width:40px;text-align:center;font-size:15px">#</th>
+                        <th style="width:80px;text-align:center;font-size:15px">CB代號</th>
+                        <th style="width:100px;font-size:15px">名稱</th>
+                        <th style="width:70px;text-align:center;font-size:15px">股票</th>
+                        <th style="width:90px;font-size:15px">產業</th>
+                        <th style="width:85px;text-align:right;font-size:15px">收盤價</th>
+                        <th style="width:80px;text-align:right;font-size:15px">轉換價</th>
+                        <th style="width:65px;text-align:right;font-size:15px">規模</th>
+                        <th style="width:85px;text-align:right;font-size:15px">歷史高</th>
+                        <th style="width:85px;text-align:right;font-size:15px">潛在空間</th>
+                        <th style="width:100px;text-align:center;font-size:15px">到期日</th>
+                        <th style="width:90px;text-align:right;font-size:15px">剩餘天數</th>
+                        <th style="width:70px;text-align:center;font-size:15px">擔保</th>
+                        <th style="width:80px;text-align:center;font-size:15px">評等</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -3117,26 +3121,26 @@ function renderScreener() {
                         const daysClass = c.daysLeft <= 180 ? 'urgent' : c.daysLeft <= 365 ? 'warning' : 'normal';
                         return `
                         <tr>
-                            <td style="text-align:center;color:#aaa;font-size:11px">${idx + 1}</td>
-                            <td class="code" style="text-align:center" onclick="loadStockByCode('${c.code}')">${c.code}</td>
-                            <td style="font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:80px" title="${c.name}">${c.name}</td>
-                            <td style="text-align:center;font-size:12px;color:#666">${c.stockCode}</td>
-                            <td style="font-size:12px">${c.industry}${isHighProb ? '<br><span class="tag high-prob">高翻倍</span>' : ''}</td>
-                            <td class="text-right ${c.price < 100 ? 'down' : ''}" style="font-weight:700">${c.price.toFixed(2)}</td>
-                            <td class="text-right" style="color:#666">${c.convPrice > 0 ? c.convPrice.toFixed(1) : '-'}</td>
-                            <td class="text-right" style="color:#666;font-size:12px">${c.issueAmount > 0 ? c.issueAmount + '億' : '-'}</td>
-                            <td class="text-right" style="color:#e74c3c">${c.high.toFixed(2)}</td>
-                            <td class="text-right ${c.upside > 30 ? 'up' : ''}">${c.upside > 0 ? '+' : ''}${c.upside.toFixed(1)}%</td>
-                            <td style="text-align:center;font-size:11px">${c.expiryDate}</td>
-                            <td class="text-right"><span class="days-badge ${daysClass}">${c.daysLeft === Infinity ? '-' : c.daysLeft + '天'}</span></td>
-                            <td style="text-align:center"><span class="tag ${c.guarantee === '有擔保' ? 'guaranteed' : 'unguaranteed'}">${c.guarantee === '有擔保' ? '有' : '無'}</span></td>
-                            <td style="text-align:center;font-size:11px;color:#666">${c.creditRating}</td>
+                            <td style="text-align:center;color:#666;font-weight:700;font-size:15px">${idx + 1}</td>
+                            <td class="code" style="text-align:center;font-size:17px;font-weight:800" onclick="loadStockByCode('${c.code}')">${c.code}</td>
+                            <td style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100px;font-weight:700;font-size:16px;color:#111" title="${c.name}">${c.name}</td>
+                            <td style="text-align:center;color:#333;font-family:'Menlo',monospace;font-size:15px;font-weight:600">${c.stockCode}</td>
+                            <td style="font-size:15px;font-weight:600;color:#333">${c.industry}${isHighProb ? '<br><span class="tag high-prob" style="font-size:13px">高翻倍</span>' : ''}</td>
+                            <td class="text-right ${c.price < 100 ? 'down' : ''}" style="font-size:16px">${c.price.toFixed(2)}</td>
+                            <td class="text-right" style="color:#333;font-size:15px">${c.convPrice > 0 ? c.convPrice.toFixed(1) : '-'}</td>
+                            <td class="text-right" style="color:#333;font-size:15px;font-weight:600">${c.issueAmount > 0 ? c.issueAmount + '億' : '-'}</td>
+                            <td class="text-right up" style="font-size:16px">${c.high.toFixed(2)}</td>
+                            <td class="text-right ${c.upside > 30 ? 'up' : ''}" style="font-size:15px">${c.upside > 0 ? '+' : ''}${c.upside.toFixed(1)}%</td>
+                            <td style="text-align:center;font-family:'Menlo',monospace;font-size:15px;font-weight:600;color:#333">${c.expiryDate}</td>
+                            <td class="text-right"><span class="days-badge ${daysClass}" style="font-size:14px">${c.daysLeft === Infinity ? '-' : c.daysLeft + '天'}</span></td>
+                            <td style="text-align:center"><span class="tag ${c.guarantee === '有擔保' ? 'guaranteed' : 'unguaranteed'}" style="font-size:14px">${c.guarantee === '有擔保' ? '有' : '無'}</span></td>
+                            <td style="text-align:center;color:#333;font-size:15px;font-weight:600">${c.creditRating}</td>
                         </tr>`;
                     }).join('')}
                 </tbody>
             </table>
         </div>
-        ${filtered.length > 30 ? `<div style="padding:12px;text-align:center;color:#888;font-size:13px;background:#f8f8f8;border-top:1px solid #eee">📋 顯示前30筆，共 <b style="color:var(--primary)">${filtered.length}</b> 筆符合條件</div>` : ''}
+        ${filtered.length > 30 ? `<div style="padding:16px;text-align:center;color:#444;font-size:16px;background:#f8f8f8;border-top:1px solid #eee">📋 顯示前30筆，共 <b style="color:var(--primary);font-size:20px">${filtered.length}</b> 筆符合條件</div>` : ''}
     `;
 }
 
