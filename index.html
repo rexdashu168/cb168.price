@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
@@ -18,336 +17,375 @@
         .container { max-width: 900px; margin: 0 auto; padding: 12px; }
         @media(min-width: 1024px) { .container { max-width: 1600px; padding: 20px; } }
 
-```
-    .loading { position: fixed; top:0; left:0; right:0; bottom:0; background: var(--bg); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.3s; }
-    .loading.hidden { opacity: 0; pointer-events: none; }
-    .loading.removed { display: none; }
-    .spinner { width: 40px; height: 40px; border: 3px solid #e0e0e0; border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px; }
-    @keyframes spin { to { transform: rotate(360deg); } }
+        .loading { position: fixed; top:0; left:0; right:0; bottom:0; background: var(--bg); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.3s; }
+        .loading.hidden { opacity: 0; pointer-events: none; }
+        .loading.removed { display: none; }
+        .spinner { width: 40px; height: 40px; border: 3px solid #e0e0e0; border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
-    .update-toast { position: fixed; bottom: 20px; right: 20px; background: rgba(0,0,0,0.8); color: #fff; padding: 10px 16px; border-radius: 8px; font-size: 13px; z-index: 1000; opacity: 0; transform: translateY(20px); transition: all 0.3s; }
-    .update-toast.show { opacity: 1; transform: translateY(0); }
+        .update-toast { position: fixed; bottom: 20px; right: 20px; background: rgba(0,0,0,0.8); color: #fff; padding: 10px 16px; border-radius: 8px; font-size: 13px; z-index: 1000; opacity: 0; transform: translateY(20px); transition: all 0.3s; }
+        .update-toast.show { opacity: 1; transform: translateY(0); }
 
-    .header { text-align: center; padding: 20px 0; border-bottom: 1px solid var(--border); margin-bottom: 16px; }
-    .header h1 { color: var(--primary); font-size: 24px; font-weight: 800; }
-    .header .subtitle { color: var(--gray); font-size: 14px; margin-top: 5px; }
-    .header .version { display: inline-block; background: var(--primary); color: #fff; font-size: 11px; padding: 2px 8px; border-radius: 10px; margin-left: 8px; }
+        .header { text-align: center; padding: 20px 0; border-bottom: 1px solid var(--border); margin-bottom: 16px; }
+        .header h1 { color: var(--primary); font-size: 24px; font-weight: 800; }
+        .header .subtitle { color: var(--gray); font-size: 14px; margin-top: 5px; }
+        .header .version { display: inline-block; background: var(--primary); color: #fff; font-size: 11px; padding: 2px 8px; border-radius: 10px; margin-left: 8px; }
 
-    .main-tabs { display: flex; gap: 12px; margin-bottom: 16px; justify-content: center; }
-    .main-tab { padding: 12px 28px; border-radius: 25px; font-size: 16px; font-weight: 700; cursor: pointer; border: 2px solid var(--border); background: #fff; color: #555; transition: all 0.2s; display: flex; align-items: center; gap: 8px; }
-    .main-tab:hover { border-color: var(--primary); }
-    .main-tab.active.listed { background: var(--listed); color: #fff; border-color: var(--listed); }
-    .main-tab.active.delisted { background: var(--delisted); color: #fff; border-color: var(--delisted); }
-    .main-tab .count { background: rgba(0,0,0,0.1); padding: 2px 10px; border-radius: 12px; font-size: 14px; }
-    .main-tab.active .count { background: rgba(255,255,255,0.3); }
+        .main-tabs { display: flex; gap: 12px; margin-bottom: 16px; justify-content: center; }
+        .main-tab { padding: 12px 28px; border-radius: 25px; font-size: 16px; font-weight: 700; cursor: pointer; border: 2px solid var(--border); background: #fff; color: #555; transition: all 0.2s; display: flex; align-items: center; gap: 8px; }
+        .main-tab:hover { border-color: var(--primary); }
+        .main-tab.active.listed { background: var(--listed); color: #fff; border-color: var(--listed); }
+        .main-tab.active.delisted { background: var(--delisted); color: #fff; border-color: var(--delisted); }
+        .main-tab .count { background: rgba(0,0,0,0.1); padding: 2px 10px; border-radius: 12px; font-size: 14px; }
+        .main-tab.active .count { background: rgba(255,255,255,0.3); }
 
-    .sub-tabs { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; justify-content: center; }
-    .sub-tab { padding: 8px 18px; border-radius: 20px; font-size: 14px; font-weight: 600; cursor: pointer; border: 1px solid var(--clickable-border); background: var(--clickable); color: #333; transition: all 0.2s; }
-    .sub-tab:hover { border-color: var(--primary); background: var(--clickable-hover); }
-    .sub-tab.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+        .sub-tabs { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; justify-content: center; }
+        .sub-tab { padding: 8px 18px; border-radius: 20px; font-size: 14px; font-weight: 600; cursor: pointer; border: 1px solid var(--clickable-border); background: var(--clickable); color: #333; transition: all 0.2s; }
+        .sub-tab:hover { border-color: var(--primary); background: var(--clickable-hover); }
+        .sub-tab.active { background: var(--primary); color: #fff; border-color: var(--primary); }
 
-    .stats-box { background: linear-gradient(135deg, #fff8f0 0%, #fff0e5 100%); border-radius: 14px; padding: 18px; margin-bottom: 18px; border: 1px solid #ffd8c0; }
-    .section-title { font-size: 16px; font-weight: 700; color: #2c2c2c; margin: 16px 0 12px; padding-left: 10px; border-left: 4px solid var(--primary); display: flex; justify-content: space-between; align-items: center; }
-    .section-title:first-child { margin-top: 0; }
+        .stats-box { background: linear-gradient(135deg, #fff8f0 0%, #fff0e5 100%); border-radius: 14px; padding: 18px; margin-bottom: 18px; border: 1px solid #ffd8c0; }
+        .section-title { font-size: 16px; font-weight: 700; color: #2c2c2c; margin: 16px 0 12px; padding-left: 10px; border-left: 4px solid var(--primary); display: flex; justify-content: space-between; align-items: center; }
+        .section-title:first-child { margin-top: 0; }
 
-    .stats-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
-    .stat-item { background: #fff; padding: 10px 16px; border-radius: 8px; text-align: center; border: 1px solid #d0d0d0; min-width: 80px; }
-    .stat-item.clickable { cursor: pointer; transition: all 0.2s; background: var(--clickable); border-color: var(--clickable-border); }
-    .stat-item.clickable:hover { border-color: var(--primary); background: var(--clickable-hover); }
-    .stat-item.clickable.active { background: var(--listed); border-color: var(--listed); }
-    .stat-item.clickable.active .stat-num, .stat-item.clickable.active .stat-label { color: #fff; }
-    .stat-num { font-size: 22px; font-weight: 800; color: var(--primary); font-family: 'Menlo', monospace; }
-    .stat-label { font-size: 13px; color: #333; margin-top: 3px; }
+        .stats-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+        .stat-item { background: #fff; padding: 10px 16px; border-radius: 8px; text-align: center; border: 1px solid #d0d0d0; min-width: 80px; }
+        .stat-item.clickable { cursor: pointer; transition: all 0.2s; background: var(--clickable); border-color: var(--clickable-border); }
+        .stat-item.clickable:hover { border-color: var(--primary); background: var(--clickable-hover); }
+        .stat-item.clickable.active { background: var(--listed); border-color: var(--listed); }
+        .stat-item.clickable.active .stat-num, .stat-item.clickable.active .stat-label { color: #fff; }
+        .stat-num { font-size: 22px; font-weight: 800; color: var(--primary); font-family: 'Menlo', monospace; }
+        .stat-label { font-size: 13px; color: #333; margin-top: 3px; }
 
-    .quick-filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
-    .quick-filter { padding: 6px 14px; border-radius: 16px; font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid var(--border); background: #fff; color: #555; transition: all 0.2s; display: flex; align-items: center; gap: 6px; }
-    .quick-filter:hover { border-color: var(--primary); background: var(--clickable); }
-    .quick-filter.active { background: var(--info); color: #fff; border-color: var(--info); }
-    .quick-filter .badge { background: rgba(0,0,0,0.1); padding: 2px 8px; border-radius: 10px; font-size: 12px; }
-    .quick-filter.active .badge { background: rgba(255,255,255,0.3); }
+        .quick-filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+        .quick-filter { padding: 6px 14px; border-radius: 16px; font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid var(--border); background: #fff; color: #555; transition: all 0.2s; display: flex; align-items: center; gap: 6px; }
+        .quick-filter:hover { border-color: var(--primary); background: var(--clickable); }
+        .quick-filter.active { background: var(--info); color: #fff; border-color: var(--info); }
+        .quick-filter .badge { background: rgba(0,0,0,0.1); padding: 2px 8px; border-radius: 10px; font-size: 12px; }
+        .quick-filter.active .badge { background: rgba(255,255,255,0.3); }
 
-    .ind-grid { display: flex; flex-wrap: wrap; gap: 6px; }
-    .ind-tag { padding: 6px 12px; background: var(--clickable); border: 1px solid var(--clickable-border); border-radius: 16px; cursor: pointer; font-size: 13px; font-weight: 600; color: #2c2c2c; transition: all 0.2s; display: flex; align-items: center; gap: 4px; }
-    .ind-tag:hover { border-color: var(--primary); background: var(--clickable-hover); }
-    .ind-tag.active { background: var(--listed); color: #fff; border-color: var(--listed); }
-    .ind-tag .num { font-size: 12px; opacity: 0.8; }
-    .ind-tag.active .num { opacity: 1; }
-    
-    /* 篩選標籤組 */
-    .filter-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; padding-top: 10px; border-top: 1px dashed #ddd; }
-    .filter-tag { padding: 5px 10px; background: #fff; border: 1px solid #ddd; border-radius: 12px; cursor: pointer; font-size: 12px; font-weight: 600; color: #666; transition: all 0.2s; }
-    .filter-tag:hover { border-color: var(--primary); }
-    .filter-tag.active { background: var(--info); color: #fff; border-color: var(--info); }
-    .filter-tag.active.guarantee { background: #e74c3c; border-color: #e74c3c; }
-    .filter-tag.active.method { background: #9b59b6; border-color: #9b59b6; }
+        .ind-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+        .ind-tag { padding: 6px 12px; background: var(--clickable); border: 1px solid var(--clickable-border); border-radius: 16px; cursor: pointer; font-size: 13px; font-weight: 600; color: #2c2c2c; transition: all 0.2s; display: flex; align-items: center; gap: 4px; }
+        .ind-tag:hover { border-color: var(--primary); background: var(--clickable-hover); }
+        .ind-tag.active { background: var(--listed); color: #fff; border-color: var(--listed); }
+        .ind-tag .num { font-size: 12px; opacity: 0.8; }
+        .ind-tag.active .num { opacity: 1; }
+        
+        /* 篩選標籤組 */
+        .filter-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; padding-top: 10px; border-top: 1px dashed #ddd; }
+        .filter-tag { padding: 5px 10px; background: #fff; border: 1px solid #ddd; border-radius: 12px; cursor: pointer; font-size: 12px; font-weight: 600; color: #666; transition: all 0.2s; }
+        .filter-tag:hover { border-color: var(--primary); }
+        .filter-tag.active { background: var(--info); color: #fff; border-color: var(--info); }
+        .filter-tag.active.guarantee { background: #e74c3c; border-color: #e74c3c; }
+        .filter-tag.active.method { background: #9b59b6; border-color: #9b59b6; }
 
-    .search-box { margin-bottom: 16px; }
-    .search-input { width: 100%; padding: 12px 16px; border-radius: 10px; border: 2px solid var(--border); font-size: 16px; outline: none; }
-    .search-input:focus { border-color: var(--primary); }
+        .search-box { margin-bottom: 16px; }
+        .search-input { width: 100%; padding: 12px 16px; border-radius: 10px; border: 2px solid var(--border); font-size: 16px; outline: none; }
+        .search-input:focus { border-color: var(--primary); }
 
-    .filter-status { background: linear-gradient(90deg, #fff5e0, #fffbe8); padding: 12px 18px; border-radius: 10px; margin-bottom: 14px; border: 1px solid #ffd080; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
-    .filter-status .status-text { font-size: 15px; color: #e65100; font-weight: 600; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-    .filter-status .status-tag { background: var(--primary); color: #fff; padding: 4px 12px; border-radius: 12px; font-size: 14px; }
-    .filter-status .status-count { color: #2c2c2c; }
-    .filter-status .status-count b { color: var(--primary); font-size: 18px; }
-    .filter-status .status-clear { background: var(--clickable); border: 1px solid var(--clickable-border); color: #555; padding: 6px 14px; border-radius: 16px; font-size: 14px; cursor: pointer; transition: all 0.2s; }
-    .filter-status .status-clear:hover { background: #e74c3c; color: #fff; border-color: #e74c3c; }
+        .filter-status { background: linear-gradient(90deg, #fff5e0, #fffbe8); padding: 12px 18px; border-radius: 10px; margin-bottom: 14px; border: 1px solid #ffd080; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+        .filter-status .status-text { font-size: 15px; color: #e65100; font-weight: 600; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .filter-status .status-tag { background: var(--primary); color: #fff; padding: 4px 12px; border-radius: 12px; font-size: 14px; }
+        .filter-status .status-count { color: #2c2c2c; }
+        .filter-status .status-count b { color: var(--primary); font-size: 18px; }
+        .filter-status .status-clear { background: var(--clickable); border: 1px solid var(--clickable-border); color: #555; padding: 6px 14px; border-radius: 16px; font-size: 14px; cursor: pointer; transition: all 0.2s; }
+        .filter-status .status-clear:hover { background: #e74c3c; color: #fff; border-color: #e74c3c; }
 
-    .control-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; }
-    .view-tabs { display: flex; gap: 6px; }
-    .view-tab { padding: 6px 14px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid var(--border); background: #fff; color: #555; }
-    .view-tab:hover { border-color: var(--primary); }
-    .view-tab.active { background: #e67e22; color: #fff; border-color: #e67e22; }
-    .period-tabs { display: flex; gap: 6px; flex-wrap: wrap; }
-    .period-tab { padding: 5px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; border: 1px solid var(--border); background: #fff; color: #555; }
-    .period-tab:hover { border-color: var(--primary); }
-    .period-tab.active { background: #3498db; color: #fff; border-color: #3498db; }
+        .control-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; }
+        .view-tabs { display: flex; gap: 6px; }
+        .view-tab { padding: 6px 14px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid var(--border); background: #fff; color: #555; }
+        .view-tab:hover { border-color: var(--primary); }
+        .view-tab.active { background: #e67e22; color: #fff; border-color: #e67e22; }
+        .period-tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+        .period-tab { padding: 5px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; border: 1px solid var(--border); background: #fff; color: #555; }
+        .period-tab:hover { border-color: var(--primary); }
+        .period-tab.active { background: #3498db; color: #fff; border-color: #3498db; }
 
-    /* 表格區域 */
-    .table-wrap { overflow-x: auto; background: #fff; border-radius: 10px; border: 1px solid var(--border); }
-    table { width: 100%; border-collapse: collapse; font-size: 14px; }
-    th, td { padding: 6px 6px; text-align: left; border-bottom: 1px solid #eee; white-space: nowrap; }
-    th { background: #f8f8f8; font-weight: 600; position: sticky; top: 0; cursor: pointer; user-select: none; text-align: center; }
-    th:hover { background: #f0f0f0; }
-    th.sorted-asc::after { content: '▲'; color: var(--primary); font-size: 10px; }
-    th.sorted-desc::after { content: '▼'; color: var(--primary); font-size: 10px; }
-    tr:hover { background: #fafafa; cursor: pointer; }
-    tr.no-price { background: #f9f9f9; opacity: 0.7; }
-    .code { color: var(--primary); font-weight: 600; }
-    .up { color: var(--up); }
-    .down { color: var(--down); }
-    .text-right { text-align: right; }
-    .text-center { text-align: center; }
-    .text-left { text-align: left; }
-    .premium-low { background: rgba(39,174,96,0.08); }
-    .premium-high { background: rgba(231,76,60,0.08); }
-    
-    /* 擔保標籤 */
-    .guarantee-badge { display: inline-block; padding: 1px 5px; border-radius: 3px; font-size: 12px; font-weight: 700; }
-    .guarantee-badge.yes { background: #fff0f0; color: #e74c3c; border: 1px solid #f5c6cb; }
-    .guarantee-badge.no { background: #e8f5e9; color: #27ae60; border: 1px solid #c3e6cb; }
-    
-    /* 剩餘天數 */
-    .days-badge { display: inline-block; padding: 1px 4px; border-radius: 3px; font-size: 12px; font-weight: 600; }
-    .days-badge.urgent { background: #fff3cd; color: #856404; }
-    .days-badge.warning { background: #ffeeba; color: #856404; }
-    .days-badge.normal { background: #f8f9fa; color: #6c757d; }
-    
-    @media(max-width: 768px) { .hide-mobile { display: none; } }
-    @media(max-width: 1200px) { .hide-tablet { display: none; } }
-    @media(max-width: 1400px) { .hide-wide { display: none; } }
+        /* 表格區域 */
+        .table-wrap { overflow-x: auto; background: #fff; border-radius: 10px; border: 1px solid var(--border); }
+        table { width: 100%; border-collapse: collapse; font-size: 14px; }
+        th, td { padding: 6px 6px; text-align: left; border-bottom: 1px solid #eee; white-space: nowrap; }
+        th { background: #f8f8f8; font-weight: 600; position: sticky; top: 0; cursor: pointer; user-select: none; text-align: center; }
+        th:hover { background: #f0f0f0; }
+        th.sorted-asc::after { content: '▲'; color: var(--primary); font-size: 10px; }
+        th.sorted-desc::after { content: '▼'; color: var(--primary); font-size: 10px; }
+        tr:hover { background: #fafafa; cursor: pointer; }
+        tr.no-price { background: #f9f9f9; opacity: 0.7; }
+        .code { color: var(--primary); font-weight: 600; }
+        .up { color: var(--up); }
+        .down { color: var(--down); }
+        .text-right { text-align: right; }
+        .text-center { text-align: center; }
+        .text-left { text-align: left; }
+        .premium-low { background: rgba(39,174,96,0.08); }
+        .premium-high { background: rgba(231,76,60,0.08); }
+        
+        /* 擔保標籤 */
+        .guarantee-badge { display: inline-block; padding: 1px 5px; border-radius: 3px; font-size: 12px; font-weight: 700; }
+        .guarantee-badge.yes { background: #fff0f0; color: #e74c3c; border: 1px solid #f5c6cb; }
+        .guarantee-badge.no { background: #e8f5e9; color: #27ae60; border: 1px solid #c3e6cb; }
+        
+        /* 剩餘天數 */
+        .days-badge { display: inline-block; padding: 1px 4px; border-radius: 3px; font-size: 12px; font-weight: 600; }
+        .days-badge.urgent { background: #fff3cd; color: #856404; }
+        .days-badge.warning { background: #ffeeba; color: #856404; }
+        .days-badge.normal { background: #f8f9fa; color: #6c757d; }
+        
+        @media(max-width: 768px) { .hide-mobile { display: none; } }
+        @media(max-width: 1200px) { .hide-tablet { display: none; } }
+        @media(max-width: 1400px) { .hide-wide { display: none; } }
 
-    /* 彈窗 */
-    .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
-    .modal.show { display: flex; }
-    .modal-content { background: #fff; border-radius: 14px; max-width: 900px; width: 100%; max-height: 90vh; overflow: hidden; display: flex; flex-direction: column; }
-    .modal-header { padding: 16px 20px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
-    .modal-header h3 { font-size: 18px; color: var(--primary); display: flex; align-items: center; gap: 10px; }
-    .modal-close { width: 32px; height: 32px; border-radius: 50%; border: none; background: #f0f0f0; font-size: 18px; cursor: pointer; }
-    .modal-body { padding: 16px 20px; overflow-y: auto; flex: 1; }
+        /* 彈窗 */
+        .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
+        .modal.show { display: flex; }
+        .modal-content { background: #fff; border-radius: 14px; max-width: 900px; width: 100%; max-height: 90vh; overflow: hidden; display: flex; flex-direction: column; }
+        .modal-header { padding: 16px 20px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+        .modal-header h3 { font-size: 18px; color: var(--primary); display: flex; align-items: center; gap: 10px; }
+        .modal-close { width: 32px; height: 32px; border-radius: 50%; border: none; background: #f0f0f0; font-size: 18px; cursor: pointer; }
+        .modal-body { padding: 16px 20px; overflow-y: auto; flex: 1; }
 
-    .industry-position { background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); border-radius: 12px; padding: 16px 20px; margin-bottom: 16px; border-left: 4px solid var(--listed); }
-    .industry-position .label { font-size: 13px; color: #666; margin-bottom: 4px; }
-    .industry-position .value { font-size: 18px; font-weight: 700; color: #2c2c2c; line-height: 1.4; }
+        .industry-position { background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); border-radius: 12px; padding: 16px 20px; margin-bottom: 16px; border-left: 4px solid var(--listed); }
+        .industry-position .label { font-size: 13px; color: #666; margin-bottom: 4px; }
+        .industry-position .value { font-size: 18px; font-weight: 700; color: #2c2c2c; line-height: 1.4; }
 
-    .detail-section { background: #f8f8f8; border-radius: 10px; padding: 14px; margin-bottom: 14px; }
-    .detail-section h4 { font-size: 14px; color: var(--primary); margin-bottom: 10px; border-bottom: 1px solid #ddd; padding-bottom: 6px; }
-    .detail-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
-    .detail-item .label { font-size: 12px; color: #888; }
-    .detail-item .value { font-size: 14px; font-weight: 600; color: #333; }
-    .detail-item .value.highlight { color: var(--primary); }
+        .detail-section { background: #f8f8f8; border-radius: 10px; padding: 14px; margin-bottom: 14px; }
+        .detail-section h4 { font-size: 14px; color: var(--primary); margin-bottom: 10px; border-bottom: 1px solid #ddd; padding-bottom: 6px; }
+        .detail-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+        .detail-item .label { font-size: 12px; color: #888; }
+        .detail-item .value { font-size: 14px; font-weight: 600; color: #333; }
+        .detail-item .value.highlight { color: var(--primary); }
 
-    .modal-stats { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
-    .modal-stat { background: linear-gradient(135deg, #fff8f0, #fff0e5); padding: 12px 16px; border-radius: 10px; text-align: center; min-width: 80px; }
-    .modal-stat .val { font-size: 20px; font-weight: 700; color: var(--primary); }
-    .modal-stat .lbl { font-size: 12px; color: #666; }
+        .modal-stats { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+        .modal-stat { background: linear-gradient(135deg, #fff8f0, #fff0e5); padding: 12px 16px; border-radius: 10px; text-align: center; min-width: 80px; }
+        .modal-stat .val { font-size: 20px; font-weight: 700; color: var(--primary); }
+        .modal-stat .lbl { font-size: 12px; color: #666; }
 
-    .avg-price-area { background: #fff; border-radius: 14px; padding: 20px; margin-bottom: 18px; border: 1px solid var(--border); }
-    .avg-type-tabs { display: flex; gap: 8px; margin-bottom: 14px; justify-content: center; }
-    .avg-type-tab { padding: 10px 24px; border-radius: 20px; font-size: 15px; font-weight: 600; cursor: pointer; border: 2px solid var(--clickable-border); background: var(--clickable); color: #333; transition: all 0.2s; }
-    .avg-type-tab:hover { border-color: var(--primary); background: var(--clickable-hover); }
-    .avg-type-tab.active { background: var(--primary); color: #fff; border-color: var(--primary); }
-    .avg-period-tabs { display: flex; gap: 6px; margin-bottom: 16px; justify-content: center; flex-wrap: wrap; }
-    .avg-period-tab { padding: 6px 14px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid var(--border); background: #fff; color: #555; }
-    .avg-period-tab:hover { border-color: var(--primary); }
-    .avg-period-tab.active { background: #3498db; color: #fff; border-color: #3498db; }
-    .avg-chart-container { background: #fafafa; border-radius: 10px; padding: 15px; margin-bottom: 16px; }
-    .avg-chart-container canvas { width: 100%; height: 320px; }
-    .avg-stats { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
-    .avg-stat-item { background: linear-gradient(135deg, #fff8f0, #fff0e5); padding: 14px 20px; border-radius: 10px; text-align: center; min-width: 100px; }
-    .avg-stat-item .val { font-size: 22px; font-weight: 700; color: var(--primary); font-family: 'Menlo', monospace; }
-    .avg-stat-item .lbl { font-size: 13px; color: #666; margin-top: 4px; }
+        .avg-price-area { background: #fff; border-radius: 14px; padding: 20px; margin-bottom: 18px; border: 1px solid var(--border); }
+        .avg-type-tabs { display: flex; gap: 8px; margin-bottom: 14px; justify-content: center; }
+        .avg-type-tab { padding: 10px 24px; border-radius: 20px; font-size: 15px; font-weight: 600; cursor: pointer; border: 2px solid var(--clickable-border); background: var(--clickable); color: #333; transition: all 0.2s; }
+        .avg-type-tab:hover { border-color: var(--primary); background: var(--clickable-hover); }
+        .avg-type-tab.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+        .avg-period-tabs { display: flex; gap: 6px; margin-bottom: 16px; justify-content: center; flex-wrap: wrap; }
+        .avg-period-tab { padding: 6px 14px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid var(--border); background: #fff; color: #555; }
+        .avg-period-tab:hover { border-color: var(--primary); }
+        .avg-period-tab.active { background: #3498db; color: #fff; border-color: #3498db; }
+        .avg-chart-container { background: #fafafa; border-radius: 10px; padding: 15px; margin-bottom: 16px; }
+        .avg-chart-container canvas { width: 100%; height: 320px; }
+        .avg-stats { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+        .avg-stat-item { background: linear-gradient(135deg, #fff8f0, #fff0e5); padding: 14px 20px; border-radius: 10px; text-align: center; min-width: 100px; }
+        .avg-stat-item .val { font-size: 22px; font-weight: 700; color: var(--primary); font-family: 'Menlo', monospace; }
+        .avg-stat-item .lbl { font-size: 13px; color: #666; margin-top: 4px; }
 
-    /* 個股查詢區塊 */
-    .stock-query-area { background: #fff; border-radius: 14px; padding: 20px; border: 1px solid var(--border); }
-    .stock-search-row { display: flex; gap: 10px; margin-bottom: 16px; align-items: center; flex-wrap: wrap; }
-    .stock-search-input { flex: 1; max-width: 250px; padding: 12px 16px; border-radius: 10px; border: 2px solid var(--border); font-size: 16px; outline: none; }
-    .stock-search-input:focus { border-color: var(--primary); }
-    .stock-search-btn { padding: 12px 24px; border-radius: 10px; border: none; background: var(--primary); color: #fff; font-size: 15px; font-weight: 600; cursor: pointer; }
-    .stock-search-btn:hover { background: #b55a3a; }
-    .stock-period-tabs { display: flex; gap: 6px; }
-    .stock-period { padding: 6px 14px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; background: #f0f0f0; color: #666; }
-    .stock-period:hover { background: #e0e0e0; }
-    .stock-period.active { background: #3498db; color: #fff; }
-    .stock-view-tabs { display: flex; gap: 6px; margin-left: auto; }
-    .stock-view-tab { padding: 6px 14px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; background: #f0f0f0; color: #666; }
-    .stock-view-tab:hover { background: #e0e0e0; }
-    .stock-view-tab.active { background: #e67e22; color: #fff; }
-    .stock-result { min-height: 200px; }
-    .stock-placeholder { text-align: center; padding: 60px 20px; color: #999; }
-    .stock-placeholder .icon { font-size: 48px; margin-bottom: 12px; }
-    .stock-chart-container { background: #fafafa; border-radius: 10px; padding: 15px; margin-top: 16px; position: relative; }
-    .stock-chart-container canvas { width: 100%; height: 300px; }
+        /* 個股查詢區塊 */
+        .stock-query-area { background: #fff; border-radius: 14px; padding: 20px; border: 1px solid var(--border); }
+        .stock-search-row { display: flex; gap: 10px; margin-bottom: 16px; align-items: center; flex-wrap: wrap; }
+        .stock-search-input { flex: 1; max-width: 250px; padding: 12px 16px; border-radius: 10px; border: 2px solid var(--border); font-size: 16px; outline: none; }
+        .stock-search-input:focus { border-color: var(--primary); }
+        .stock-search-btn { padding: 12px 24px; border-radius: 10px; border: none; background: var(--primary); color: #fff; font-size: 15px; font-weight: 600; cursor: pointer; }
+        .stock-search-btn:hover { background: #b55a3a; }
+        .stock-period-tabs { display: flex; gap: 6px; }
+        .stock-period { padding: 6px 14px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; background: #f0f0f0; color: #666; }
+        .stock-period:hover { background: #e0e0e0; }
+        .stock-period.active { background: #3498db; color: #fff; }
+        .stock-view-tabs { display: flex; gap: 6px; margin-left: auto; }
+        .stock-view-tab { padding: 6px 14px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; background: #f0f0f0; color: #666; }
+        .stock-view-tab:hover { background: #e0e0e0; }
+        .stock-view-tab.active { background: #e67e22; color: #fff; }
+        .stock-result { min-height: 200px; }
+        .stock-placeholder { text-align: center; padding: 60px 20px; color: #999; }
+        .stock-placeholder .icon { font-size: 48px; margin-bottom: 12px; }
+        .stock-chart-container { background: #fafafa; border-radius: 10px; padding: 15px; margin-top: 16px; position: relative; }
+        .stock-chart-container canvas { width: 100%; height: 300px; }
 
-    /* 多檔查詢區塊 */
-    .multi-query-area { background: #fff; border-radius: 14px; padding: 20px; border: 1px solid var(--border); }
-    .multi-input-row { display: flex; gap: 10px; margin-bottom: 12px; align-items: flex-start; flex-wrap: wrap; }
-    .multi-codes-input { flex: 1; min-width: 200px; max-width: 400px; padding: 12px 16px; border-radius: 10px; border: 2px solid var(--border); font-size: 15px; outline: none; min-height: 80px; resize: vertical; font-family: inherit; }
-    .multi-codes-input:focus { border-color: var(--primary); }
-    .multi-codes-input::placeholder { color: #aaa; }
-    .multi-btn-group { display: flex; flex-direction: column; gap: 8px; }
-    .multi-search-btn { padding: 12px 24px; border-radius: 10px; border: none; background: var(--primary); color: #fff; font-size: 15px; font-weight: 600; cursor: pointer; }
-    .multi-search-btn:hover { background: #b55a3a; }
-    .multi-clear-btn { padding: 8px 16px; border-radius: 8px; border: 1px solid var(--border); background: #fff; color: #666; font-size: 13px; cursor: pointer; }
-    .multi-clear-btn:hover { background: #f5f5f5; }
-    .multi-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
-    .multi-tag { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; background: linear-gradient(135deg, #fff8f0, #fff0e5); border: 1px solid #ffd8c0; border-radius: 16px; font-size: 13px; font-weight: 600; color: var(--primary); }
-    .multi-tag .remove { cursor: pointer; opacity: 0.6; font-size: 14px; }
-    .multi-tag .remove:hover { opacity: 1; }
-    .multi-controls { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
-    .multi-result { min-height: 200px; }
-    .multi-chart-container { background: #fafafa; border-radius: 10px; padding: 15px; margin-top: 16px; position: relative; }
-    .multi-chart-container canvas { width: 100%; height: 350px; }
-    .multi-legend { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 12px; justify-content: center; }
-    .multi-legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; }
-    .multi-legend-color { width: 20px; height: 3px; border-radius: 2px; }
+        /* 多檔查詢區塊 */
+        .multi-query-area { background: #fff; border-radius: 14px; padding: 20px; border: 1px solid var(--border); }
+        .multi-input-row { display: flex; gap: 10px; margin-bottom: 12px; align-items: flex-start; flex-wrap: wrap; }
+        .multi-codes-input { flex: 1; min-width: 200px; max-width: 400px; padding: 12px 16px; border-radius: 10px; border: 2px solid var(--border); font-size: 15px; outline: none; min-height: 80px; resize: vertical; font-family: inherit; }
+        .multi-codes-input:focus { border-color: var(--primary); }
+        .multi-codes-input::placeholder { color: #aaa; }
+        .multi-btn-group { display: flex; flex-direction: column; gap: 8px; }
+        .multi-search-btn { padding: 12px 24px; border-radius: 10px; border: none; background: var(--primary); color: #fff; font-size: 15px; font-weight: 600; cursor: pointer; }
+        .multi-search-btn:hover { background: #b55a3a; }
+        .multi-clear-btn { padding: 8px 16px; border-radius: 8px; border: 1px solid var(--border); background: #fff; color: #666; font-size: 13px; cursor: pointer; }
+        .multi-clear-btn:hover { background: #f5f5f5; }
+        .multi-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+        .multi-tag { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; background: linear-gradient(135deg, #fff8f0, #fff0e5); border: 1px solid #ffd8c0; border-radius: 16px; font-size: 13px; font-weight: 600; color: var(--primary); }
+        .multi-tag .remove { cursor: pointer; opacity: 0.6; font-size: 14px; }
+        .multi-tag .remove:hover { opacity: 1; }
+        .multi-controls { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
+        .multi-result { min-height: 200px; }
+        .multi-chart-container { background: #fafafa; border-radius: 10px; padding: 15px; margin-top: 16px; position: relative; }
+        .multi-chart-container canvas { width: 100%; height: 350px; }
+        .multi-legend { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 12px; justify-content: center; }
+        .multi-legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; }
+        .multi-legend-color { width: 20px; height: 3px; border-radius: 2px; }
 
-    /* 價格表區塊 */
-    .price-table-area { background: #fff; border-radius: 14px; padding: 20px; border: 1px solid var(--border); }
-    .price-search-box { display: flex; gap: 10px; margin-bottom: 20px; }
-    .price-search-input { flex: 1; max-width: 300px; padding: 12px 16px; border-radius: 10px; border: 2px solid var(--border); font-size: 16px; outline: none; }
-    .price-search-input:focus { border-color: var(--primary); }
-    .price-search-btn { padding: 12px 24px; border-radius: 10px; border: none; background: var(--primary); color: #fff; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
-    .price-search-btn:hover { background: #b55a3a; }
-    .price-placeholder { text-align: center; padding: 60px 20px; color: #999; }
-    .price-placeholder .icon { font-size: 48px; margin-bottom: 12px; }
-    
-    .price-info-card { background: linear-gradient(135deg, #fff8f0 0%, #fff0e5 100%); border-radius: 12px; padding: 20px; margin-bottom: 20px; border: 1px solid #ffd8c0; }
-    .price-info-header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; }
-    .price-info-title { font-size: 22px; font-weight: 800; color: var(--primary); }
-    .price-info-title .code { font-size: 16px; color: #666; font-weight: 600; margin-left: 8px; }
-    .price-info-badge { display: flex; gap: 8px; }
-    .price-info-badge span { padding: 4px 12px; border-radius: 12px; font-size: 13px; font-weight: 600; }
-    .price-info-badge .listed { background: rgba(39,174,96,0.15); color: #27ae60; }
-    .price-info-badge .delisted { background: rgba(149,165,166,0.15); color: #95a5a6; }
-    .price-info-badge .guarantee { background: rgba(231,76,60,0.15); color: #e74c3c; }
-    .price-info-badge .no-guarantee { background: rgba(52,152,219,0.15); color: #3498db; }
-    
-    .price-info-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
-    .price-info-item { background: #fff; padding: 10px 14px; border-radius: 8px; }
-    .price-info-item .label { font-size: 12px; color: #888; margin-bottom: 2px; }
-    .price-info-item .value { font-size: 15px; font-weight: 600; color: #333; }
-    .price-info-item .value.highlight { color: var(--primary); }
-    
-    .price-stats-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; }
-    .price-stat-card { background: #fff; border-radius: 10px; padding: 14px 18px; border: 1px solid var(--border); text-align: center; min-width: 100px; }
-    .price-stat-card .val { font-size: 20px; font-weight: 700; color: var(--primary); font-family: 'Menlo', monospace; }
-    .price-stat-card .lbl { font-size: 12px; color: #666; margin-top: 4px; }
-    
-    .price-table-container { max-height: 500px; overflow-y: auto; border-radius: 10px; border: 1px solid var(--border); }
-    .price-table-container table { font-size: 14px; }
-    .price-table-container th { position: sticky; top: 0; background: #f8f8f8; z-index: 1; }
-    .price-table-container td { font-family: 'Menlo', monospace; }
+        /* 價格表區塊 */
+        .price-table-area { background: #fff; border-radius: 14px; padding: 20px; border: 1px solid var(--border); }
+        .price-search-box { display: flex; gap: 10px; margin-bottom: 20px; }
+        .price-search-input { flex: 1; max-width: 300px; padding: 12px 16px; border-radius: 10px; border: 2px solid var(--border); font-size: 16px; outline: none; }
+        .price-search-input:focus { border-color: var(--primary); }
+        .price-search-btn { padding: 12px 24px; border-radius: 10px; border: none; background: var(--primary); color: #fff; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        .price-search-btn:hover { background: #b55a3a; }
+        .price-placeholder { text-align: center; padding: 60px 20px; color: #999; }
+        .price-placeholder .icon { font-size: 48px; margin-bottom: 12px; }
+        
+        .price-info-card { background: linear-gradient(135deg, #fff8f0 0%, #fff0e5 100%); border-radius: 12px; padding: 20px; margin-bottom: 20px; border: 1px solid #ffd8c0; }
+        .price-info-header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; }
+        .price-info-title { font-size: 22px; font-weight: 800; color: var(--primary); }
+        .price-info-title .code { font-size: 16px; color: #666; font-weight: 600; margin-left: 8px; }
+        .price-info-badge { display: flex; gap: 8px; }
+        .price-info-badge span { padding: 4px 12px; border-radius: 12px; font-size: 13px; font-weight: 600; }
+        .price-info-badge .listed { background: rgba(39,174,96,0.15); color: #27ae60; }
+        .price-info-badge .delisted { background: rgba(149,165,166,0.15); color: #95a5a6; }
+        .price-info-badge .guarantee { background: rgba(231,76,60,0.15); color: #e74c3c; }
+        .price-info-badge .no-guarantee { background: rgba(52,152,219,0.15); color: #3498db; }
+        
+        .price-info-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
+        .price-info-item { background: #fff; padding: 10px 14px; border-radius: 8px; }
+        .price-info-item .label { font-size: 12px; color: #888; margin-bottom: 2px; }
+        .price-info-item .value { font-size: 15px; font-weight: 600; color: #333; }
+        .price-info-item .value.highlight { color: var(--primary); }
+        
+        .price-stats-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; }
+        .price-stat-card { background: #fff; border-radius: 10px; padding: 14px 18px; border: 1px solid var(--border); text-align: center; min-width: 100px; }
+        .price-stat-card .val { font-size: 20px; font-weight: 700; color: var(--primary); font-family: 'Menlo', monospace; }
+        .price-stat-card .lbl { font-size: 12px; color: #666; margin-top: 4px; }
+        
+        .price-table-container { max-height: 500px; overflow-y: auto; border-radius: 10px; border: 1px solid var(--border); }
+        .price-table-container table { font-size: 14px; }
+        .price-table-container th { position: sticky; top: 0; background: #f8f8f8; z-index: 1; }
+        .price-table-container td { font-family: 'Menlo', monospace; }
 
-    /* K線圖區塊 */
-    .kline-area { background: #fff; border-radius: 14px; padding: 20px; border: 1px solid var(--border); }
-    .kline-period-tabs { display: flex; gap: 6px; margin-left: 20px; }
-    .kline-period { padding: 6px 12px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; background: #f0f0f0; color: #666; transition: all 0.2s; }
-    .kline-period:hover { background: #e0e0e0; }
-    .kline-period.active { background: var(--primary); color: #fff; }
-    .kline-info-card { background: linear-gradient(135deg, #fff8f0 0%, #fff0e5 100%); border-radius: 12px; padding: 16px 20px; margin-bottom: 16px; border: 1px solid #ffd8c0; }
-    .kline-title { font-size: 20px; font-weight: 800; color: var(--primary); text-align: center; margin-bottom: 12px; }
-    .kline-stats { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
-    .kline-stat { text-align: center; }
-    .kline-stat .val { font-size: 18px; font-weight: 700; font-family: 'Menlo', monospace; }
-    .kline-stat .val.up { color: var(--up); }
-    .kline-stat .val.down { color: var(--down); }
-    .kline-stat .lbl { font-size: 12px; color: #666; }
-    .kline-chart-container { background: #fafafa; border-radius: 10px; padding: 15px; position: relative; }
-    .kline-chart-container canvas { width: 100%; height: 400px; }
-    .kline-tooltip { position: absolute; background: rgba(0,0,0,0.85); color: #fff; padding: 10px 14px; border-radius: 8px; font-size: 12px; pointer-events: none; z-index: 100; display: none; }
-    .kline-tooltip .date { font-weight: 700; margin-bottom: 6px; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 4px; }
-    .kline-tooltip .row { display: flex; justify-content: space-between; gap: 20px; margin: 2px 0; }
-    .kline-tooltip .label { color: #aaa; }
-    .kline-tooltip .value { font-family: 'Menlo', monospace; }
-    .kline-tooltip .value.up { color: #ff6b6b; }
-    .kline-tooltip .value.down { color: #51cf66; }
-    
-    /* 產業走勢圖tooltip */
-    .industry-tooltip { position: absolute; background: rgba(0,0,0,0.85); color: #fff; padding: 10px 14px; border-radius: 8px; font-size: 12px; pointer-events: none; z-index: 100; display: none; }
-    .industry-chart-title { font-size: 18px; font-weight: 800; color: var(--primary); text-align: center; margin-bottom: 12px; }
-    .industry-chart-stats { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; margin-bottom: 12px; }
-    .industry-chart-stat { background: #fff; padding: 8px 14px; border-radius: 8px; text-align: center; border: 1px solid var(--border); }
-    .industry-chart-stat .val { font-size: 16px; font-weight: 700; color: var(--primary); font-family: 'Menlo', monospace; }
-    .industry-chart-stat .lbl { font-size: 11px; color: #666; }
+        /* K線圖區塊 */
+        .kline-area { background: #fff; border-radius: 14px; padding: 20px; border: 1px solid var(--border); }
+        .kline-period-tabs { display: flex; gap: 6px; margin-left: 20px; }
+        .kline-period { padding: 6px 12px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; background: #f0f0f0; color: #666; transition: all 0.2s; }
+        .kline-period:hover { background: #e0e0e0; }
+        .kline-period.active { background: var(--primary); color: #fff; }
+        .kline-info-card { background: linear-gradient(135deg, #fff8f0 0%, #fff0e5 100%); border-radius: 12px; padding: 16px 20px; margin-bottom: 16px; border: 1px solid #ffd8c0; }
+        .kline-title { font-size: 20px; font-weight: 800; color: var(--primary); text-align: center; margin-bottom: 12px; }
+        .kline-stats { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
+        .kline-stat { text-align: center; }
+        .kline-stat .val { font-size: 18px; font-weight: 700; font-family: 'Menlo', monospace; }
+        .kline-stat .val.up { color: var(--up); }
+        .kline-stat .val.down { color: var(--down); }
+        .kline-stat .lbl { font-size: 12px; color: #666; }
+        .kline-chart-container { background: #fafafa; border-radius: 10px; padding: 15px; position: relative; }
+        .kline-chart-container canvas { width: 100%; height: 400px; }
+        .kline-tooltip { position: absolute; background: rgba(0,0,0,0.85); color: #fff; padding: 10px 14px; border-radius: 8px; font-size: 12px; pointer-events: none; z-index: 100; display: none; }
+        .kline-tooltip .date { font-weight: 700; margin-bottom: 6px; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 4px; }
+        .kline-tooltip .row { display: flex; justify-content: space-between; gap: 20px; margin: 2px 0; }
+        .kline-tooltip .label { color: #aaa; }
+        .kline-tooltip .value { font-family: 'Menlo', monospace; }
+        .kline-tooltip .value.up { color: #ff6b6b; }
+        .kline-tooltip .value.down { color: #51cf66; }
+        
+        /* 產業走勢圖tooltip */
+        .industry-tooltip { position: absolute; background: rgba(0,0,0,0.85); color: #fff; padding: 10px 14px; border-radius: 8px; font-size: 12px; pointer-events: none; z-index: 100; display: none; }
+        .industry-chart-title { font-size: 18px; font-weight: 800; color: var(--primary); text-align: center; margin-bottom: 12px; }
+        .industry-chart-stats { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; margin-bottom: 12px; }
+        .industry-chart-stat { background: #fff; padding: 8px 14px; border-radius: 8px; text-align: center; border: 1px solid var(--border); }
+        .industry-chart-stat .val { font-size: 16px; font-weight: 700; color: var(--primary); font-family: 'Menlo', monospace; }
+        .industry-chart-stat .lbl { font-size: 11px; color: #666; }
 
-    .pagination { display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 16px; }
-    .pagination button { padding: 8px 16px; border-radius: 6px; border: 1px solid var(--border); background: #fff; cursor: pointer; font-size: 14px; }
-    .pagination button:hover:not(:disabled) { border-color: var(--primary); background: var(--clickable); }
-    .pagination button:disabled { opacity: 0.5; cursor: not-allowed; }
-    .pagination .page-info { font-size: 14px; color: #666; }
+        .pagination { display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 16px; }
+        .pagination button { padding: 8px 16px; border-radius: 6px; border: 1px solid var(--border); background: #fff; cursor: pointer; font-size: 14px; }
+        .pagination button:hover:not(:disabled) { border-color: var(--primary); background: var(--clickable); }
+        .pagination button:disabled { opacity: 0.5; cursor: not-allowed; }
+        .pagination .page-info { font-size: 14px; color: #666; }
 
-    /* 價格分析區塊 */
-    .price-analysis-area { background: #fff; border-radius: 14px; padding: 20px; border: 1px solid var(--border); }
-    .analysis-section { margin-bottom: 28px; padding-bottom: 24px; border-bottom: 1px solid #eee; }
-    .analysis-section:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
-    .analysis-title { font-size: 18px; font-weight: 700; color: var(--primary); margin-bottom: 6px; }
-    .analysis-subtitle { font-size: 13px; color: #888; margin-bottom: 16px; }
-    
-    .distribution-chart-container { background: #fafafa; border-radius: 10px; padding: 15px; margin-bottom: 12px; }
-    .distribution-chart-container canvas { width: 100%; height: 200px; }
-    .distribution-legend { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
-    .legend-item { display: flex; align-items: center; gap: 6px; font-size: 13px; padding: 6px 12px; background: #f8f8f8; border-radius: 16px; cursor: pointer; transition: all 0.2s; }
-    .legend-item:hover { background: #eee; }
-    .legend-color { width: 14px; height: 14px; border-radius: 3px; }
-    .legend-label { color: #555; }
-    .legend-count { font-weight: 700; color: var(--primary); font-family: 'Menlo', monospace; }
-    
-    .percentile-container { background: linear-gradient(135deg, #fff8f0 0%, #fff0e5 100%); border-radius: 12px; padding: 20px; }
-    .percentile-gauge { margin-bottom: 20px; }
-    .gauge-bar { position: relative; height: 24px; background: linear-gradient(to right, #27ae60, #f1c40f, #e67e22, #e74c3c); border-radius: 12px; overflow: visible; }
-    .gauge-fill { position: absolute; left: 0; top: 0; height: 100%; background: rgba(255,255,255,0.3); border-radius: 12px 0 0 12px; }
-    .gauge-marker { position: absolute; top: -8px; width: 4px; height: 40px; background: #2c2c2c; border-radius: 2px; transform: translateX(-50%); box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
-    .gauge-marker::after { content: ''; position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%); border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 8px solid #2c2c2c; }
-    .gauge-labels { display: flex; justify-content: space-between; margin-top: 8px; font-size: 11px; color: #666; }
-    .percentile-stats { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
-    .percentile-stat { background: #fff; padding: 14px 20px; border-radius: 10px; text-align: center; min-width: 120px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-    .percentile-stat .val { font-size: 24px; font-weight: 800; color: var(--primary); font-family: 'Menlo', monospace; }
-    .percentile-stat .lbl { font-size: 12px; color: #666; margin-top: 4px; }
-    
-    .bias-container { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
-    .bias-card { background: linear-gradient(135deg, #fff 0%, #f8f8f8 100%); border: 1px solid #e0e0e0; border-radius: 12px; padding: 16px 24px; text-align: center; min-width: 140px; transition: all 0.2s; }
-    .bias-card:hover { border-color: var(--primary); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
-    .bias-card .ma-label { font-size: 14px; font-weight: 600; color: #555; margin-bottom: 8px; }
-    .bias-card .ma-value { font-size: 13px; color: #888; margin-bottom: 6px; font-family: 'Menlo', monospace; }
-    .bias-card .bias-value { font-size: 22px; font-weight: 800; font-family: 'Menlo', monospace; }
-    .bias-card .bias-value.positive { color: #e74c3c; }
-    .bias-card .bias-value.negative { color: #27ae60; }
-    .bias-card .bias-label { font-size: 11px; color: #999; margin-top: 4px; }
-    
-    @media(max-width: 600px) {
-        .analysis-title { font-size: 16px; }
-        .percentile-stat { min-width: 100px; padding: 12px 16px; }
-        .percentile-stat .val { font-size: 20px; }
-        .bias-card { min-width: 120px; padding: 12px 16px; }
-        .bias-card .bias-value { font-size: 18px; }
-    }
+        /* 價格分析區塊 */
+        .price-analysis-area { background: #fff; border-radius: 14px; padding: 20px; border: 1px solid var(--border); }
+        .analysis-section { margin-bottom: 28px; padding-bottom: 24px; border-bottom: 1px solid #eee; }
+        .analysis-section:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+        .analysis-title { font-size: 18px; font-weight: 700; color: var(--primary); margin-bottom: 6px; }
+        .analysis-subtitle { font-size: 13px; color: #888; margin-bottom: 16px; }
+        
+        .distribution-chart-container { background: #fafafa; border-radius: 10px; padding: 15px; margin-bottom: 12px; }
+        .distribution-chart-container canvas { width: 100%; height: 200px; }
+        .distribution-legend { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+        .legend-item { display: flex; align-items: center; gap: 6px; font-size: 13px; padding: 6px 12px; background: #f8f8f8; border-radius: 16px; cursor: pointer; transition: all 0.2s; }
+        .legend-item:hover { background: #eee; }
+        .legend-color { width: 14px; height: 14px; border-radius: 3px; }
+        .legend-label { color: #555; }
+        .legend-count { font-weight: 700; color: var(--primary); font-family: 'Menlo', monospace; }
+        
+        .percentile-container { background: linear-gradient(135deg, #fff8f0 0%, #fff0e5 100%); border-radius: 12px; padding: 20px; }
+        .percentile-gauge { margin-bottom: 20px; }
+        .gauge-bar { position: relative; height: 24px; background: linear-gradient(to right, #27ae60, #f1c40f, #e67e22, #e74c3c); border-radius: 12px; overflow: visible; }
+        .gauge-fill { position: absolute; left: 0; top: 0; height: 100%; background: rgba(255,255,255,0.3); border-radius: 12px 0 0 12px; }
+        .gauge-marker { position: absolute; top: -8px; width: 4px; height: 40px; background: #2c2c2c; border-radius: 2px; transform: translateX(-50%); box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+        .gauge-marker::after { content: ''; position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%); border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 8px solid #2c2c2c; }
+        .gauge-labels { display: flex; justify-content: space-between; margin-top: 8px; font-size: 11px; color: #666; }
+        .percentile-stats { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+        .percentile-stat { background: #fff; padding: 14px 20px; border-radius: 10px; text-align: center; min-width: 120px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .percentile-stat .val { font-size: 24px; font-weight: 800; color: var(--primary); font-family: 'Menlo', monospace; }
+        .percentile-stat .lbl { font-size: 12px; color: #666; margin-top: 4px; }
+        
+        .bias-container { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+        .bias-card { background: linear-gradient(135deg, #fff 0%, #f8f8f8 100%); border: 1px solid #e0e0e0; border-radius: 12px; padding: 16px 24px; text-align: center; min-width: 140px; transition: all 0.2s; }
+        .bias-card:hover { border-color: var(--primary); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+        .bias-card .ma-label { font-size: 14px; font-weight: 600; color: #555; margin-bottom: 8px; }
+        .bias-card .ma-value { font-size: 13px; color: #888; margin-bottom: 6px; font-family: 'Menlo', monospace; }
+        .bias-card .bias-value { font-size: 22px; font-weight: 800; font-family: 'Menlo', monospace; }
+        .bias-card .bias-value.positive { color: #e74c3c; }
+        .bias-card .bias-value.negative { color: #27ae60; }
+        .bias-card .bias-label { font-size: 11px; color: #999; margin-top: 4px; }
+        
+        /* 歷史統計區塊 */
+        .history-stats { display: flex; flex-wrap: wrap; gap: 20px; }
+        .history-stat-group { flex: 1; min-width: 280px; background: #f8f8f8; border-radius: 12px; padding: 16px; }
+        .stat-group-title { font-size: 14px; font-weight: 700; color: #555; margin-bottom: 12px; }
+        .stat-bars { display: flex; flex-direction: column; gap: 8px; }
+        .stat-bar-item { display: flex; align-items: center; gap: 8px; }
+        .stat-bar-item .bar-label { width: 90px; font-size: 12px; color: #555; flex-shrink: 0; }
+        .stat-bar-item .bar-track { flex: 1; height: 16px; background: #e8e8e8; border-radius: 8px; overflow: hidden; }
+        .stat-bar-item .bar-fill { height: 100%; border-radius: 8px; transition: width 0.5s; }
+        .stat-bar-item .bar-value { width: 45px; font-size: 12px; font-weight: 700; color: var(--primary); text-align: right; font-family: 'Menlo', monospace; }
+        .stat-bar-item .stars { width: 40px; font-size: 11px; color: #f1c40f; }
+        
+        /* 篩選器標籤 */
+        .screener-tabs { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+        .screener-tab { padding: 10px 20px; border-radius: 20px; font-size: 14px; font-weight: 600; cursor: pointer; border: 2px solid var(--clickable-border); background: var(--clickable); color: #333; transition: all 0.2s; }
+        .screener-tab:hover { border-color: var(--primary); background: var(--clickable-hover); }
+        .screener-tab.active { background: #e74c3c; color: #fff; border-color: #e74c3c; }
+        
+        /* 篩選結果 */
+        .screener-result { background: #fff; border-radius: 12px; border: 1px solid var(--border); overflow: hidden; }
+        .screener-header { background: linear-gradient(135deg, #fff8f0 0%, #fff0e5 100%); padding: 14px 18px; border-bottom: 1px solid #eee; }
+        .screener-header .title { font-size: 15px; font-weight: 700; color: var(--primary); }
+        .screener-header .desc { font-size: 12px; color: #888; margin-top: 4px; }
+        .screener-header .stats { display: flex; gap: 16px; margin-top: 10px; }
+        .screener-header .stat-badge { background: #fff; padding: 6px 14px; border-radius: 16px; font-size: 13px; }
+        .screener-header .stat-badge b { color: var(--primary); font-family: 'Menlo', monospace; }
+        .screener-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .screener-table th { background: #f8f8f8; padding: 10px 12px; text-align: left; font-weight: 600; border-bottom: 1px solid #eee; position: sticky; top: 0; }
+        .screener-table td { padding: 10px 12px; border-bottom: 1px solid #f0f0f0; }
+        .screener-table tr:hover { background: #fafafa; }
+        .screener-table .code { color: var(--primary); font-weight: 600; cursor: pointer; }
+        .screener-table .code:hover { text-decoration: underline; }
+        .screener-table .up { color: #e74c3c; }
+        .screener-table .down { color: #27ae60; }
+        .screener-table .text-right { text-align: right; }
+        .screener-table .tag { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; }
+        .screener-table .tag.guaranteed { background: #e8f5e9; color: #27ae60; }
+        .screener-table .tag.unguaranteed { background: #fff3e0; color: #e67e22; }
+        .screener-table .tag.high-prob { background: #ffebee; color: #e74c3c; }
+        
+        @media(max-width: 600px) {
+            .analysis-title { font-size: 16px; }
+            .percentile-stat { min-width: 100px; padding: 12px 16px; }
+            .percentile-stat .val { font-size: 20px; }
+            .bias-card { min-width: 120px; padding: 12px 16px; }
+            .bias-card .bias-value { font-size: 18px; }
+            .history-stat-group { min-width: 100%; }
+            .screener-tab { padding: 8px 14px; font-size: 13px; }
+        }
 
-    .hidden { display: none !important; }
-    .chart-area { background: #fff; border-radius: 10px; border: 1px solid var(--border); padding: 16px; margin-bottom: 16px; min-height: 280px; }
-</style>
-```
-
+        .hidden { display: none !important; }
+        .chart-area { background: #fff; border-radius: 10px; border: 1px solid var(--border); padding: 16px; margin-bottom: 16px; min-height: 280px; }
+    </style>
 </head>
 <body>
 
@@ -364,237 +402,274 @@
         <div class="subtitle">可轉債歷史價格查詢系統 | Rex大叔投資研究室</div>
     </div>
 
-```
-<div class="main-tabs">
-    <div class="main-tab listed active" onclick="setListedMode('listed')">🟢 掛牌中 <span class="count" id="listedCount">-</span></div>
-    <div class="main-tab delisted" onclick="setListedMode('delisted')">⚫ 已下市 <span class="count" id="delistedCount">-</span></div>
-</div>
+    <div class="main-tabs">
+        <div class="main-tab listed active" onclick="setListedMode('listed')">🟢 掛牌中 <span class="count" id="listedCount">-</span></div>
+        <div class="main-tab delisted" onclick="setListedMode('delisted')">⚫ 已下市 <span class="count" id="delistedCount">-</span></div>
+    </div>
 
-<div class="sub-tabs" id="subTabs">
-    <div class="sub-tab active" onclick="setMode('stock')">🔍 個股查詢</div>
-    <div class="sub-tab" onclick="setMode('multi')">📊 多檔查詢</div>
-    <div class="sub-tab" onclick="setMode('industry')">🏭 產業查詢</div>
-    <div class="sub-tab" onclick="setMode('overall')">📋 整體查詢</div>
-    <div class="sub-tab" onclick="setMode('avgPrice')">📈 均價走勢</div>
-    <div class="sub-tab" onclick="setMode('priceAnalysis')">💹 價格分析</div>
-    <div class="sub-tab" onclick="setMode('kline')">🕯️ K線圖</div>
-</div>
+    <div class="sub-tabs" id="subTabs">
+        <div class="sub-tab active" onclick="setMode('stock')">🔍 個股查詢</div>
+        <div class="sub-tab" onclick="setMode('multi')">📊 多檔查詢</div>
+        <div class="sub-tab" onclick="setMode('industry')">🏭 產業查詢</div>
+        <div class="sub-tab" onclick="setMode('overall')">📋 整體查詢</div>
+        <div class="sub-tab" onclick="setMode('avgPrice')">📈 均價走勢</div>
+        <div class="sub-tab" onclick="setMode('priceAnalysis')">💹 價格分析</div>
+        <div class="sub-tab" onclick="setMode('kline')">🕯️ K線圖</div>
+    </div>
 
-<div class="stats-box" id="statsBox"></div>
+    <div class="stats-box" id="statsBox"></div>
 
-<!-- 個股查詢區塊 -->
-<div class="stock-query-area hidden" id="stockQueryArea">
-    <div class="stock-search-row">
-        <input type="text" class="stock-search-input" id="stockCodeInput" placeholder="輸入CB代號，例如：49232" onkeyup="if(event.key==='Enter')loadStockDetail()">
-        <button class="stock-search-btn" onclick="loadStockDetail()">🔍 查詢</button>
-        <div class="stock-period-tabs" id="stockPeriodTabs">
-            <span class="stock-period" onclick="setStockPeriod('3m')">3個月</span>
-            <span class="stock-period" onclick="setStockPeriod('6m')">6個月</span>
-            <span class="stock-period active" onclick="setStockPeriod('1y')">1年</span>
-            <span class="stock-period" onclick="setStockPeriod('2y')">2年</span>
-            <span class="stock-period" onclick="setStockPeriod('3y')">3年</span>
-            <span class="stock-period" onclick="setStockPeriod('5y')">5年</span>
-            <span class="stock-period" onclick="setStockPeriod('all')">全部</span>
+    <!-- 個股查詢區塊 -->
+    <div class="stock-query-area hidden" id="stockQueryArea">
+        <div class="stock-search-row">
+            <input type="text" class="stock-search-input" id="stockCodeInput" placeholder="輸入CB代號，例如：49232" onkeyup="if(event.key==='Enter')loadStockDetail()">
+            <button class="stock-search-btn" onclick="loadStockDetail()">🔍 查詢</button>
+            <div class="stock-period-tabs" id="stockPeriodTabs">
+                <span class="stock-period" onclick="setStockPeriod('3m')">3個月</span>
+                <span class="stock-period" onclick="setStockPeriod('6m')">6個月</span>
+                <span class="stock-period active" onclick="setStockPeriod('1y')">1年</span>
+                <span class="stock-period" onclick="setStockPeriod('2y')">2年</span>
+                <span class="stock-period" onclick="setStockPeriod('3y')">3年</span>
+                <span class="stock-period" onclick="setStockPeriod('5y')">5年</span>
+                <span class="stock-period" onclick="setStockPeriod('all')">全部</span>
+            </div>
+            <div class="stock-view-tabs">
+                <span class="stock-view-tab active" onclick="setStockView('table')">📋 表格</span>
+                <span class="stock-view-tab" onclick="setStockView('chart')">📈 走勢圖</span>
+            </div>
         </div>
-        <div class="stock-view-tabs">
-            <span class="stock-view-tab active" onclick="setStockView('table')">📋 表格</span>
-            <span class="stock-view-tab" onclick="setStockView('chart')">📈 走勢圖</span>
+        <div class="stock-result" id="stockResult">
+            <div class="stock-placeholder">
+                <div class="icon">🔍</div>
+                <div>輸入CB代號查詢個股詳細資料</div>
+                <div style="font-size:13px;margin-top:8px;color:#aaa">包含基本資料、價格統計、歷史價格表格與走勢圖</div>
+            </div>
         </div>
     </div>
-    <div class="stock-result" id="stockResult">
-        <div class="stock-placeholder">
-            <div class="icon">🔍</div>
-            <div>輸入CB代號查詢個股詳細資料</div>
-            <div style="font-size:13px;margin-top:8px;color:#aaa">包含基本資料、價格統計、歷史價格表格與走勢圖</div>
-        </div>
-    </div>
-</div>
 
-<!-- 多檔查詢區塊 -->
-<div class="multi-query-area hidden" id="multiQueryArea">
-    <div class="multi-input-row">
-        <textarea class="multi-codes-input" id="multiCodesInput" placeholder="輸入多個CB代號，用逗號、空格或換行分隔&#10;例如：49232, 49231, 38aboratory&#10;或每行一個代號"></textarea>
-        <div class="multi-btn-group">
-            <button class="multi-search-btn" onclick="loadMultiQuery()">🔍 查詢</button>
-            <button class="multi-clear-btn" onclick="clearMultiQuery()">清除全部</button>
+    <!-- 多檔查詢區塊 -->
+    <div class="multi-query-area hidden" id="multiQueryArea">
+        <div class="multi-input-row">
+            <textarea class="multi-codes-input" id="multiCodesInput" placeholder="輸入多個CB代號，用逗號、空格或換行分隔&#10;例如：49232, 49231, 38aboratory&#10;或每行一個代號"></textarea>
+            <div class="multi-btn-group">
+                <button class="multi-search-btn" onclick="loadMultiQuery()">🔍 查詢</button>
+                <button class="multi-clear-btn" onclick="clearMultiQuery()">清除全部</button>
+            </div>
+        </div>
+        <div class="multi-tags" id="multiTags"></div>
+        <div class="multi-controls" id="multiControls" style="display:none">
+            <div class="stock-period-tabs">
+                <span class="stock-period" onclick="setMultiPeriod('3m')">3個月</span>
+                <span class="stock-period" onclick="setMultiPeriod('6m')">6個月</span>
+                <span class="stock-period active" onclick="setMultiPeriod('1y')">1年</span>
+                <span class="stock-period" onclick="setMultiPeriod('2y')">2年</span>
+                <span class="stock-period" onclick="setMultiPeriod('3y')">3年</span>
+                <span class="stock-period" onclick="setMultiPeriod('5y')">5年</span>
+                <span class="stock-period" onclick="setMultiPeriod('all')">全部</span>
+            </div>
+            <div class="stock-view-tabs" style="margin-left:auto">
+                <span class="stock-view-tab active" onclick="setMultiView('table')">📋 比較表</span>
+                <span class="stock-view-tab" onclick="setMultiView('chart')">📈 疊加圖</span>
+            </div>
+        </div>
+        <div class="multi-result" id="multiResult">
+            <div class="stock-placeholder">
+                <div class="icon">📊</div>
+                <div>輸入多個CB代號進行比較分析</div>
+                <div style="font-size:13px;margin-top:8px;color:#aaa">可同時比較多檔CB的價格走勢</div>
+            </div>
         </div>
     </div>
-    <div class="multi-tags" id="multiTags"></div>
-    <div class="multi-controls" id="multiControls" style="display:none">
-        <div class="stock-period-tabs">
-            <span class="stock-period" onclick="setMultiPeriod('3m')">3個月</span>
-            <span class="stock-period" onclick="setMultiPeriod('6m')">6個月</span>
-            <span class="stock-period active" onclick="setMultiPeriod('1y')">1年</span>
-            <span class="stock-period" onclick="setMultiPeriod('2y')">2年</span>
-            <span class="stock-period" onclick="setMultiPeriod('3y')">3年</span>
-            <span class="stock-period" onclick="setMultiPeriod('5y')">5年</span>
-            <span class="stock-period" onclick="setMultiPeriod('all')">全部</span>
-        </div>
-        <div class="stock-view-tabs" style="margin-left:auto">
-            <span class="stock-view-tab active" onclick="setMultiView('table')">📋 比較表</span>
-            <span class="stock-view-tab" onclick="setMultiView('chart')">📈 疊加圖</span>
-        </div>
-    </div>
-    <div class="multi-result" id="multiResult">
-        <div class="stock-placeholder">
-            <div class="icon">📊</div>
-            <div>輸入多個CB代號進行比較分析</div>
-            <div style="font-size:13px;margin-top:8px;color:#aaa">可同時比較多檔CB的價格走勢</div>
-        </div>
-    </div>
-</div>
 
-<div class="avg-price-area hidden" id="avgPriceArea">
-    <div class="avg-type-tabs">
-        <div class="avg-type-tab active" onclick="setAvgType('all')">全部</div>
-        <div class="avg-type-tab" onclick="setAvgType('guaranteed')">有擔保</div>
-        <div class="avg-type-tab" onclick="setAvgType('unguaranteed')">無擔保</div>
-    </div>
-    <div class="avg-period-tabs">
-        <div class="avg-period-tab" onclick="setAvgPeriod('3m')">3個月</div>
-        <div class="avg-period-tab" onclick="setAvgPeriod('6m')">6個月</div>
-        <div class="avg-period-tab active" onclick="setAvgPeriod('1y')">1年</div>
-        <div class="avg-period-tab" onclick="setAvgPeriod('2y')">2年</div>
-        <div class="avg-period-tab" onclick="setAvgPeriod('3y')">3年</div>
-        <div class="avg-period-tab" onclick="setAvgPeriod('5y')">5年</div>
-        <div class="avg-period-tab" onclick="setAvgPeriod('all')">全部</div>
-    </div>
-    <div class="avg-chart-container"><canvas id="avgPriceChart"></canvas></div>
-    <div class="avg-stats" id="avgStats"></div>
-</div>
-
-<!-- 價格分析區塊 -->
-<div class="price-analysis-area hidden" id="priceAnalysisArea">
-    <div class="analysis-section">
-        <div class="analysis-title">📊 價格區間分布</div>
-        <div class="analysis-subtitle">目前掛牌中CB依最新收盤價分布</div>
-        <div class="distribution-chart-container">
-            <canvas id="distributionChart"></canvas>
+    <div class="avg-price-area hidden" id="avgPriceArea">
+        <div class="avg-type-tabs">
+            <div class="avg-type-tab active" onclick="setAvgType('all')">全部</div>
+            <div class="avg-type-tab" onclick="setAvgType('guaranteed')">有擔保</div>
+            <div class="avg-type-tab" onclick="setAvgType('unguaranteed')">無擔保</div>
         </div>
-        <div class="distribution-legend" id="distributionLegend"></div>
+        <div class="avg-period-tabs">
+            <div class="avg-period-tab" onclick="setAvgPeriod('3m')">3個月</div>
+            <div class="avg-period-tab" onclick="setAvgPeriod('6m')">6個月</div>
+            <div class="avg-period-tab active" onclick="setAvgPeriod('1y')">1年</div>
+            <div class="avg-period-tab" onclick="setAvgPeriod('2y')">2年</div>
+            <div class="avg-period-tab" onclick="setAvgPeriod('3y')">3年</div>
+            <div class="avg-period-tab" onclick="setAvgPeriod('5y')">5年</div>
+            <div class="avg-period-tab" onclick="setAvgPeriod('all')">全部</div>
+        </div>
+        <div class="avg-chart-container"><canvas id="avgPriceChart"></canvas></div>
+        <div class="avg-stats" id="avgStats"></div>
     </div>
-    
-    <div class="analysis-section">
-        <div class="analysis-title">📈 市場均價歷史百分位</div>
-        <div class="analysis-subtitle">目前均價在歷史上的相對位置</div>
-        <div class="percentile-container" id="percentileContainer">
-            <div class="percentile-gauge">
-                <div class="gauge-bar">
-                    <div class="gauge-fill" id="gaugeFill"></div>
-                    <div class="gauge-marker" id="gaugeMarker"></div>
+
+    <!-- 價格分析區塊 -->
+    <div class="price-analysis-area hidden" id="priceAnalysisArea">
+        <div class="analysis-section">
+            <div class="analysis-title">📊 價格區間分布</div>
+            <div class="analysis-subtitle">目前掛牌中CB依最新收盤價分布</div>
+            <div class="distribution-chart-container">
+                <canvas id="distributionChart"></canvas>
+            </div>
+            <div class="distribution-legend" id="distributionLegend"></div>
+        </div>
+        
+        <div class="analysis-section">
+            <div class="analysis-title">📈 市場均價歷史百分位</div>
+            <div class="analysis-subtitle">目前均價在歷史上的相對位置</div>
+            <div class="percentile-container" id="percentileContainer">
+                <div class="percentile-gauge">
+                    <div class="gauge-bar">
+                        <div class="gauge-fill" id="gaugeFill"></div>
+                        <div class="gauge-marker" id="gaugeMarker"></div>
+                    </div>
+                    <div class="gauge-labels">
+                        <span>便宜</span>
+                        <span>偏低</span>
+                        <span>中等</span>
+                        <span>偏高</span>
+                        <span>昂貴</span>
+                    </div>
                 </div>
-                <div class="gauge-labels">
-                    <span>便宜</span>
-                    <span>偏低</span>
-                    <span>中等</span>
-                    <span>偏高</span>
-                    <span>昂貴</span>
+                <div class="percentile-stats" id="percentileStats"></div>
+            </div>
+        </div>
+        
+        <div class="analysis-section">
+            <div class="analysis-title">📉 均線乖離率</div>
+            <div class="analysis-subtitle">目前均價與移動平均線的偏離程度</div>
+            <div class="bias-container" id="biasContainer"></div>
+        </div>
+        
+        <div class="analysis-section">
+            <div class="analysis-title">🎯 歷史翻倍特徵統計</div>
+            <div class="analysis-subtitle">根據2213檔CB歷史數據，分析翻倍機率最高的條件</div>
+            <div class="history-stats" id="historyStats">
+                <div class="history-stat-group">
+                    <div class="stat-group-title">起漲價格區間 vs 翻倍機率</div>
+                    <div class="stat-bars">
+                        <div class="stat-bar-item"><span class="bar-label">&lt;90 深度折價</span><div class="bar-track"><div class="bar-fill" style="width:71.6%;background:#27ae60"></div></div><span class="bar-value">35.8%</span><span class="stars">★★★</span></div>
+                        <div class="stat-bar-item"><span class="bar-label">90-95</span><div class="bar-track"><div class="bar-fill" style="width:26.2%;background:#95a5a6"></div></div><span class="bar-value">13.1%</span></div>
+                        <div class="stat-bar-item"><span class="bar-label">95-100</span><div class="bar-track"><div class="bar-fill" style="width:22.4%;background:#95a5a6"></div></div><span class="bar-value">11.2%</span></div>
+                        <div class="stat-bar-item"><span class="bar-label">100-105 平價</span><div class="bar-track"><div class="bar-fill" style="width:46.6%;background:#f1c40f"></div></div><span class="bar-value">23.3%</span><span class="stars">★★</span></div>
+                        <div class="stat-bar-item"><span class="bar-label">105-110 小溢價</span><div class="bar-track"><div class="bar-fill" style="width:81%;background:#e74c3c"></div></div><span class="bar-value">40.5%</span><span class="stars">★★★</span></div>
+                        <div class="stat-bar-item"><span class="bar-label">110-130</span><div class="bar-track"><div class="bar-fill" style="width:68.4%;background:#e67e22"></div></div><span class="bar-value">34.2%</span><span class="stars">★★★</span></div>
+                    </div>
+                </div>
+                <div class="history-stat-group">
+                    <div class="stat-group-title">產業翻倍率 TOP5</div>
+                    <div class="stat-bars">
+                        <div class="stat-bar-item"><span class="bar-label">其他電子業</span><div class="bar-track"><div class="bar-fill" style="width:82.5%;background:#e74c3c"></div></div><span class="bar-value">33.0%</span><span class="stars">★★★</span></div>
+                        <div class="stat-bar-item"><span class="bar-label">觀光餐旅</span><div class="bar-track"><div class="bar-fill" style="width:75%;background:#e67e22"></div></div><span class="bar-value">30.0%</span><span class="stars">★★★</span></div>
+                        <div class="stat-bar-item"><span class="bar-label">半導體業</span><div class="bar-track"><div class="bar-fill" style="width:73.75%;background:#e67e22"></div></div><span class="bar-value">29.5%</span><span class="stars">★★★</span></div>
+                        <div class="stat-bar-item"><span class="bar-label">生技醫療</span><div class="bar-track"><div class="bar-fill" style="width:65.5%;background:#f1c40f"></div></div><span class="bar-value">26.2%</span><span class="stars">★★</span></div>
+                        <div class="stat-bar-item"><span class="bar-label">運動休閒</span><div class="bar-track"><div class="bar-fill" style="width:64%;background:#f1c40f"></div></div><span class="bar-value">25.6%</span><span class="stars">★★</span></div>
+                    </div>
                 </div>
             </div>
-            <div class="percentile-stats" id="percentileStats"></div>
+        </div>
+        
+        <div class="analysis-section">
+            <div class="analysis-title">🔥 潛力股篩選器</div>
+            <div class="analysis-subtitle">根據歷史高翻倍特徵，從目前343檔中篩選潛力標的</div>
+            <div class="screener-tabs" id="screenerTabs">
+                <div class="screener-tab active" onclick="setScreener('deepDiscount')">深度折價區</div>
+                <div class="screener-tab" onclick="setScreener('momentum')">動能啟動區</div>
+                <div class="screener-tab" onclick="setScreener('highProbInd')">高翻倍產業</div>
+                <div class="screener-tab" onclick="setScreener('guaranteed')">有擔保精選</div>
+            </div>
+            <div class="screener-result" id="screenerResult"></div>
         </div>
     </div>
-    
-    <div class="analysis-section">
-        <div class="analysis-title">📉 均線乖離率</div>
-        <div class="analysis-subtitle">目前均價與移動平均線的偏離程度</div>
-        <div class="bias-container" id="biasContainer"></div>
-    </div>
-</div>
 
-<!-- K線圖區塊 -->
-<div class="kline-area hidden" id="klineArea">
-    <div class="price-search-box">
-        <input type="text" class="price-search-input" id="klineCodeInput" placeholder="輸入CB代號，例如：49232" onkeyup="if(event.key==='Enter')loadKlineChart()">
-        <button class="price-search-btn" onclick="loadKlineChart()">🔍 查詢</button>
-        <div class="kline-period-tabs">
-            <span class="kline-period active" onclick="setKlinePeriod('3m')">3個月</span>
-            <span class="kline-period" onclick="setKlinePeriod('6m')">6個月</span>
-            <span class="kline-period" onclick="setKlinePeriod('1y')">1年</span>
-            <span class="kline-period" onclick="setKlinePeriod('2y')">2年</span>
-            <span class="kline-period" onclick="setKlinePeriod('3y')">3年</span>
-            <span class="kline-period" onclick="setKlinePeriod('5y')">5年</span>
-            <span class="kline-period" onclick="setKlinePeriod('all')">全部</span>
+    <!-- K線圖區塊 -->
+    <div class="kline-area hidden" id="klineArea">
+        <div class="price-search-box">
+            <input type="text" class="price-search-input" id="klineCodeInput" placeholder="輸入CB代號，例如：49232" onkeyup="if(event.key==='Enter')loadKlineChart()">
+            <button class="price-search-btn" onclick="loadKlineChart()">🔍 查詢</button>
+            <div class="kline-period-tabs">
+                <span class="kline-period active" onclick="setKlinePeriod('3m')">3個月</span>
+                <span class="kline-period" onclick="setKlinePeriod('6m')">6個月</span>
+                <span class="kline-period" onclick="setKlinePeriod('1y')">1年</span>
+                <span class="kline-period" onclick="setKlinePeriod('2y')">2年</span>
+                <span class="kline-period" onclick="setKlinePeriod('3y')">3年</span>
+                <span class="kline-period" onclick="setKlinePeriod('5y')">5年</span>
+                <span class="kline-period" onclick="setKlinePeriod('all')">全部</span>
+            </div>
+        </div>
+        <div class="kline-result" id="klineResult">
+            <div class="price-placeholder">
+                <div class="icon">🕯️</div>
+                <div>輸入CB代號查看K線圖</div>
+            </div>
         </div>
     </div>
-    <div class="kline-result" id="klineResult">
-        <div class="price-placeholder">
-            <div class="icon">🕯️</div>
-            <div>輸入CB代號查看K線圖</div>
+
+    <div class="quick-filters" id="quickFilters">
+        <div class="quick-filter" onclick="toggleQuickFilter('lowPremium')">💎 低溢價(&lt;10%)<span class="badge" id="lowPremiumCount">-</span></div>
+        <div class="quick-filter" onclick="toggleQuickFilter('discount')">🔥 折價<span class="badge" id="discountCount">-</span></div>
+        <div class="quick-filter" onclick="toggleQuickFilter('nearExpiry')">⏰ 近期到期<span class="badge" id="nearExpiryCount">-</span></div>
+        <div class="quick-filter" onclick="toggleQuickFilter('highVolume')">📊 高成交量<span class="badge" id="highVolumeCount">-</span></div>
+    </div>
+
+    <div class="filter-status hidden" id="filterStatus">
+        <div class="status-text">
+            <span>🔍 篩選條件：</span>
+            <span class="status-tag" id="filterTag"></span>
+            <span class="status-count">符合 <b id="filterCount">0</b> 筆</span>
+        </div>
+        <button class="status-clear" onclick="clearFilter()">✕ 清除篩選</button>
+    </div>
+
+    <div class="search-box">
+        <input type="text" class="search-input" id="search" placeholder="搜尋CB代號、名稱、產業、產業地位..." oninput="renderTable()">
+    </div>
+
+    <div class="control-row" id="controlRow">
+        <div class="view-tabs" id="viewTabs">
+            <div class="view-tab active" onclick="setView('table')">📋 表格</div>
+            <div class="view-tab" onclick="setView('chart')" id="chartViewTab">📈 走勢圖</div>
+        </div>
+        <div class="period-tabs">
+            <div class="period-tab" onclick="setPeriod('3m')">3個月</div>
+            <div class="period-tab" onclick="setPeriod('6m')">6個月</div>
+            <div class="period-tab active" onclick="setPeriod('1y')">1年</div>
+            <div class="period-tab" onclick="setPeriod('2y')">2年</div>
+            <div class="period-tab" onclick="setPeriod('3y')">3年</div>
+            <div class="period-tab" onclick="setPeriod('5y')">5年</div>
+            <div class="period-tab" onclick="setPeriod('all')">全部</div>
         </div>
     </div>
-</div>
 
-<div class="quick-filters" id="quickFilters">
-    <div class="quick-filter" onclick="toggleQuickFilter('lowPremium')">💎 低溢價(&lt;10%)<span class="badge" id="lowPremiumCount">-</span></div>
-    <div class="quick-filter" onclick="toggleQuickFilter('discount')">🔥 折價<span class="badge" id="discountCount">-</span></div>
-    <div class="quick-filter" onclick="toggleQuickFilter('nearExpiry')">⏰ 近期到期<span class="badge" id="nearExpiryCount">-</span></div>
-    <div class="quick-filter" onclick="toggleQuickFilter('highVolume')">📊 高成交量<span class="badge" id="highVolumeCount">-</span></div>
-</div>
+    <div class="chart-area hidden" id="chartArea"><canvas id="industryChart"></canvas></div>
 
-<div class="filter-status hidden" id="filterStatus">
-    <div class="status-text">
-        <span>🔍 篩選條件：</span>
-        <span class="status-tag" id="filterTag"></span>
-        <span class="status-count">符合 <b id="filterCount">0</b> 筆</span>
+    <div class="table-wrap" id="tableArea">
+        <table>
+            <thead>
+                <tr>
+                    <th data-sort="code" onclick="sortTable('code')">代號</th>
+                    <th data-sort="name" onclick="sortTable('name')">名稱</th>
+                    <th class="hide-mobile" data-sort="industry" onclick="sortTable('industry')">產業</th>
+                    <th data-sort="guarantee" onclick="sortTable('guarantee')">擔保</th>
+                    <th class="text-right" data-sort="close" onclick="sortTable('close')">收盤</th>
+                    <th class="text-right" data-sort="change" onclick="sortTable('change')">漲跌%</th>
+                    <th class="text-right hide-tablet" data-sort="chg5" onclick="sortTable('chg5')">5日%</th>
+                    <th class="text-right hide-tablet" data-sort="chg10" onclick="sortTable('chg10')">10日%</th>
+                    <th class="text-right hide-wide" data-sort="chg20" onclick="sortTable('chg20')">20日%</th>
+                    <th class="text-right hide-wide" data-sort="chg60" onclick="sortTable('chg60')">60日%</th>
+                    <th class="text-right hide-mobile" data-sort="high" onclick="sortTable('high')">最高</th>
+                    <th class="text-right hide-mobile" data-sort="low" onclick="sortTable('low')">最低</th>
+                    <th class="text-right hide-tablet" data-sort="amplitude" onclick="sortTable('amplitude')">振幅%</th>
+                    <th class="hide-tablet text-right" data-sort="expiry" onclick="sortTable('expiry')">到期日</th>
+                    <th class="text-right" data-sort="days" onclick="sortTable('days')">剩餘</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+        </table>
     </div>
-    <button class="status-clear" onclick="clearFilter()">✕ 清除篩選</button>
-</div>
 
-<div class="search-box">
-    <input type="text" class="search-input" id="search" placeholder="搜尋CB代號、名稱、產業、產業地位..." oninput="renderTable()">
-</div>
-
-<div class="control-row" id="controlRow">
-    <div class="view-tabs" id="viewTabs">
-        <div class="view-tab active" onclick="setView('table')">📋 表格</div>
-        <div class="view-tab" onclick="setView('chart')" id="chartViewTab">📈 走勢圖</div>
+    <div class="pagination" id="pagination">
+        <button onclick="changePage(-1)" id="prevBtn">◀ 上一頁</button>
+        <span class="page-info" id="pageInfo">第 1 頁 / 共 1 頁</span>
+        <button onclick="changePage(1)" id="nextBtn">下一頁 ▶</button>
     </div>
-    <div class="period-tabs">
-        <div class="period-tab" onclick="setPeriod('3m')">3個月</div>
-        <div class="period-tab" onclick="setPeriod('6m')">6個月</div>
-        <div class="period-tab active" onclick="setPeriod('1y')">1年</div>
-        <div class="period-tab" onclick="setPeriod('2y')">2年</div>
-        <div class="period-tab" onclick="setPeriod('3y')">3年</div>
-        <div class="period-tab" onclick="setPeriod('5y')">5年</div>
-        <div class="period-tab" onclick="setPeriod('all')">全部</div>
-    </div>
-</div>
-
-<div class="chart-area hidden" id="chartArea"><canvas id="industryChart"></canvas></div>
-
-<div class="table-wrap" id="tableArea">
-    <table>
-        <thead>
-            <tr>
-                <th data-sort="code" onclick="sortTable('code')">代號</th>
-                <th data-sort="name" onclick="sortTable('name')">名稱</th>
-                <th class="hide-mobile" data-sort="industry" onclick="sortTable('industry')">產業</th>
-                <th data-sort="guarantee" onclick="sortTable('guarantee')">擔保</th>
-                <th class="text-right" data-sort="close" onclick="sortTable('close')">收盤</th>
-                <th class="text-right" data-sort="change" onclick="sortTable('change')">漲跌%</th>
-                <th class="text-right hide-tablet" data-sort="chg5" onclick="sortTable('chg5')">5日%</th>
-                <th class="text-right hide-tablet" data-sort="chg10" onclick="sortTable('chg10')">10日%</th>
-                <th class="text-right hide-wide" data-sort="chg20" onclick="sortTable('chg20')">20日%</th>
-                <th class="text-right hide-wide" data-sort="chg60" onclick="sortTable('chg60')">60日%</th>
-                <th class="text-right hide-mobile" data-sort="high" onclick="sortTable('high')">最高</th>
-                <th class="text-right hide-mobile" data-sort="low" onclick="sortTable('low')">最低</th>
-                <th class="text-right hide-tablet" data-sort="amplitude" onclick="sortTable('amplitude')">振幅%</th>
-                <th class="hide-tablet text-right" data-sort="expiry" onclick="sortTable('expiry')">到期日</th>
-                <th class="text-right" data-sort="days" onclick="sortTable('days')">剩餘</th>
-            </tr>
-        </thead>
-        <tbody id="tableBody"></tbody>
-    </table>
-</div>
-
-<div class="pagination" id="pagination">
-    <button onclick="changePage(-1)" id="prevBtn">◀ 上一頁</button>
-    <span class="page-info" id="pageInfo">第 1 頁 / 共 1 頁</span>
-    <button onclick="changePage(1)" id="nextBtn">下一頁 ▶</button>
-</div>
-```
-
 </div>
 
 <div class="modal" id="modal" onclick="if(event.target===this)closeModal()">
@@ -1993,6 +2068,9 @@ function renderPriceAnalysis() {
     
     // 3. 計算並顯示均線乖離率
     renderBiasAnalysis();
+    
+    // 4. 渲染潛力股篩選器
+    renderScreener();
 }
 
 // 價格區間分布圖
@@ -2253,6 +2331,149 @@ function renderBiasAnalysis() {
     }).join('');
 }
 
+// ========== 潛力股篩選器 ==========
+let SCREENER_TYPE = 'deepDiscount';
+
+function setScreener(type) {
+    SCREENER_TYPE = type;
+    document.querySelectorAll('.screener-tab').forEach(t => {
+        t.classList.toggle('active', 
+            (type === 'deepDiscount' && t.textContent.includes('深度')) ||
+            (type === 'momentum' && t.textContent.includes('動能')) ||
+            (type === 'highProbInd' && t.textContent.includes('產業')) ||
+            (type === 'guaranteed' && t.textContent.includes('擔保'))
+        );
+    });
+    renderScreener();
+}
+
+function renderScreener() {
+    const container = document.getElementById('screenerResult');
+    if (!container) return;
+    
+    // 取得掛牌中CB的最新價格資料
+    const cbList = [];
+    DB.listedCodes.forEach(code => {
+        const info = DB.cbInfo[code];
+        const prices = DB.cbPrice[code];
+        if (!info || !prices || prices.length === 0) return;
+        
+        const lastPrice = prices[prices.length - 1].close;
+        const high = Math.max(...prices.map(p => p.high));
+        const low = Math.min(...prices.map(p => p.low));
+        
+        cbList.push({
+            code,
+            name: info.name || '',
+            industry: info.industry || '',
+            guarantee: info.guarantee || '無擔保',
+            price: lastPrice,
+            high,
+            low,
+            upside: ((high - lastPrice) / lastPrice * 100)
+        });
+    });
+    
+    let filtered = [];
+    let title = '';
+    let desc = '';
+    let historyRate = '';
+    
+    // 高翻倍產業列表
+    const highProbIndustries = ['其他電子', '觀光餐旅', '半導體業', '生技醫療', '運動休閒', '文化創意', '零組件業', '電腦週邊', '建材營造'];
+    
+    switch(SCREENER_TYPE) {
+        case 'deepDiscount':
+            filtered = cbList.filter(c => c.price < 95).sort((a, b) => a.price - b.price);
+            title = '🔥 深度折價區（<95元）';
+            desc = '歷史數據顯示：深度折價區CB翻倍機率35.8%，平均漲幅103.6%';
+            historyRate = '35.8%';
+            break;
+            
+        case 'momentum':
+            filtered = cbList.filter(c => c.price >= 105 && c.price < 115).sort((a, b) => b.price - a.price);
+            title = '🚀 動能啟動區（105-115元）';
+            desc = '歷史數據顯示：小溢價區CB翻倍機率40.5%，代表股價已在動，更容易繼續上漲';
+            historyRate = '40.5%';
+            break;
+            
+        case 'highProbInd':
+            filtered = cbList.filter(c => highProbIndustries.some(ind => c.industry.includes(ind)) && c.price < 115)
+                            .sort((a, b) => a.price - b.price);
+            title = '🏭 高翻倍產業（平價以下）';
+            desc = '歷史翻倍率TOP產業：其他電子33%、觀光餐旅30%、半導體29.5%、生技醫療26.2%';
+            historyRate = '26-33%';
+            break;
+            
+        case 'guaranteed':
+            filtered = cbList.filter(c => c.guarantee === '有擔保' && c.price < 110).sort((a, b) => a.price - b.price);
+            title = '🛡️ 有擔保精選（<110元）';
+            desc = '有擔保CB翻倍率20.9%，下檔有保護且歷史翻倍率優於無擔保';
+            historyRate = '20.9%';
+            break;
+    }
+    
+    if (filtered.length === 0) {
+        container.innerHTML = `
+            <div class="screener-header">
+                <div class="title">${title}</div>
+                <div class="desc">${desc}</div>
+            </div>
+            <div style="padding:40px;text-align:center;color:#999">目前沒有符合條件的CB</div>
+        `;
+        return;
+    }
+    
+    container.innerHTML = `
+        <div class="screener-header">
+            <div class="title">${title}</div>
+            <div class="desc">${desc}</div>
+            <div class="stats">
+                <span class="stat-badge">符合 <b>${filtered.length}</b> 檔</span>
+                <span class="stat-badge">歷史翻倍率 <b>${historyRate}</b></span>
+            </div>
+        </div>
+        <div style="max-height:400px;overflow-y:auto">
+            <table class="screener-table">
+                <thead>
+                    <tr>
+                        <th>代號</th>
+                        <th>名稱</th>
+                        <th>產業</th>
+                        <th class="text-right">收盤價</th>
+                        <th class="text-right">歷史高點</th>
+                        <th class="text-right">潛在空間</th>
+                        <th>擔保</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${filtered.slice(0, 30).map(c => {
+                        const isHighProb = highProbIndustries.some(ind => c.industry.includes(ind));
+                        return `
+                        <tr>
+                            <td class="code" onclick="loadStockByCode('${c.code}')">${c.code}</td>
+                            <td>${c.name}</td>
+                            <td>${c.industry}${isHighProb ? ' <span class="tag high-prob">高翻倍</span>' : ''}</td>
+                            <td class="text-right ${c.price < 100 ? 'down' : ''}">${c.price.toFixed(2)}</td>
+                            <td class="text-right">${c.high.toFixed(2)}</td>
+                            <td class="text-right ${c.upside > 30 ? 'up' : ''}">${c.upside > 0 ? '+' : ''}${c.upside.toFixed(1)}%</td>
+                            <td><span class="tag ${c.guarantee === '有擔保' ? 'guaranteed' : 'unguaranteed'}">${c.guarantee}</span></td>
+                        </tr>`;
+                    }).join('')}
+                </tbody>
+            </table>
+        </div>
+        ${filtered.length > 30 ? `<div style="padding:10px;text-align:center;color:#999;font-size:12px">顯示前30筆，共${filtered.length}筆符合</div>` : ''}
+    `;
+}
+
+// 從篩選器點擊代號跳到個股查詢
+function loadStockByCode(code) {
+    setMode('stock');
+    document.getElementById('stockCodeInput').value = code;
+    loadStockDetail();
+}
+
 function renderAvgPriceChart() {
     const canvas = document.getElementById('avgPriceChart');
     if (!canvas) return;
@@ -2463,300 +2684,6 @@ function updateAvgStats(dailyData) {
         <div class="avg-stat-item"><div class="val" style="color:${change >= 0 ? '#e74c3c' : '#27ae60'}">${change >= 0 ? '+' : ''}${pct}%</div><div class="lbl">期間漲跌</div></div>
         <div class="avg-stat-item"><div class="val">${last.count}</div><div class="lbl">最新檔數</div></div>
         <div class="avg-stat-item"><div class="val">${dailyData.length}</div><div class="lbl">${countLabel}</div></div>`;
-}
-
-// ========== 價格分析功能 ==========
-function renderPriceAnalysis() {
-    renderDistributionChart();
-    renderPercentileGauge();
-    renderBiasCards();
-}
-
-// 1. 價格區間分布圖
-function renderDistributionChart() {
-    const canvas = document.getElementById('distributionChart');
-    if (!canvas) return;
-    
-    const ctx = canvas.getContext('2d');
-    const container = canvas.parentElement;
-    const dpr = window.devicePixelRatio || 1;
-    const rect = container.getBoundingClientRect();
-    canvas.width = rect.width * dpr;
-    canvas.height = 200 * dpr;
-    canvas.style.width = rect.width + 'px';
-    canvas.style.height = '200px';
-    ctx.scale(dpr, dpr);
-    
-    const width = rect.width;
-    const height = 200;
-    
-    // 取得掛牌中CB的最新收盤價
-    const priceRanges = [
-        { label: '90以下', min: 0, max: 90, color: '#27ae60', desc: '深度折價' },
-        { label: '90-100', min: 90, max: 100, color: '#2ecc71', desc: '折價區' },
-        { label: '100-110', min: 100, max: 110, color: '#f39c12', desc: '平價區' },
-        { label: '110-130', min: 110, max: 130, color: '#e67e22', desc: '小溢價' },
-        { label: '130-150', min: 130, max: 150, color: '#e74c3c', desc: '溢價區' },
-        { label: '150以上', min: 150, max: Infinity, color: '#c0392b', desc: '高溢價' }
-    ];
-    
-    // 統計各區間的CB數量
-    let totalCount = 0;
-    priceRanges.forEach(r => r.count = 0);
-    
-    DB.listedCodes.forEach(code => {
-        const prices = DB.cbPrice[code];
-        if (!prices || prices.length === 0) return;
-        const lastPrice = prices[prices.length - 1].close;
-        
-        for (const range of priceRanges) {
-            if (lastPrice >= range.min && lastPrice < range.max) {
-                range.count++;
-                totalCount++;
-                break;
-            }
-        }
-    });
-    
-    if (totalCount === 0) {
-        ctx.fillStyle = '#999';
-        ctx.font = '14px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText('無價格資料', width / 2, height / 2);
-        return;
-    }
-    
-    // 繪製長條圖
-    ctx.clearRect(0, 0, width, height);
-    
-    const chartLeft = 60;
-    const chartRight = width - 20;
-    const chartTop = 20;
-    const chartBottom = height - 40;
-    const chartWidth = chartRight - chartLeft;
-    const chartHeight = chartBottom - chartTop;
-    
-    const maxCount = Math.max(...priceRanges.map(r => r.count));
-    const barWidth = chartWidth / priceRanges.length - 10;
-    
-    priceRanges.forEach((range, i) => {
-        const x = chartLeft + i * (chartWidth / priceRanges.length) + 5;
-        const barHeight = maxCount > 0 ? (range.count / maxCount) * chartHeight : 0;
-        const y = chartBottom - barHeight;
-        
-        // 繪製長條
-        ctx.fillStyle = range.color;
-        ctx.beginPath();
-        ctx.roundRect(x, y, barWidth, barHeight, [4, 4, 0, 0]);
-        ctx.fill();
-        
-        // 繪製數量標籤
-        if (range.count > 0) {
-            ctx.fillStyle = '#333';
-            ctx.font = 'bold 12px Menlo, monospace';
-            ctx.textAlign = 'center';
-            ctx.fillText(range.count.toString(), x + barWidth / 2, y - 5);
-        }
-        
-        // 繪製X軸標籤
-        ctx.fillStyle = '#666';
-        ctx.font = '11px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText(range.label, x + barWidth / 2, chartBottom + 15);
-        
-        // 繪製百分比
-        const pct = ((range.count / totalCount) * 100).toFixed(1);
-        ctx.fillStyle = '#999';
-        ctx.font = '10px sans-serif';
-        ctx.fillText(`${pct}%`, x + barWidth / 2, chartBottom + 28);
-    });
-    
-    // Y軸標籤
-    ctx.fillStyle = '#888';
-    ctx.font = '10px sans-serif';
-    ctx.textAlign = 'right';
-    for (let i = 0; i <= 4; i++) {
-        const val = Math.round(maxCount * (1 - i / 4));
-        const y = chartTop + (chartHeight / 4) * i;
-        ctx.fillText(val.toString(), chartLeft - 8, y + 4);
-        
-        ctx.strokeStyle = '#eee';
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        ctx.moveTo(chartLeft, y);
-        ctx.lineTo(chartRight, y);
-        ctx.stroke();
-    }
-    
-    // 更新圖例
-    const legendEl = document.getElementById('distributionLegend');
-    if (legendEl) {
-        legendEl.innerHTML = priceRanges.map(r => `
-            <div class="legend-item">
-                <div class="legend-color" style="background:${r.color}"></div>
-                <span class="legend-label">${r.desc}</span>
-                <span class="legend-count">${r.count}</span>
-            </div>
-        `).join('');
-    }
-}
-
-// 2. 歷史百分位
-function renderPercentileGauge() {
-    // 取得所有歷史日均價（使用全部時間區間）
-    const dateNums = Object.keys(DB.dailyAvg).map(Number).sort((a, b) => a - b);
-    
-    const historicalAvgs = dateNums.map(dateNum => {
-        const day = DB.dailyAvg[dateNum];
-        if (day.all.length < 5) return null; // 最少5檔才計入
-        return day.all.reduce((a, b) => a + b, 0) / day.all.length;
-    }).filter(v => v !== null);
-    
-    if (historicalAvgs.length < 30) {
-        document.getElementById('percentileStats').innerHTML = '<div style="color:#999;text-align:center;padding:20px">歷史資料不足</div>';
-        return;
-    }
-    
-    // 取得目前均價（最新一天）
-    const lastDateNum = dateNums[dateNums.length - 1];
-    const lastDay = DB.dailyAvg[lastDateNum];
-    const currentAvg = lastDay.all.reduce((a, b) => a + b, 0) / lastDay.all.length;
-    
-    // 計算百分位
-    const sortedAvgs = [...historicalAvgs].sort((a, b) => a - b);
-    let percentile = 0;
-    for (let i = 0; i < sortedAvgs.length; i++) {
-        if (currentAvg <= sortedAvgs[i]) {
-            percentile = (i / sortedAvgs.length) * 100;
-            break;
-        }
-        if (i === sortedAvgs.length - 1) {
-            percentile = 100;
-        }
-    }
-    
-    // 計算統計數據
-    const minAvg = Math.min(...historicalAvgs);
-    const maxAvg = Math.max(...historicalAvgs);
-    const median = sortedAvgs[Math.floor(sortedAvgs.length / 2)];
-    const p25 = sortedAvgs[Math.floor(sortedAvgs.length * 0.25)];
-    const p75 = sortedAvgs[Math.floor(sortedAvgs.length * 0.75)];
-    
-    // 更新儀表板
-    const gaugeFill = document.getElementById('gaugeFill');
-    const gaugeMarker = document.getElementById('gaugeMarker');
-    
-    if (gaugeFill && gaugeMarker) {
-        gaugeFill.style.width = `${percentile}%`;
-        gaugeMarker.style.left = `${percentile}%`;
-    }
-    
-    // 判斷區間描述
-    let levelDesc, levelColor;
-    if (percentile < 20) { levelDesc = '歷史低檔區'; levelColor = '#27ae60'; }
-    else if (percentile < 40) { levelDesc = '偏低位置'; levelColor = '#2ecc71'; }
-    else if (percentile < 60) { levelDesc = '中等水平'; levelColor = '#f39c12'; }
-    else if (percentile < 80) { levelDesc = '偏高位置'; levelColor = '#e67e22'; }
-    else { levelDesc = '歷史高檔區'; levelColor = '#e74c3c'; }
-    
-    // 更新統計資訊
-    const statsEl = document.getElementById('percentileStats');
-    if (statsEl) {
-        statsEl.innerHTML = `
-            <div class="percentile-stat">
-                <div class="val" style="color:${levelColor}">${percentile.toFixed(0)}%</div>
-                <div class="lbl">歷史百分位</div>
-            </div>
-            <div class="percentile-stat">
-                <div class="val">${currentAvg.toFixed(2)}</div>
-                <div class="lbl">目前均價</div>
-            </div>
-            <div class="percentile-stat">
-                <div class="val">${median.toFixed(2)}</div>
-                <div class="lbl">歷史中位數</div>
-            </div>
-            <div class="percentile-stat">
-                <div class="val">${minAvg.toFixed(2)}</div>
-                <div class="lbl">歷史最低</div>
-            </div>
-            <div class="percentile-stat">
-                <div class="val">${maxAvg.toFixed(2)}</div>
-                <div class="lbl">歷史最高</div>
-            </div>
-            <div class="percentile-stat">
-                <div class="val" style="font-size:14px">${levelDesc}</div>
-                <div class="lbl">位置判斷</div>
-            </div>
-        `;
-    }
-}
-
-// 3. 均線乖離率
-function renderBiasCards() {
-    const biasContainer = document.getElementById('biasContainer');
-    if (!biasContainer) return;
-    
-    // 取得每日均價資料（日線）
-    const dateNums = Object.keys(DB.dailyAvg).map(Number).sort((a, b) => a - b);
-    
-    const dailyAvgs = dateNums.map(dateNum => {
-        const day = DB.dailyAvg[dateNum];
-        if (day.all.length < 5) return null;
-        return { dateNum, avg: day.all.reduce((a, b) => a + b, 0) / day.all.length };
-    }).filter(v => v !== null);
-    
-    if (dailyAvgs.length < 60) {
-        biasContainer.innerHTML = '<div style="color:#999;text-align:center;padding:20px;width:100%">資料不足，需至少60個交易日</div>';
-        return;
-    }
-    
-    const currentAvg = dailyAvgs[dailyAvgs.length - 1].avg;
-    
-    // 計算各均線
-    const maConfigs = [
-        { period: 5, label: '5日均線' },
-        { period: 10, label: '10日均線' },
-        { period: 20, label: '20日均線' },
-        { period: 60, label: '60日均線' }
-    ];
-    
-    const cards = maConfigs.map(config => {
-        if (dailyAvgs.length < config.period) return null;
-        
-        // 計算均線值
-        const maValues = dailyAvgs.slice(-config.period).map(d => d.avg);
-        const maValue = maValues.reduce((a, b) => a + b, 0) / maValues.length;
-        
-        // 計算乖離率
-        const bias = ((currentAvg - maValue) / maValue) * 100;
-        
-        return {
-            label: config.label,
-            maValue: maValue,
-            bias: bias
-        };
-    }).filter(c => c !== null);
-    
-    // 渲染卡片
-    biasContainer.innerHTML = cards.map(card => {
-        const biasClass = card.bias >= 0 ? 'positive' : 'negative';
-        const biasSign = card.bias >= 0 ? '+' : '';
-        
-        // 乖離程度判斷
-        let biasLevel = '';
-        const absBias = Math.abs(card.bias);
-        if (absBias > 5) biasLevel = card.bias > 0 ? '（偏高）' : '（偏低）';
-        else if (absBias > 10) biasLevel = card.bias > 0 ? '（過熱）' : '（超跌）';
-        
-        return `
-            <div class="bias-card">
-                <div class="ma-label">${card.label}</div>
-                <div class="ma-value">${card.maValue.toFixed(2)}</div>
-                <div class="bias-value ${biasClass}">${biasSign}${card.bias.toFixed(2)}%</div>
-                <div class="bias-label">乖離率${biasLevel}</div>
-            </div>
-        `;
-    }).join('');
 }
 
 // ========== 個股查詢功能 ==========
@@ -3711,6 +3638,5 @@ function drawKlineChart(prices) {
 
 window.onload = init;
 </script>
-
 </body>
 </html>
