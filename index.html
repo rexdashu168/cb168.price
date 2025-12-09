@@ -52,21 +52,6 @@
     .ind-tag .num { background: rgba(0,0,0,0.08); padding: 4px 14px; border-radius: 12px; font-size: 15px; font-weight: 700; font-family: 'Menlo', monospace; color: var(--primary); min-width: 50px; text-align: center; }
     .ind-tag.active .num { background: rgba(255,255,255,0.3); color: #fff; }
 
-    .year-btns { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-    @media(min-width: 500px) { .year-btns { grid-template-columns: repeat(4, 1fr); } }
-    @media(min-width: 768px) { .year-btns { grid-template-columns: repeat(6, 1fr); } }
-    .year-btn { display: flex; align-items: center; justify-content: center; gap: 4px; padding: 10px 8px; background: var(--clickable); border: 1px solid var(--clickable-border); border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; color: #2c2c2c; transition: all 0.2s; }
-    .year-btn:hover { border-color: var(--primary); background: var(--clickable-hover); }
-    .year-btn.active { background: #27ae60; color: #fff; border-color: #27ae60; }
-    .year-btn.loading { opacity: 0.6; pointer-events: none; }
-
-    /* 上傳提示區塊 */
-    .upload-hint { background: linear-gradient(135deg, #fff5e0, #fffbe8); padding: 20px; border-radius: 12px; margin: 16px 0; border: 2px dashed #ffc966; text-align: center; }
-    .upload-hint .hint-icon { font-size: 36px; margin-bottom: 8px; }
-    .upload-hint .hint-text { color: #d35400; font-size: 15px; margin-bottom: 14px; }
-    .upload-hint .upload-btn { display: inline-block; background: var(--primary); color: #fff; padding: 10px 24px; border-radius: 20px; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
-    .upload-hint .upload-btn:hover { background: #d35400; transform: scale(1.02); }
-
     .search-box { margin-bottom: 16px; }
     .search-input { width: 100%; padding: 12px 16px; border-radius: 10px; border: 2px solid var(--border); font-size: 16px; outline: none; }
     .search-input:focus { border-color: var(--primary); }
@@ -243,6 +228,7 @@ let MODE = 'stock';      // stock, industry, overall
 let VIEW = 'table';      // table, chart
 let PERIOD = '1y';       // 3m, 6m, 1y, 2y, 3y, all
 let FILTER = { industry: '', guarantee: '' };
+let CURRENT_CODE = '';   // 目前顯示的 CB 代碼
 
 // 產業Emoji對照（使用簡化產業名稱）
 function industryEmoji(ind) {
@@ -327,9 +313,51 @@ function updateFilterStatus() {
 async function init() {
     document.getElementById('loadStatus').innerText = '載入CB基本資料...';
     await loadCbInfo();
-    renderYearBtns();
+    
+    // 自動載入所有年度價格資料
+    await loadAllYears();
+    
     renderStatsBox();
+    renderTable();
     document.getElementById('loading').classList.add('hidden');
+}
+
+// 批次載入所有年度資料
+async function loadAllYears() {
+    const total = availableYears.length;
+    let loaded = 0;
+    
+    for(const year of availableYears) {
+        document.getElementById('loadStatus').innerText = `載入價格資料 ${year} (${loaded}/${total})...`;
+        await loadYear(year);
+        loaded++;
+    }
+    document.getElementById('loadStatus').innerText = '載入完成！';
+}
+
+// 載入單一年度資料（靜默模式）
+async function loadYear(year) {
+    if(DB.cbPriceYears[year]) return;
+    
+    const urls = [
+        FILES.CBPRICE_BASE + `CB_price_${year}_cleaned.xlsx`, 
+        FILES.CBPRICE_BASE + `CB_price_${year}.xlsx`
+    ];
+    
+    for(const url of urls) {
+        try {
+            const res = await fetch(url);
+            if(!res.ok) continue;
+            const wb = XLSX.read(await res.arrayBuffer(), {type: 'array'});
+            parseWorkbook(wb);
+            DB.cbPriceYears[year] = true;
+            console.log(`✅ ${year} 年度載入成功`);
+            return;
+        } catch(e) {
+            // 靜默失敗
+        }
+    }
+    console.log(`⚠️ ${year} 年度無資料`);
 }
 
 async function loadCbInfo() {
@@ -430,30 +458,11 @@ function renderStatsBox() {
         <div class="section-title">📊 統計數據</div>
         <div class="stats-grid">
             <div class="stat-item"><div class="stat-num">${cbInfoCnt}</div><div class="stat-label">全部CB</div></div>
-            <div class="stat-item"><div class="stat-num">${codes.length}</div><div class="stat-label">已載入CB</div></div>
-            <div class="stat-item"><div class="stat-num">${loadedYears}</div><div class="stat-label">已載入年度</div></div>
+            <div class="stat-item"><div class="stat-num">${codes.length}</div><div class="stat-label">有價格CB</div></div>
+            <div class="stat-item"><div class="stat-num">${totalRecords.toLocaleString()}</div><div class="stat-label">價格筆數</div></div>
             <div class="stat-item clickable ${FILTER.guarantee === '有擔保' ? 'active' : ''}" onclick="setFilter('guarantee', '有擔保')"><div class="stat-num">${padNum(META.guarantees['有擔保'])}</div><div class="stat-label">有擔保</div></div>
             <div class="stat-item clickable ${FILTER.guarantee === '無擔保' ? 'active' : ''}" onclick="setFilter('guarantee', '無擔保')"><div class="stat-num">${padNum(META.guarantees['無擔保'])}</div><div class="stat-label">無擔保</div></div>
         </div>
-    `;
-    
-    // 如果沒載入CB資料，顯示上傳按鈕
-    if(cbInfoCnt === 0) {
-        html += `
-            <div class="upload-hint">
-                <div class="hint-icon">📂</div>
-                <div class="hint-text">請上傳 00_CB.xlsx 以載入CB基本資料與產業分類</div>
-                <label class="upload-btn">
-                    <input type="file" accept=".xlsx,.xls" onchange="handleCbUpload(this)" style="display:none">
-                    📤 選擇檔案
-                </label>
-            </div>
-        `;
-    }
-    
-    html += `
-        <div class="section-title">📅 選擇年度載入</div>
-        <div class="year-btns" id="yearBtns"></div>
     `;
     
     // 產業標籤區塊（有資料時直接顯示）
@@ -473,105 +482,6 @@ function renderStatsBox() {
     }
     
     document.getElementById('statsBox').innerHTML = html;
-    renderYearBtns();
-}
-
-// 處理上傳 00_CB.xlsx
-async function handleCbUpload(input) {
-    const file = input.files[0];
-    if(!file) return;
-    
-    try {
-        const data = await file.arrayBuffer();
-        const wb = XLSX.read(data, {type: 'array'});
-        
-        // 嘗試讀取「01」工作表
-        const sheetNames = ['01', '01_ALLCB基本資料', wb.SheetNames[0]].filter(s => s && wb.Sheets[s]);
-        
-        sheetNames.forEach(sn => {
-            const sheet = wb.Sheets[sn];
-            if(!sheet) return;
-            XLSX.utils.sheet_to_json(sheet).forEach(r => {
-                const code = String(r['CB代號'] || r['代號'] || '').trim();
-                if(!code || code.length < 4) return;
-                
-                // L欄：產業分類
-                const industry = r['產業分類'] || r['產業'] || '其他';
-                const simpleIndustry = simplifyIndustry(industry);
-                
-                const guarVal = r['擔保'] || '';
-                const guarantee = (guarVal === '有擔保' || guarVal === 'Y' || guarVal === '有') ? '有擔保' : '無擔保';
-                
-                const methodVal = r['發行方式'] || '';
-                const method = methodVal.includes('競') ? '競拍' : (methodVal.includes('詢') ? '詢圈' : '');
-                
-                DB.cbInfo[code] = {
-                    name: r['CB簡稱'] || r['名稱'] || '',
-                    stockCode: String(r['股票代號'] || '').replace(/\.0$/, ''),
-                    stockName: r['標的簡稱'] || '',
-                    industry: simpleIndustry,
-                    convPrice: parseFloat(r['轉換價格'] || r['轉換價格(元)']) || 0,
-                    guarantee: guarantee,
-                    method: method
-                };
-                
-                META.industries[simpleIndustry] = (META.industries[simpleIndustry] || 0) + 1;
-                META.guarantees[guarantee] = (META.guarantees[guarantee] || 0) + 1;
-            });
-        });
-        
-        if(Object.keys(DB.cbInfo).length > 0) {
-            META.cbInfoLoaded = true;
-            console.log('上傳成功:', Object.keys(DB.cbInfo).length, '筆CB');
-            renderStatsBox();
-            renderTable();
-        } else {
-            alert('無法解析檔案，請確認是否為正確的 00_CB.xlsx');
-        }
-    } catch(e) {
-        console.error('上傳失敗:', e);
-        alert('檔案讀取失敗：' + e.message);
-    }
-}
-
-function renderYearBtns() {
-    const container = document.getElementById('yearBtns');
-    if(!container) return;
-    container.innerHTML = availableYears.map(y => `
-        <div class="year-btn ${DB.cbPriceYears[y] ? 'active' : ''}" id="btn${y}" onclick="loadYear(${y})">
-            ${DB.cbPriceYears[y] ? '✅' : '📁'} ${y}
-        </div>
-    `).join('');
-}
-
-async function loadYear(year) {
-    if(DB.cbPriceYears[year]) return;
-    const btn = document.getElementById('btn' + year);
-    btn.classList.add('loading');
-    btn.innerHTML = '⏳ 載入中...';
-    
-    const urls = [FILES.CBPRICE_BASE + `CB_price_${year}_cleaned.xlsx`, FILES.CBPRICE_BASE + `CB_price_${year}.xlsx`];
-    let success = false;
-    for(const url of urls) {
-        try {
-            const res = await fetch(url);
-            if(!res.ok) continue;
-            const wb = XLSX.read(await res.arrayBuffer(), {type: 'array'});
-            parseWorkbook(wb);
-            success = true;
-            break;
-        } catch(e) {}
-    }
-    
-    if(success) {
-        DB.cbPriceYears[year] = true;
-        renderStatsBox();
-        renderTable();
-    } else {
-        alert(`載入 ${year} 年度失敗`);
-        btn.classList.remove('loading');
-        btn.innerHTML = `📁 ${year}`;
-    }
 }
 
 function parseWorkbook(wb) {
@@ -735,12 +645,9 @@ function openDetail(code) {
             <div class="period-tab ${PERIOD==='all'?'active':''}" onclick="setModalPeriod('all','${code}')">全部</div>
         </div>
         
-        <!-- 走勢圖佔位 -->
-        <div id="modalChart" class="chart-area hidden" style="min-height:200px;margin-bottom:12px">
-            <div class="chart-placeholder">
-                <div class="icon">📈</div>
-                <div>走勢圖功能開發中</div>
-            </div>
+        <!-- 走勢圖區域 -->
+        <div id="modalChart" class="chart-area hidden" style="min-height:280px;margin-bottom:12px;padding:10px">
+            <canvas id="priceChart" style="width:100%;height:260px"></canvas>
         </div>
         
         <!-- 表格 -->
@@ -760,12 +667,162 @@ function openDetail(code) {
     
     document.getElementById('modalBody').innerHTML = html;
     document.getElementById('modal').classList.add('show');
+    CURRENT_CODE = code;
 }
 
 function showModalView(v, code) {
     document.getElementById('modalChart').classList.toggle('hidden', v !== 'chart');
     document.getElementById('modalTable').classList.toggle('hidden', v !== 'table');
     document.querySelectorAll('#modalBody .view-tab').forEach((t,i) => t.classList.toggle('active', ['table','chart'][i] === v));
+    
+    // 切換到走勢圖時繪製
+    if(v === 'chart') {
+        setTimeout(() => drawChart(code || CURRENT_CODE), 50);
+    }
+}
+
+// 繪製走勢圖
+function drawChart(code) {
+    const canvas = document.getElementById('priceChart');
+    if(!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    const container = canvas.parentElement;
+    
+    // 設置 canvas 實際尺寸（高解析度）
+    const dpr = window.devicePixelRatio || 1;
+    const rect = container.getBoundingClientRect();
+    canvas.width = rect.width * dpr;
+    canvas.height = 260 * dpr;
+    canvas.style.width = rect.width + 'px';
+    canvas.style.height = '260px';
+    ctx.scale(dpr, dpr);
+    
+    const width = rect.width;
+    const height = 260;
+    
+    // 取得價格資料
+    const allPrices = DB.cbPrice[code] || [];
+    const prices = filterByPeriod(allPrices);
+    
+    if(prices.length < 2) {
+        ctx.fillStyle = '#999';
+        ctx.font = '14px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('資料不足，無法繪製走勢圖', width/2, height/2);
+        return;
+    }
+    
+    // 計算價格範圍
+    const closes = prices.map(p => p.close);
+    const highs = prices.map(p => p.high);
+    const lows = prices.map(p => p.low);
+    const maxPrice = Math.max(...highs);
+    const minPrice = Math.min(...lows);
+    const priceRange = maxPrice - minPrice || 1;
+    const padding = priceRange * 0.1;
+    
+    // 繪圖區域
+    const chartLeft = 55;
+    const chartRight = width - 15;
+    const chartTop = 20;
+    const chartBottom = height - 35;
+    const chartWidth = chartRight - chartLeft;
+    const chartHeight = chartBottom - chartTop;
+    
+    // 清空畫布
+    ctx.clearRect(0, 0, width, height);
+    
+    // 繪製背景格線
+    ctx.strokeStyle = '#e8e8e8';
+    ctx.lineWidth = 1;
+    for(let i = 0; i <= 4; i++) {
+        const y = chartTop + (chartHeight / 4) * i;
+        ctx.beginPath();
+        ctx.moveTo(chartLeft, y);
+        ctx.lineTo(chartRight, y);
+        ctx.stroke();
+    }
+    
+    // Y軸價格標籤
+    ctx.fillStyle = '#666';
+    ctx.font = '11px Menlo, monospace';
+    ctx.textAlign = 'right';
+    for(let i = 0; i <= 4; i++) {
+        const price = maxPrice + padding - ((priceRange + padding * 2) / 4) * i;
+        const y = chartTop + (chartHeight / 4) * i;
+        ctx.fillText(price.toFixed(1), chartLeft - 5, y + 4);
+    }
+    
+    // 計算點位置
+    const getX = (i) => chartLeft + (i / (prices.length - 1)) * chartWidth;
+    const getY = (price) => chartTop + ((maxPrice + padding - price) / (priceRange + padding * 2)) * chartHeight;
+    
+    // 繪製區域填充（漸層）
+    const gradient = ctx.createLinearGradient(0, chartTop, 0, chartBottom);
+    const lastClose = prices[prices.length - 1].close;
+    const firstClose = prices[0].close;
+    const isUp = lastClose >= firstClose;
+    
+    if(isUp) {
+        gradient.addColorStop(0, 'rgba(231, 76, 60, 0.15)');
+        gradient.addColorStop(1, 'rgba(231, 76, 60, 0.02)');
+    } else {
+        gradient.addColorStop(0, 'rgba(39, 174, 96, 0.15)');
+        gradient.addColorStop(1, 'rgba(39, 174, 96, 0.02)');
+    }
+    
+    ctx.beginPath();
+    ctx.moveTo(getX(0), chartBottom);
+    prices.forEach((p, i) => ctx.lineTo(getX(i), getY(p.close)));
+    ctx.lineTo(getX(prices.length - 1), chartBottom);
+    ctx.closePath();
+    ctx.fillStyle = gradient;
+    ctx.fill();
+    
+    // 繪製收盤價折線
+    ctx.beginPath();
+    ctx.strokeStyle = isUp ? '#e74c3c' : '#27ae60';
+    ctx.lineWidth = 2;
+    prices.forEach((p, i) => {
+        if(i === 0) ctx.moveTo(getX(i), getY(p.close));
+        else ctx.lineTo(getX(i), getY(p.close));
+    });
+    ctx.stroke();
+    
+    // 標記起點和終點
+    ctx.fillStyle = isUp ? '#e74c3c' : '#27ae60';
+    ctx.beginPath();
+    ctx.arc(getX(prices.length - 1), getY(lastClose), 4, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // X軸日期標籤
+    ctx.fillStyle = '#666';
+    ctx.font = '10px sans-serif';
+    ctx.textAlign = 'center';
+    
+    const labelCount = Math.min(5, prices.length);
+    for(let i = 0; i < labelCount; i++) {
+        const idx = Math.floor((i / (labelCount - 1)) * (prices.length - 1));
+        const x = getX(idx);
+        const dateStr = prices[idx].date.substring(5); // MM/DD
+        ctx.fillText(dateStr, x, chartBottom + 15);
+    }
+    
+    // 顯示價格資訊
+    const info = DB.cbInfo[code] || {};
+    const change = lastClose - firstClose;
+    const pct = (change / firstClose * 100).toFixed(2);
+    
+    ctx.fillStyle = '#333';
+    ctx.font = 'bold 12px sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText(`${info.name || code}`, chartLeft, 12);
+    
+    ctx.font = '11px sans-serif';
+    ctx.fillStyle = isUp ? '#e74c3c' : '#27ae60';
+    ctx.textAlign = 'right';
+    ctx.fillText(`${lastClose.toFixed(2)} (${change >= 0 ? '+' : ''}${pct}%)`, chartRight, 12);
 }
 
 function setModalPeriod(p, code) {
@@ -778,8 +835,17 @@ function setModalPeriod(p, code) {
             (p === '3y' && txt === '3年') || (p === 'all' && txt === '全部')
         );
     });
+    
+    // 檢查當前是表格還是走勢圖
+    const isChartView = !document.getElementById('modalChart').classList.contains('hidden');
+    
     // 重新開啟詳情以更新資料
     openDetail(code);
+    
+    // 如果原本是走勢圖，保持走勢圖視圖
+    if(isChartView) {
+        showModalView('chart', code);
+    }
 }
 
 function closeModal() { document.getElementById('modal').classList.remove('show'); }
