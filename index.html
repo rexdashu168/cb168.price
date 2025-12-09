@@ -29,18 +29,6 @@
     .sub-tab:hover { border-color: var(--primary); background: var(--clickable-hover); }
     .sub-tab.active { background: var(--primary); color: #fff; border-color: var(--primary); }
 
-    /* 分析工具按鈕 */
-    .analysis-btns { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; justify-content: center; overflow-x: auto; padding: 4px 0; }
-    .analysis-btn { display: flex; align-items: center; gap: 6px; padding: 10px 16px; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; border: 1px solid #ffd0a0; background: linear-gradient(135deg, #fff8f0, #fff0e5); color: #d35400; transition: all 0.2s; white-space: nowrap; }
-    .analysis-btn:hover { border-color: var(--primary); background: linear-gradient(135deg, #ffe8d0, #ffd8b0); transform: translateY(-1px); box-shadow: 0 3px 8px rgba(230,126,34,0.2); }
-    .analysis-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
-
-    /* 個股詳情內的分析標籤 */
-    .atab { padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid #ffd0a0; background: linear-gradient(135deg, #fff8f0, #fff0e5); color: #d35400; transition: all 0.2s; white-space: nowrap; }
-    .atab:hover { border-color: var(--primary); background: #ffe8d0; }
-    .atab.active { background: var(--primary); color: #fff; border-color: var(--primary); }
-    .tab-content { min-height: 150px; }
-
     .stats-box { background: linear-gradient(135deg, #fff8f0 0%, #fff0e5 100%); border-radius: 14px; padding: 18px; margin-bottom: 18px; border: 1px solid #ffd8c0; }
     .section-title { font-size: 16px; font-weight: 700; color: #2c2c2c; margin: 16px 0 12px; padding-left: 10px; border-left: 4px solid var(--primary); }
     .section-title:first-child { margin-top: 0; }
@@ -63,21 +51,6 @@
     .ind-tag .name { flex: 1; }
     .ind-tag .num { background: rgba(0,0,0,0.08); padding: 4px 14px; border-radius: 12px; font-size: 15px; font-weight: 700; font-family: 'Menlo', monospace; color: var(--primary); min-width: 50px; text-align: center; }
     .ind-tag.active .num { background: rgba(255,255,255,0.3); color: #fff; }
-
-    .year-btns { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-    @media(min-width: 500px) { .year-btns { grid-template-columns: repeat(4, 1fr); } }
-    @media(min-width: 768px) { .year-btns { grid-template-columns: repeat(6, 1fr); } }
-    .year-btn { display: flex; align-items: center; justify-content: center; gap: 4px; padding: 10px 8px; background: var(--clickable); border: 1px solid var(--clickable-border); border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; color: #2c2c2c; transition: all 0.2s; }
-    .year-btn:hover { border-color: var(--primary); background: var(--clickable-hover); }
-    .year-btn.active { background: #27ae60; color: #fff; border-color: #27ae60; }
-    .year-btn.loading { opacity: 0.6; pointer-events: none; }
-
-    /* 上傳提示區塊 */
-    .upload-hint { background: linear-gradient(135deg, #fff5e0, #fffbe8); padding: 20px; border-radius: 12px; margin: 16px 0; border: 2px dashed #ffc966; text-align: center; }
-    .upload-hint .hint-icon { font-size: 36px; margin-bottom: 8px; }
-    .upload-hint .hint-text { color: #d35400; font-size: 15px; margin-bottom: 14px; }
-    .upload-hint .upload-btn { display: inline-block; background: var(--primary); color: #fff; padding: 10px 24px; border-radius: 20px; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
-    .upload-hint .upload-btn:hover { background: #d35400; transform: scale(1.02); }
 
     .search-box { margin-bottom: 16px; }
     .search-input { width: 100%; padding: 12px 16px; border-radius: 10px; border: 2px solid var(--border); font-size: 16px; outline: none; }
@@ -133,24 +106,6 @@
     .modal-stat { background: linear-gradient(135deg, #fff8f0, #fff0e5); padding: 12px 16px; border-radius: 10px; text-align: center; min-width: 80px; }
     .modal-stat .val { font-size: 20px; font-weight: 700; color: var(--primary); }
     .modal-stat .lbl { font-size: 12px; color: #666; }
-
-    /* 分析面板 */
-    .analysis-panel { background: #fff; border-radius: 14px; padding: 20px; margin-bottom: 16px; border: 1px solid #e0e0e0; }
-    .analysis-panel .panel-title { font-size: 18px; font-weight: 700; color: var(--primary); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
-    .analysis-input-row { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; align-items: flex-end; }
-    .analysis-input-group { display: flex; flex-direction: column; gap: 4px; }
-    .analysis-input-group label { font-size: 13px; color: #666; font-weight: 600; }
-    .analysis-input-group input { padding: 10px 14px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 16px; width: 120px; }
-    .analysis-input-group input:focus { border-color: var(--primary); outline: none; }
-    .analysis-calc-btn { padding: 10px 24px; background: var(--primary); color: #fff; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
-    .analysis-calc-btn:hover { background: #d35400; }
-    .analysis-result { background: linear-gradient(135deg, #f8fff8, #e8ffe8); border: 1px solid #a0d0a0; border-radius: 12px; padding: 16px; margin-top: 16px; }
-    .analysis-result.down { background: linear-gradient(135deg, #fff8f8, #ffe8e8); border-color: #d0a0a0; }
-    .result-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
-    .result-item { text-align: center; padding: 12px; background: #fff; border-radius: 8px; }
-    .result-item .val { font-size: 22px; font-weight: 800; color: #27ae60; font-family: 'Menlo', monospace; }
-    .result-item.down .val { color: #e74c3c; }
-    .result-item .lbl { font-size: 12px; color: #666; margin-top: 4px; }
 
     .hidden { display: none !important; }
 </style>
@@ -273,6 +228,7 @@ let MODE = 'stock';      // stock, industry, overall
 let VIEW = 'table';      // table, chart
 let PERIOD = '1y';       // 3m, 6m, 1y, 2y, 3y, all
 let FILTER = { industry: '', guarantee: '' };
+let CURRENT_CODE = '';   // 目前顯示的 CB 代碼
 
 // 產業Emoji對照（使用簡化產業名稱）
 function industryEmoji(ind) {
@@ -354,12 +310,238 @@ function updateFilterStatus() {
     }
 }
 
+// IndexedDB 快取相關
+const CACHE_DB_NAME = 'CBPriceCache';
+const CACHE_DB_VERSION = 1;
+let cacheDB = null;
+
+// 開啟 IndexedDB
+function openCacheDB() {
+    return new Promise((resolve, reject) => {
+        const request = indexedDB.open(CACHE_DB_NAME, CACHE_DB_VERSION);
+        request.onerror = () => reject(request.error);
+        request.onsuccess = () => {
+            cacheDB = request.result;
+            resolve(cacheDB);
+        };
+        request.onupgradeneeded = (e) => {
+            const db = e.target.result;
+            if(!db.objectStoreNames.contains('cbInfo')) {
+                db.createObjectStore('cbInfo', { keyPath: 'id' });
+            }
+            if(!db.objectStoreNames.contains('cbPrice')) {
+                db.createObjectStore('cbPrice', { keyPath: 'id' });
+            }
+            if(!db.objectStoreNames.contains('meta')) {
+                db.createObjectStore('meta', { keyPath: 'id' });
+            }
+        };
+    });
+}
+
+// 從快取讀取資料
+async function loadFromCache() {
+    try {
+        await openCacheDB();
+        
+        // 讀取 meta
+        const meta = await getCacheData('meta', 'main');
+        if(!meta || !meta.timestamp) return false;
+        
+        // 檢查快取時間（超過 24 小時提示更新，但仍可使用）
+        const cacheAge = Date.now() - meta.timestamp;
+        const hoursOld = Math.floor(cacheAge / (1000 * 60 * 60));
+        
+        // 讀取 cbInfo
+        const cbInfoData = await getCacheData('cbInfo', 'main');
+        if(cbInfoData && cbInfoData.data) {
+            Object.assign(DB.cbInfo, cbInfoData.data);
+        }
+        
+        // 讀取 cbPrice
+        const cbPriceData = await getCacheData('cbPrice', 'main');
+        if(cbPriceData && cbPriceData.data) {
+            Object.assign(DB.cbPrice, cbPriceData.data);
+            Object.assign(DB.cbPriceYears, cbPriceData.years || {});
+        }
+        
+        // 讀取 META
+        if(meta.industries) Object.assign(META.industries, meta.industries);
+        if(meta.guarantees) Object.assign(META.guarantees, meta.guarantees);
+        META.cbInfoLoaded = true;
+        
+        console.log(`✅ 從快取載入成功 (${hoursOld}小時前的資料)`);
+        return true;
+    } catch(e) {
+        console.log('快取讀取失敗:', e);
+        return false;
+    }
+}
+
+// 儲存資料到快取
+async function saveToCache() {
+    try {
+        if(!cacheDB) await openCacheDB();
+        
+        await setCacheData('cbInfo', { id: 'main', data: DB.cbInfo });
+        await setCacheData('cbPrice', { id: 'main', data: DB.cbPrice, years: DB.cbPriceYears });
+        await setCacheData('meta', { 
+            id: 'main', 
+            timestamp: Date.now(),
+            industries: META.industries,
+            guarantees: META.guarantees
+        });
+        
+        console.log('✅ 資料已存入快取');
+    } catch(e) {
+        console.log('快取儲存失敗:', e);
+    }
+}
+
+// 取得快取資料
+function getCacheData(storeName, key) {
+    return new Promise((resolve, reject) => {
+        const tx = cacheDB.transaction(storeName, 'readonly');
+        const store = tx.objectStore(storeName);
+        const request = store.get(key);
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+    });
+}
+
+// 設定快取資料
+function setCacheData(storeName, data) {
+    return new Promise((resolve, reject) => {
+        const tx = cacheDB.transaction(storeName, 'readwrite');
+        const store = tx.objectStore(storeName);
+        const request = store.put(data);
+        request.onsuccess = () => resolve();
+        request.onerror = () => reject(request.error);
+    });
+}
+
+// 清除快取
+async function clearCache() {
+    try {
+        if(!cacheDB) await openCacheDB();
+        const stores = ['cbInfo', 'cbPrice', 'meta'];
+        for(const storeName of stores) {
+            const tx = cacheDB.transaction(storeName, 'readwrite');
+            tx.objectStore(storeName).clear();
+        }
+        console.log('✅ 快取已清除');
+    } catch(e) {
+        console.log('清除快取失敗:', e);
+    }
+}
+
+// 重新載入資料（清除快取後重新抓取）
+async function reloadData() {
+    if(!confirm('確定要重新載入所有資料？這可能需要一些時間。')) return;
+    
+    // 清除快取和記憶體資料
+    await clearCache();
+    DB.cbPrice = {};
+    DB.cbPriceYears = {};
+    DB.cbInfo = {};
+    META.industries = {};
+    META.guarantees = { '有擔保': 0, '無擔保': 0 };
+    META.cbInfoLoaded = false;
+    
+    // 顯示載入畫面
+    document.getElementById('loading').classList.remove('hidden');
+    
+    // 重新載入
+    await loadFromNetwork();
+    await saveToCache();
+    
+    renderStatsBox();
+    renderTable();
+    document.getElementById('loading').classList.add('hidden');
+}
+
 async function init() {
+    document.getElementById('loadStatus').innerText = '檢查快取資料...';
+    
+    // 先嘗試從快取載入
+    const cached = await loadFromCache();
+    
+    if(cached && Object.keys(DB.cbPrice).length > 0) {
+        // 快取有資料，直接使用
+        document.getElementById('loadStatus').innerText = '從快取載入完成！';
+        renderStatsBox();
+        renderTable();
+        document.getElementById('loading').classList.add('hidden');
+        return;
+    }
+    
+    // 快取沒資料，從網路載入
+    await loadFromNetwork();
+    
+    // 存入快取
+    await saveToCache();
+    
+    renderStatsBox();
+    renderTable();
+    document.getElementById('loading').classList.add('hidden');
+}
+
+// 從網路載入所有資料
+async function loadFromNetwork() {
     document.getElementById('loadStatus').innerText = '載入CB基本資料...';
     await loadCbInfo();
-    renderYearBtns();
-    renderStatsBox();
-    document.getElementById('loading').classList.add('hidden');
+    
+    // 並行載入所有年度價格資料
+    await loadAllYearsParallel();
+}
+
+// 並行批次載入所有年度資料
+async function loadAllYearsParallel() {
+    const total = availableYears.length;
+    let completed = 0;
+    
+    document.getElementById('loadStatus').innerText = `載入價格資料 (0/${total})...`;
+    
+    // 建立所有載入任務
+    const tasks = availableYears.map(year => {
+        return loadYear(year).then(() => {
+            completed++;
+            document.getElementById('loadStatus').innerText = `載入價格資料 (${completed}/${total})...`;
+        });
+    });
+    
+    // 同時執行所有任務
+    await Promise.all(tasks);
+    
+    // 載入完成後排序所有價格資料
+    Object.keys(DB.cbPrice).forEach(c => {
+        DB.cbPrice[c].sort((a, b) => a.dateNum - b.dateNum);
+    });
+    
+    document.getElementById('loadStatus').innerText = '載入完成！';
+}
+
+// 載入單一年度資料（靜默模式）
+async function loadYear(year) {
+    if(DB.cbPriceYears[year]) return;
+    
+    const urls = [
+        FILES.CBPRICE_BASE + `CB_price_${year}_cleaned.xlsx`, 
+        FILES.CBPRICE_BASE + `CB_price_${year}.xlsx`
+    ];
+    
+    for(const url of urls) {
+        try {
+            const res = await fetch(url);
+            if(!res.ok) continue;
+            const wb = XLSX.read(await res.arrayBuffer(), {type: 'array'});
+            parseWorkbook(wb);
+            DB.cbPriceYears[year] = true;
+            return;
+        } catch(e) {
+            // 靜默失敗
+        }
+    }
 }
 
 async function loadCbInfo() {
@@ -457,33 +639,17 @@ function renderStatsBox() {
     const cbInfoCnt = Object.keys(DB.cbInfo).length;
     
     let html = `
-        <div class="section-title">📊 統計數據</div>
+        <div class="section-title" style="display:flex;justify-content:space-between;align-items:center;">
+            <span>📊 統計數據</span>
+            <button onclick="reloadData()" style="background:var(--clickable);border:1px solid var(--clickable-border);padding:6px 14px;border-radius:16px;font-size:13px;cursor:pointer;color:#555;">🔄 重新載入</button>
+        </div>
         <div class="stats-grid">
             <div class="stat-item"><div class="stat-num">${cbInfoCnt}</div><div class="stat-label">全部CB</div></div>
-            <div class="stat-item"><div class="stat-num">${codes.length}</div><div class="stat-label">已載入CB</div></div>
-            <div class="stat-item"><div class="stat-num">${loadedYears}</div><div class="stat-label">已載入年度</div></div>
+            <div class="stat-item"><div class="stat-num">${codes.length}</div><div class="stat-label">有價格CB</div></div>
+            <div class="stat-item"><div class="stat-num">${totalRecords.toLocaleString()}</div><div class="stat-label">價格筆數</div></div>
             <div class="stat-item clickable ${FILTER.guarantee === '有擔保' ? 'active' : ''}" onclick="setFilter('guarantee', '有擔保')"><div class="stat-num">${padNum(META.guarantees['有擔保'])}</div><div class="stat-label">有擔保</div></div>
             <div class="stat-item clickable ${FILTER.guarantee === '無擔保' ? 'active' : ''}" onclick="setFilter('guarantee', '無擔保')"><div class="stat-num">${padNum(META.guarantees['無擔保'])}</div><div class="stat-label">無擔保</div></div>
         </div>
-    `;
-    
-    // 如果沒載入CB資料，顯示上傳按鈕
-    if(cbInfoCnt === 0) {
-        html += `
-            <div class="upload-hint">
-                <div class="hint-icon">📂</div>
-                <div class="hint-text">請上傳 00_CB.xlsx 以載入CB基本資料與產業分類</div>
-                <label class="upload-btn">
-                    <input type="file" accept=".xlsx,.xls" onchange="handleCbUpload(this)" style="display:none">
-                    📤 選擇檔案
-                </label>
-            </div>
-        `;
-    }
-    
-    html += `
-        <div class="section-title">📅 選擇年度載入</div>
-        <div class="year-btns" id="yearBtns"></div>
     `;
     
     // 產業標籤區塊（有資料時直接顯示）
@@ -503,105 +669,6 @@ function renderStatsBox() {
     }
     
     document.getElementById('statsBox').innerHTML = html;
-    renderYearBtns();
-}
-
-// 處理上傳 00_CB.xlsx
-async function handleCbUpload(input) {
-    const file = input.files[0];
-    if(!file) return;
-    
-    try {
-        const data = await file.arrayBuffer();
-        const wb = XLSX.read(data, {type: 'array'});
-        
-        // 嘗試讀取「01」工作表
-        const sheetNames = ['01', '01_ALLCB基本資料', wb.SheetNames[0]].filter(s => s && wb.Sheets[s]);
-        
-        sheetNames.forEach(sn => {
-            const sheet = wb.Sheets[sn];
-            if(!sheet) return;
-            XLSX.utils.sheet_to_json(sheet).forEach(r => {
-                const code = String(r['CB代號'] || r['代號'] || '').trim();
-                if(!code || code.length < 4) return;
-                
-                // L欄：產業分類
-                const industry = r['產業分類'] || r['產業'] || '其他';
-                const simpleIndustry = simplifyIndustry(industry);
-                
-                const guarVal = r['擔保'] || '';
-                const guarantee = (guarVal === '有擔保' || guarVal === 'Y' || guarVal === '有') ? '有擔保' : '無擔保';
-                
-                const methodVal = r['發行方式'] || '';
-                const method = methodVal.includes('競') ? '競拍' : (methodVal.includes('詢') ? '詢圈' : '');
-                
-                DB.cbInfo[code] = {
-                    name: r['CB簡稱'] || r['名稱'] || '',
-                    stockCode: String(r['股票代號'] || '').replace(/\.0$/, ''),
-                    stockName: r['標的簡稱'] || '',
-                    industry: simpleIndustry,
-                    convPrice: parseFloat(r['轉換價格'] || r['轉換價格(元)']) || 0,
-                    guarantee: guarantee,
-                    method: method
-                };
-                
-                META.industries[simpleIndustry] = (META.industries[simpleIndustry] || 0) + 1;
-                META.guarantees[guarantee] = (META.guarantees[guarantee] || 0) + 1;
-            });
-        });
-        
-        if(Object.keys(DB.cbInfo).length > 0) {
-            META.cbInfoLoaded = true;
-            console.log('上傳成功:', Object.keys(DB.cbInfo).length, '筆CB');
-            renderStatsBox();
-            renderTable();
-        } else {
-            alert('無法解析檔案，請確認是否為正確的 00_CB.xlsx');
-        }
-    } catch(e) {
-        console.error('上傳失敗:', e);
-        alert('檔案讀取失敗：' + e.message);
-    }
-}
-
-function renderYearBtns() {
-    const container = document.getElementById('yearBtns');
-    if(!container) return;
-    container.innerHTML = availableYears.map(y => `
-        <div class="year-btn ${DB.cbPriceYears[y] ? 'active' : ''}" id="btn${y}" onclick="loadYear(${y})">
-            ${DB.cbPriceYears[y] ? '✅' : '📁'} ${y}
-        </div>
-    `).join('');
-}
-
-async function loadYear(year) {
-    if(DB.cbPriceYears[year]) return;
-    const btn = document.getElementById('btn' + year);
-    btn.classList.add('loading');
-    btn.innerHTML = '⏳ 載入中...';
-    
-    const urls = [FILES.CBPRICE_BASE + `CB_price_${year}_cleaned.xlsx`, FILES.CBPRICE_BASE + `CB_price_${year}.xlsx`];
-    let success = false;
-    for(const url of urls) {
-        try {
-            const res = await fetch(url);
-            if(!res.ok) continue;
-            const wb = XLSX.read(await res.arrayBuffer(), {type: 'array'});
-            parseWorkbook(wb);
-            success = true;
-            break;
-        } catch(e) {}
-    }
-    
-    if(success) {
-        DB.cbPriceYears[year] = true;
-        renderStatsBox();
-        renderTable();
-    } else {
-        alert(`載入 ${year} 年度失敗`);
-        btn.classList.remove('loading');
-        btn.innerHTML = `📁 ${year}`;
-    }
 }
 
 function parseWorkbook(wb) {
@@ -625,7 +692,6 @@ function parseWorkbook(wb) {
             });
         });
     });
-    Object.keys(DB.cbPrice).forEach(c => DB.cbPrice[c].sort((a, b) => a.dateNum - b.dateNum));
 }
 
 // 根據時間區間篩選價格資料
@@ -725,202 +791,224 @@ function renderTable() {
 }
 
 function openDetail(code) {
-    const allPrices = DB.cbPrice[code] || [];
+    const allPrices = DB.cbPrice[code];
+    if(!allPrices) return;
+    
     const p = filterByPeriod(allPrices);
+    if(p.length === 0) return;
+    
     const info = DB.cbInfo[code] || {};
-    
-    // 即使沒價格也可以開啟（只顯示基本資料和分析工具）
-    const hasPrice = p.length > 0;
-    const first = hasPrice ? p[0] : null;
-    const last = hasPrice ? p[p.length - 1] : null;
-    const high = hasPrice ? Math.max(...p.map(x => x.high)) : 0;
-    const low = hasPrice ? Math.min(...p.map(x => x.low)) : 0;
-    
-    // 轉換價值計算
-    const convPrice = info.convPrice || 0;
-    const lastClose = last ? last.close : 100;
+    const first = p[0], last = p[p.length - 1];
+    const high = Math.max(...p.map(x => x.high)), low = Math.min(...p.map(x => x.low));
     
     document.getElementById('modalTitle').innerText = info.name ? `${info.name} (${code})` : code;
     
-    // 儲存當前CB資訊供分析使用
-    window.currentCB = { code, info, lastClose, convPrice, high, low };
-    
     let html = `
-        <!-- 標籤列 -->
-        <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
-            ${info.guarantee === '有擔保' ? '<span style="background:#27ae60;color:#fff;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:600">有擔保</span>' : '<span style="background:#666;color:#fff;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:600">無擔保</span>'}
-            ${info.industry ? `<span style="background:#e67e22;color:#fff;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:600">${info.industry}</span>` : ''}
-            ${info.method ? `<span style="background:#3498db;color:#fff;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:600">${info.method}</span>` : ''}
-        </div>
         <div style="font-size:13px;color:#666;margin-bottom:12px">
             ${info.stockName ? `標的: ${info.stockName}(${info.stockCode})` : ''}
-            ${convPrice ? ` | 轉換價: ${convPrice}元` : ''}
+            ${info.industry ? ` | 產業: ${info.industry}` : ''}
+            ${info.convPrice ? ` | 轉換價: ${info.convPrice}元` : ''}
+            ${info.guarantee ? ` | ${info.guarantee}` : ''}
+        </div>
+        <div class="modal-stats">
+            <div class="modal-stat"><div class="val">${high.toFixed(2)}</div><div class="lbl">期間最高</div></div>
+            <div class="modal-stat"><div class="val">${low.toFixed(2)}</div><div class="lbl">期間最低</div></div>
+            <div class="modal-stat"><div class="val">${last.close.toFixed(2)}</div><div class="lbl">最新收盤</div></div>
+            <div class="modal-stat"><div class="val">${p.length}</div><div class="lbl">資料筆數</div></div>
         </div>
         
-        <!-- 分析功能標籤 -->
-        <div class="analysis-tabs" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;overflow-x:auto;padding-bottom:4px">
-            <div class="atab active" onclick="showAnalysisTab('price','${code}')">📋 歷史價格</div>
-            <div class="atab" onclick="showAnalysisTab('convert','${code}')">🔄 轉換分析</div>
-            <div class="atab" onclick="showAnalysisTab('value','${code}')">📊 價值分析</div>
-            <div class="atab" onclick="showAnalysisTab('up','${code}')">📈 上漲情境</div>
-            <div class="atab" onclick="showAnalysisTab('down','${code}')">📉 下跌情境</div>
-            <div class="atab" onclick="showAnalysisTab('cbas','${code}')">🔢 CBAS拆解</div>
+        <!-- 彈窗內的圖/表切換 -->
+        <div class="view-tabs" style="margin-bottom:12px">
+            <div class="view-tab active" onclick="showModalView('table','${code}')">📋 表格</div>
+            <div class="view-tab" onclick="showModalView('chart','${code}')">📈 走勢圖</div>
+        </div>
+        <div class="period-tabs" style="margin-bottom:12px">
+            <div class="period-tab ${PERIOD==='3m'?'active':''}" onclick="setModalPeriod('3m','${code}')">3個月</div>
+            <div class="period-tab ${PERIOD==='6m'?'active':''}" onclick="setModalPeriod('6m','${code}')">6個月</div>
+            <div class="period-tab ${PERIOD==='1y'?'active':''}" onclick="setModalPeriod('1y','${code}')">1年</div>
+            <div class="period-tab ${PERIOD==='2y'?'active':''}" onclick="setModalPeriod('2y','${code}')">2年</div>
+            <div class="period-tab ${PERIOD==='3y'?'active':''}" onclick="setModalPeriod('3y','${code}')">3年</div>
+            <div class="period-tab ${PERIOD==='all'?'active':''}" onclick="setModalPeriod('all','${code}')">全部</div>
         </div>
         
-        <!-- 各分析內容區域 -->
-        <div id="tabPrice" class="tab-content">
-            ${hasPrice ? `
-                <div class="modal-stats">
-                    <div class="modal-stat"><div class="val">${high.toFixed(2)}</div><div class="lbl">期間最高</div></div>
-                    <div class="modal-stat"><div class="val">${low.toFixed(2)}</div><div class="lbl">期間最低</div></div>
-                    <div class="modal-stat"><div class="val">${lastClose.toFixed(2)}</div><div class="lbl">最新收盤</div></div>
-                    <div class="modal-stat"><div class="val">${p.length}</div><div class="lbl">資料筆數</div></div>
-                </div>
-                <div class="period-tabs" style="margin-bottom:12px">
-                    <div class="period-tab ${PERIOD==='3m'?'active':''}" onclick="setModalPeriod('3m','${code}')">3個月</div>
-                    <div class="period-tab ${PERIOD==='6m'?'active':''}" onclick="setModalPeriod('6m','${code}')">6個月</div>
-                    <div class="period-tab ${PERIOD==='1y'?'active':''}" onclick="setModalPeriod('1y','${code}')">1年</div>
-                    <div class="period-tab ${PERIOD==='2y'?'active':''}" onclick="setModalPeriod('2y','${code}')">2年</div>
-                    <div class="period-tab ${PERIOD==='3y'?'active':''}" onclick="setModalPeriod('3y','${code}')">3年</div>
-                    <div class="period-tab ${PERIOD==='all'?'active':''}" onclick="setModalPeriod('all','${code}')">全部</div>
-                </div>
-                <div style="font-size:13px;color:#666;margin-bottom:10px">價格期間: ${first.date} ~ ${last.date}</div>
-                <div class="table-wrap" style="max-height:280px;overflow-y:auto"><table>
-                    <thead><tr><th>日期</th><th class="text-right">開盤</th><th class="text-right">最高</th><th class="text-right">最低</th><th class="text-right">收盤</th><th class="text-right">漲跌</th></tr></thead>
-                    <tbody>
-                        ${[...p].reverse().slice(0, 80).map(x => {
-                            const cls = x.change > 0 ? 'up' : x.change < 0 ? 'down' : '';
-                            return `<tr><td>${x.date}</td><td class="text-right">${x.open.toFixed(2)}</td><td class="text-right">${x.high.toFixed(2)}</td><td class="text-right">${x.low.toFixed(2)}</td><td class="text-right">${x.close.toFixed(2)}</td><td class="text-right ${cls}">${x.change > 0 ? '+' : ''}${x.change.toFixed(2)}</td></tr>`;
-                        }).join('')}
-                    </tbody>
-                </table></div>
-                ${p.length > 80 ? '<div style="text-align:center;padding:8px;color:#999;font-size:12px">僅顯示最近80筆</div>' : ''}
-            ` : '<div style="text-align:center;padding:40px;color:#999">尚未載入價格資料，請點擊年度按鈕載入</div>'}
+        <!-- 走勢圖區域 -->
+        <div id="modalChart" class="chart-area hidden" style="min-height:280px;margin-bottom:12px;padding:10px">
+            <canvas id="priceChart" style="width:100%;height:260px"></canvas>
         </div>
         
-        <div id="tabConvert" class="tab-content hidden">
-            <div class="analysis-panel">
-                <div class="analysis-input-row">
-                    <div class="analysis-input-group">
-                        <label>股票現價</label>
-                        <input type="number" id="inStockPrice" placeholder="股價" step="0.1">
-                    </div>
-                    <div class="analysis-input-group">
-                        <label>轉換價格</label>
-                        <input type="number" id="inConvPrice" value="${convPrice || ''}" step="0.1">
-                    </div>
-                    <div class="analysis-input-group">
-                        <label>CB現價</label>
-                        <input type="number" id="inCbPrice" value="${lastClose.toFixed(2)}" step="0.1">
-                    </div>
-                    <button class="analysis-calc-btn" onclick="calcConvert()">計算</button>
-                </div>
-                <div id="convertResult"></div>
-            </div>
-            <div style="font-size:12px;color:#888;margin-top:10px">轉換價值 = 股價 ÷ 轉換價 × 100 | 溢價率 = (CB價 - 轉換價值) ÷ 轉換價值</div>
-        </div>
-        
-        <div id="tabValue" class="tab-content hidden">
-            <div class="analysis-panel">
-                <div class="analysis-input-row">
-                    <div class="analysis-input-group">
-                        <label>CB現價</label>
-                        <input type="number" id="valCbPrice" value="${lastClose.toFixed(2)}" step="0.1">
-                    </div>
-                    <div class="analysis-input-group">
-                        <label>轉換價值</label>
-                        <input type="number" id="valConvValue" placeholder="輸入" step="0.1">
-                    </div>
-                    <div class="analysis-input-group">
-                        <label>剩餘年期</label>
-                        <input type="number" id="valYears" value="3" step="0.1">
-                    </div>
-                    <button class="analysis-calc-btn" onclick="calcValue()">分析</button>
-                </div>
-                <div id="valueResult"></div>
-            </div>
-        </div>
-        
-        <div id="tabUp" class="tab-content hidden">
-            <div class="analysis-panel">
-                <div class="analysis-input-row">
-                    <div class="analysis-input-group">
-                        <label>股票現價</label>
-                        <input type="number" id="upStockPrice" placeholder="現價" step="0.1">
-                    </div>
-                    <div class="analysis-input-group">
-                        <label>轉換價格</label>
-                        <input type="number" id="upConvPrice" value="${convPrice || ''}" step="0.1">
-                    </div>
-                    <div class="analysis-input-group">
-                        <label>上漲%</label>
-                        <input type="number" id="upPercent" value="20" step="5">
-                    </div>
-                    <button class="analysis-calc-btn" onclick="calcUp()">模擬</button>
-                </div>
-                <div id="upResult"></div>
-            </div>
-        </div>
-        
-        <div id="tabDown" class="tab-content hidden">
-            <div class="analysis-panel">
-                <div class="analysis-input-row">
-                    <div class="analysis-input-group">
-                        <label>CB現價</label>
-                        <input type="number" id="downCbPrice" value="${lastClose.toFixed(2)}" step="0.1">
-                    </div>
-                    <div class="analysis-input-group">
-                        <label>轉換價值</label>
-                        <input type="number" id="downConvValue" placeholder="輸入" step="0.1">
-                    </div>
-                    <div class="analysis-input-group">
-                        <label>下跌%</label>
-                        <input type="number" id="downPercent" value="20" step="5">
-                    </div>
-                    <button class="analysis-calc-btn" onclick="calcDown()">模擬</button>
-                </div>
-                <div id="downResult"></div>
-            </div>
-            <div style="font-size:12px;color:#888;margin-top:10px">CB具有債券底價保護（約95-100元），下跌時損失有限</div>
-        </div>
-        
-        <div id="tabCbas" class="tab-content hidden">
-            <div class="analysis-panel">
-                <div class="analysis-input-row">
-                    <div class="analysis-input-group">
-                        <label>CB現價</label>
-                        <input type="number" id="cbasCbPrice" value="${lastClose.toFixed(2)}" step="0.1">
-                    </div>
-                    <div class="analysis-input-group">
-                        <label>純債價值</label>
-                        <input type="number" id="cbasBondValue" value="98" step="0.5">
-                    </div>
-                    <div class="analysis-input-group">
-                        <label>剩餘年期</label>
-                        <input type="number" id="cbasYears" value="3" step="0.1">
-                    </div>
-                    <button class="analysis-calc-btn" onclick="calcCBAS()">拆解</button>
-                </div>
-                <div id="cbasResult"></div>
-            </div>
-            <div style="font-size:12px;color:#888;margin-top:10px">CB價格 = 純債價值 + 選擇權價值</div>
-        </div>
-    `;
+        <!-- 表格 -->
+        <div id="modalTable">
+            <div style="font-size:13px;color:#666;margin-bottom:10px">價格期間: ${first.date} ~ ${last.date}</div>
+            <div class="table-wrap" style="max-height:300px;overflow-y:auto"><table>
+                <thead><tr><th>日期</th><th class="text-right">開盤</th><th class="text-right">最高</th><th class="text-right">最低</th><th class="text-right">收盤</th><th class="text-right">漲跌</th><th class="text-right">張數</th></tr></thead>
+                <tbody>`;
+    
+    [...p].reverse().slice(0, 100).forEach(x => {
+        const cls = x.change > 0 ? 'up' : x.change < 0 ? 'down' : '';
+        html += `<tr><td>${x.date}</td><td class="text-right">${x.open.toFixed(2)}</td><td class="text-right">${x.high.toFixed(2)}</td><td class="text-right">${x.low.toFixed(2)}</td><td class="text-right">${x.close.toFixed(2)}</td><td class="text-right ${cls}">${x.change > 0 ? '+' : ''}${x.change.toFixed(2)}</td><td class="text-right">${x.vol}</td></tr>`;
+    });
+    
+    html += '</tbody></table></div></div>';
+    if(p.length > 100) html += '<div style="text-align:center;padding:10px;color:#999;font-size:13px">僅顯示最近100筆</div>';
     
     document.getElementById('modalBody').innerHTML = html;
     document.getElementById('modal').classList.add('show');
+    CURRENT_CODE = code;
 }
 
-// 切換分析標籤
-function showAnalysisTab(tab, code) {
-    // 隱藏所有內容
-    document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-    // 顯示選中的
-    const tabMap = { 'price': 'tabPrice', 'convert': 'tabConvert', 'value': 'tabValue', 'up': 'tabUp', 'down': 'tabDown', 'cbas': 'tabCbas' };
-    document.getElementById(tabMap[tab]).classList.remove('hidden');
-    // 更新標籤樣式
-    document.querySelectorAll('.atab').forEach(el => el.classList.remove('active'));
-    event.target.classList.add('active');
+function showModalView(v, code) {
+    document.getElementById('modalChart').classList.toggle('hidden', v !== 'chart');
+    document.getElementById('modalTable').classList.toggle('hidden', v !== 'table');
+    document.querySelectorAll('#modalBody .view-tab').forEach((t,i) => t.classList.toggle('active', ['table','chart'][i] === v));
+    
+    // 切換到走勢圖時繪製
+    if(v === 'chart') {
+        setTimeout(() => drawChart(code || CURRENT_CODE), 50);
+    }
+}
+
+// 繪製走勢圖
+function drawChart(code) {
+    const canvas = document.getElementById('priceChart');
+    if(!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    const container = canvas.parentElement;
+    
+    // 設置 canvas 實際尺寸（高解析度）
+    const dpr = window.devicePixelRatio || 1;
+    const rect = container.getBoundingClientRect();
+    canvas.width = rect.width * dpr;
+    canvas.height = 260 * dpr;
+    canvas.style.width = rect.width + 'px';
+    canvas.style.height = '260px';
+    ctx.scale(dpr, dpr);
+    
+    const width = rect.width;
+    const height = 260;
+    
+    // 取得價格資料
+    const allPrices = DB.cbPrice[code] || [];
+    const prices = filterByPeriod(allPrices);
+    
+    if(prices.length < 2) {
+        ctx.fillStyle = '#999';
+        ctx.font = '14px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('資料不足，無法繪製走勢圖', width/2, height/2);
+        return;
+    }
+    
+    // 計算價格範圍
+    const closes = prices.map(p => p.close);
+    const highs = prices.map(p => p.high);
+    const lows = prices.map(p => p.low);
+    const maxPrice = Math.max(...highs);
+    const minPrice = Math.min(...lows);
+    const priceRange = maxPrice - minPrice || 1;
+    const padding = priceRange * 0.1;
+    
+    // 繪圖區域
+    const chartLeft = 55;
+    const chartRight = width - 15;
+    const chartTop = 20;
+    const chartBottom = height - 35;
+    const chartWidth = chartRight - chartLeft;
+    const chartHeight = chartBottom - chartTop;
+    
+    // 清空畫布
+    ctx.clearRect(0, 0, width, height);
+    
+    // 繪製背景格線
+    ctx.strokeStyle = '#e8e8e8';
+    ctx.lineWidth = 1;
+    for(let i = 0; i <= 4; i++) {
+        const y = chartTop + (chartHeight / 4) * i;
+        ctx.beginPath();
+        ctx.moveTo(chartLeft, y);
+        ctx.lineTo(chartRight, y);
+        ctx.stroke();
+    }
+    
+    // Y軸價格標籤
+    ctx.fillStyle = '#666';
+    ctx.font = '11px Menlo, monospace';
+    ctx.textAlign = 'right';
+    for(let i = 0; i <= 4; i++) {
+        const price = maxPrice + padding - ((priceRange + padding * 2) / 4) * i;
+        const y = chartTop + (chartHeight / 4) * i;
+        ctx.fillText(price.toFixed(1), chartLeft - 5, y + 4);
+    }
+    
+    // 計算點位置
+    const getX = (i) => chartLeft + (i / (prices.length - 1)) * chartWidth;
+    const getY = (price) => chartTop + ((maxPrice + padding - price) / (priceRange + padding * 2)) * chartHeight;
+    
+    // 繪製區域填充（漸層）
+    const gradient = ctx.createLinearGradient(0, chartTop, 0, chartBottom);
+    const lastClose = prices[prices.length - 1].close;
+    const firstClose = prices[0].close;
+    const isUp = lastClose >= firstClose;
+    
+    if(isUp) {
+        gradient.addColorStop(0, 'rgba(231, 76, 60, 0.15)');
+        gradient.addColorStop(1, 'rgba(231, 76, 60, 0.02)');
+    } else {
+        gradient.addColorStop(0, 'rgba(39, 174, 96, 0.15)');
+        gradient.addColorStop(1, 'rgba(39, 174, 96, 0.02)');
+    }
+    
+    ctx.beginPath();
+    ctx.moveTo(getX(0), chartBottom);
+    prices.forEach((p, i) => ctx.lineTo(getX(i), getY(p.close)));
+    ctx.lineTo(getX(prices.length - 1), chartBottom);
+    ctx.closePath();
+    ctx.fillStyle = gradient;
+    ctx.fill();
+    
+    // 繪製收盤價折線
+    ctx.beginPath();
+    ctx.strokeStyle = isUp ? '#e74c3c' : '#27ae60';
+    ctx.lineWidth = 2;
+    prices.forEach((p, i) => {
+        if(i === 0) ctx.moveTo(getX(i), getY(p.close));
+        else ctx.lineTo(getX(i), getY(p.close));
+    });
+    ctx.stroke();
+    
+    // 標記起點和終點
+    ctx.fillStyle = isUp ? '#e74c3c' : '#27ae60';
+    ctx.beginPath();
+    ctx.arc(getX(prices.length - 1), getY(lastClose), 4, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // X軸日期標籤
+    ctx.fillStyle = '#666';
+    ctx.font = '10px sans-serif';
+    ctx.textAlign = 'center';
+    
+    const labelCount = Math.min(5, prices.length);
+    for(let i = 0; i < labelCount; i++) {
+        const idx = Math.floor((i / (labelCount - 1)) * (prices.length - 1));
+        const x = getX(idx);
+        const dateStr = prices[idx].date.substring(5); // MM/DD
+        ctx.fillText(dateStr, x, chartBottom + 15);
+    }
+    
+    // 顯示價格資訊
+    const info = DB.cbInfo[code] || {};
+    const change = lastClose - firstClose;
+    const pct = (change / firstClose * 100).toFixed(2);
+    
+    ctx.fillStyle = '#333';
+    ctx.font = 'bold 12px sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText(`${info.name || code}`, chartLeft, 12);
+    
+    ctx.font = '11px sans-serif';
+    ctx.fillStyle = isUp ? '#e74c3c' : '#27ae60';
+    ctx.textAlign = 'right';
+    ctx.fillText(`${lastClose.toFixed(2)} (${change >= 0 ? '+' : ''}${pct}%)`, chartRight, 12);
 }
 
 function setModalPeriod(p, code) {
@@ -933,162 +1021,20 @@ function setModalPeriod(p, code) {
             (p === '3y' && txt === '3年') || (p === 'all' && txt === '全部')
         );
     });
+    
+    // 檢查當前是表格還是走勢圖
+    const isChartView = !document.getElementById('modalChart').classList.contains('hidden');
+    
     // 重新開啟詳情以更新資料
     openDetail(code);
+    
+    // 如果原本是走勢圖，保持走勢圖視圖
+    if(isChartView) {
+        showModalView('chart', code);
+    }
 }
 
 function closeModal() { document.getElementById('modal').classList.remove('show'); }
-
-// ========== 分析計算函數 ==========
-// 轉換分析計算
-function calcConvert() {
-    const stockPrice = parseFloat(document.getElementById('inStockPrice').value) || 0;
-    const convPrice = parseFloat(document.getElementById('inConvPrice').value) || 0;
-    const cbPrice = parseFloat(document.getElementById('inCbPrice').value) || 100;
-    
-    if(stockPrice <= 0 || convPrice <= 0) {
-        document.getElementById('convertResult').innerHTML = '<div style="color:#e74c3c;padding:12px">請輸入有效的股價和轉換價格</div>';
-        return;
-    }
-    
-    const convValue = (stockPrice / convPrice) * 100;
-    const premium = ((cbPrice - convValue) / convValue) * 100;
-    const convRatio = 100 / convPrice; // 每張CB可換股數
-    
-    document.getElementById('convertResult').innerHTML = `
-        <div class="analysis-result ${premium > 0 ? '' : 'down'}">
-            <div class="result-grid">
-                <div class="result-item"><div class="val">${convValue.toFixed(2)}</div><div class="lbl">轉換價值</div></div>
-                <div class="result-item ${premium > 0 ? '' : 'down'}"><div class="val">${premium > 0 ? '+' : ''}${premium.toFixed(2)}%</div><div class="lbl">溢價率</div></div>
-                <div class="result-item"><div class="val">${convRatio.toFixed(2)}</div><div class="lbl">轉換比率(股)</div></div>
-                <div class="result-item"><div class="val">${(cbPrice - convValue).toFixed(2)}</div><div class="lbl">溢價金額</div></div>
-            </div>
-        </div>
-    `;
-}
-
-// 價值分析計算
-function calcValue() {
-    const cbPrice = parseFloat(document.getElementById('valCbPrice').value) || 100;
-    const convValue = parseFloat(document.getElementById('valConvValue').value) || 0;
-    const years = parseFloat(document.getElementById('valYears').value) || 3;
-    
-    const bondFloor = 98; // 假設純債價值
-    const optionValue = cbPrice - bondFloor;
-    const premium = convValue > 0 ? ((cbPrice - convValue) / convValue * 100) : 0;
-    const timeValue = optionValue / years;
-    
-    let status = '', statusColor = '';
-    if(cbPrice < bondFloor) { status = '折價（低於純債價值）'; statusColor = '#27ae60'; }
-    else if(premium < 0) { status = '折價（低於轉換價值）'; statusColor = '#27ae60'; }
-    else if(premium < 10) { status = '輕度溢價'; statusColor = '#f39c12'; }
-    else if(premium < 30) { status = '中度溢價'; statusColor = '#e67e22'; }
-    else { status = '高度溢價'; statusColor = '#e74c3c'; }
-    
-    document.getElementById('valueResult').innerHTML = `
-        <div class="analysis-result">
-            <div class="result-grid">
-                <div class="result-item"><div class="val" style="color:${statusColor}">${status}</div><div class="lbl">評估狀態</div></div>
-                <div class="result-item"><div class="val">${optionValue.toFixed(2)}</div><div class="lbl">選擇權價值</div></div>
-                <div class="result-item"><div class="val">${timeValue.toFixed(2)}</div><div class="lbl">年均時間價值</div></div>
-                <div class="result-item ${premium > 0 ? '' : 'down'}"><div class="val">${premium > 0 ? '+' : ''}${premium.toFixed(1)}%</div><div class="lbl">溢價率</div></div>
-            </div>
-        </div>
-    `;
-}
-
-// 上漲情境計算
-function calcUp() {
-    const stockPrice = parseFloat(document.getElementById('upStockPrice').value) || 0;
-    const convPrice = parseFloat(document.getElementById('upConvPrice').value) || 0;
-    const upPercent = parseFloat(document.getElementById('upPercent').value) || 20;
-    
-    if(stockPrice <= 0 || convPrice <= 0) {
-        document.getElementById('upResult').innerHTML = '<div style="color:#e74c3c;padding:12px">請輸入有效數值</div>';
-        return;
-    }
-    
-    const currentConvValue = (stockPrice / convPrice) * 100;
-    const newStockPrice = stockPrice * (1 + upPercent / 100);
-    const newConvValue = (newStockPrice / convPrice) * 100;
-    const cbGain = newConvValue - 100; // 假設CB從100元開始
-    const leverageRatio = cbGain / upPercent;
-    
-    document.getElementById('upResult').innerHTML = `
-        <div class="analysis-result">
-            <div class="result-grid">
-                <div class="result-item"><div class="val">${newStockPrice.toFixed(2)}</div><div class="lbl">目標股價</div></div>
-                <div class="result-item"><div class="val">${newConvValue.toFixed(2)}</div><div class="lbl">新轉換價值</div></div>
-                <div class="result-item"><div class="val">+${(newConvValue - currentConvValue).toFixed(2)}</div><div class="lbl">價值增加</div></div>
-                <div class="result-item"><div class="val">${leverageRatio.toFixed(2)}x</div><div class="lbl">槓桿倍數</div></div>
-            </div>
-        </div>
-    `;
-}
-
-// 下跌情境計算
-function calcDown() {
-    const cbPrice = parseFloat(document.getElementById('downCbPrice').value) || 100;
-    const convValue = parseFloat(document.getElementById('downConvValue').value) || 0;
-    const downPercent = parseFloat(document.getElementById('downPercent').value) || 20;
-    
-    const bondFloor = 98; // 債券底價
-    const newConvValue = convValue * (1 - downPercent / 100);
-    
-    // CB下跌受債券底價保護
-    const stockLoss = convValue * (downPercent / 100);
-    const cbNewPrice = Math.max(bondFloor, newConvValue); // CB不會跌破債券底
-    const cbLoss = cbPrice - cbNewPrice;
-    const protection = stockLoss > 0 ? ((stockLoss - cbLoss) / stockLoss * 100) : 0;
-    
-    document.getElementById('downResult').innerHTML = `
-        <div class="analysis-result down">
-            <div class="result-grid">
-                <div class="result-item down"><div class="val">${newConvValue.toFixed(2)}</div><div class="lbl">新轉換價值</div></div>
-                <div class="result-item"><div class="val">${cbNewPrice.toFixed(2)}</div><div class="lbl">預估CB價格</div></div>
-                <div class="result-item down"><div class="val">-${cbLoss.toFixed(2)}</div><div class="lbl">CB損失</div></div>
-                <div class="result-item"><div class="val">${protection.toFixed(1)}%</div><div class="lbl">下檔保護</div></div>
-            </div>
-        </div>
-        <div style="margin-top:12px;padding:12px;background:#fff5f5;border-radius:8px;font-size:13px;color:#666">
-            💡 股票下跌 ${downPercent}% 損失約 ${stockLoss.toFixed(2)} 元，CB損失約 ${cbLoss.toFixed(2)} 元<br>
-            CB具有 <b style="color:#27ae60">${protection.toFixed(1)}%</b> 的下檔保護效果
-        </div>
-    `;
-}
-
-// CBAS拆解計算
-function calcCBAS() {
-    const cbPrice = parseFloat(document.getElementById('cbasCbPrice').value) || 105;
-    const bondValue = parseFloat(document.getElementById('cbasBondValue').value) || 98;
-    const years = parseFloat(document.getElementById('cbasYears').value) || 3;
-    
-    const optionValue = cbPrice - bondValue;
-    const optionPct = (optionValue / cbPrice * 100);
-    const bondPct = (bondValue / cbPrice * 100);
-    const yearlyOption = optionValue / years;
-    
-    document.getElementById('cbasResult').innerHTML = `
-        <div class="analysis-result">
-            <div class="result-grid">
-                <div class="result-item"><div class="val">${bondValue.toFixed(2)}</div><div class="lbl">純債價值 (${bondPct.toFixed(1)}%)</div></div>
-                <div class="result-item"><div class="val">${optionValue.toFixed(2)}</div><div class="lbl">選擇權價值 (${optionPct.toFixed(1)}%)</div></div>
-                <div class="result-item"><div class="val">${yearlyOption.toFixed(2)}</div><div class="lbl">年均選擇權成本</div></div>
-            </div>
-            <div style="margin-top:16px;padding:12px;background:#f8f8f8;border-radius:8px">
-                <div style="display:flex;height:24px;border-radius:4px;overflow:hidden">
-                    <div style="width:${bondPct}%;background:#3498db"></div>
-                    <div style="width:${optionPct}%;background:#e67e22"></div>
-                </div>
-                <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:12px;color:#666">
-                    <span>🔵 純債價值 ${bondPct.toFixed(1)}%</span>
-                    <span>🟠 選擇權價值 ${optionPct.toFixed(1)}%</span>
-                </div>
-            </div>
-        </div>
-    `;
-}
-
 window.onload = init;
 </script>
 
