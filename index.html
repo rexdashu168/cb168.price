@@ -345,6 +345,8 @@
             <span class="stock-period" onclick="setStockPeriod('6m')">6個月</span>
             <span class="stock-period active" onclick="setStockPeriod('1y')">1年</span>
             <span class="stock-period" onclick="setStockPeriod('2y')">2年</span>
+            <span class="stock-period" onclick="setStockPeriod('3y')">3年</span>
+            <span class="stock-period" onclick="setStockPeriod('5y')">5年</span>
             <span class="stock-period" onclick="setStockPeriod('all')">全部</span>
         </div>
         <div class="stock-view-tabs">
@@ -377,6 +379,8 @@
             <span class="stock-period" onclick="setMultiPeriod('6m')">6個月</span>
             <span class="stock-period active" onclick="setMultiPeriod('1y')">1年</span>
             <span class="stock-period" onclick="setMultiPeriod('2y')">2年</span>
+            <span class="stock-period" onclick="setMultiPeriod('3y')">3年</span>
+            <span class="stock-period" onclick="setMultiPeriod('5y')">5年</span>
             <span class="stock-period" onclick="setMultiPeriod('all')">全部</span>
         </div>
         <div class="stock-view-tabs" style="margin-left:auto">
@@ -405,6 +409,7 @@
         <div class="avg-period-tab active" onclick="setAvgPeriod('1y')">1年</div>
         <div class="avg-period-tab" onclick="setAvgPeriod('2y')">2年</div>
         <div class="avg-period-tab" onclick="setAvgPeriod('3y')">3年</div>
+        <div class="avg-period-tab" onclick="setAvgPeriod('5y')">5年</div>
         <div class="avg-period-tab" onclick="setAvgPeriod('all')">全部</div>
     </div>
     <div class="avg-chart-container"><canvas id="avgPriceChart"></canvas></div>
@@ -420,6 +425,9 @@
             <span class="kline-period active" onclick="setKlinePeriod('3m')">3個月</span>
             <span class="kline-period" onclick="setKlinePeriod('6m')">6個月</span>
             <span class="kline-period" onclick="setKlinePeriod('1y')">1年</span>
+            <span class="kline-period" onclick="setKlinePeriod('2y')">2年</span>
+            <span class="kline-period" onclick="setKlinePeriod('3y')">3年</span>
+            <span class="kline-period" onclick="setKlinePeriod('5y')">5年</span>
             <span class="kline-period" onclick="setKlinePeriod('all')">全部</span>
         </div>
     </div>
@@ -462,6 +470,7 @@
         <div class="period-tab active" onclick="setPeriod('1y')">1年</div>
         <div class="period-tab" onclick="setPeriod('2y')">2年</div>
         <div class="period-tab" onclick="setPeriod('3y')">3年</div>
+        <div class="period-tab" onclick="setPeriod('5y')">5年</div>
         <div class="period-tab" onclick="setPeriod('all')">全部</div>
     </div>
 </div>
@@ -1079,9 +1088,77 @@ function drawIndustryChart() {
     chartData.forEach((d, i) => { if (i === 0) ctx.moveTo(getX(i), getY(d.avg)); else ctx.lineTo(getX(i), getY(d.avg)); });
     ctx.stroke();
     
+    // 13日均線（橘色虛線）
+    const ma13 = [];
+    for (let i = 0; i < chartData.length; i++) {
+        if (i < 12) { ma13.push(null); }
+        else {
+            let sum = 0;
+            for (let j = i - 12; j <= i; j++) sum += chartData[j].avg;
+            ma13.push(sum / 13);
+        }
+    }
+    ctx.beginPath(); ctx.strokeStyle = '#f39c12'; ctx.lineWidth = 1.5;
+    ctx.setLineDash([4, 3]);
+    let ma13Started = false;
+    ma13.forEach((val, i) => {
+        if (val !== null) {
+            if (!ma13Started) { ctx.moveTo(getX(i), getY(val)); ma13Started = true; }
+            else ctx.lineTo(getX(i), getY(val));
+        }
+    });
+    ctx.stroke();
+    ctx.setLineDash([]);
+    
     // 終點
     ctx.fillStyle = isUp ? '#e74c3c' : '#27ae60'; ctx.beginPath();
     ctx.arc(getX(chartData.length - 1), getY(lastAvg), 5, 0, Math.PI * 2); ctx.fill();
+    
+    // 找出最高和最低點的索引
+    let maxIdx = 0, minIdx = 0;
+    chartData.forEach((d, i) => {
+        if (d.avg >= chartData[maxIdx].avg) maxIdx = i;
+        if (d.avg <= chartData[minIdx].avg) minIdx = i;
+    });
+    
+    // 最高價標示（紅色框框）
+    const boxPadX = 6, boxPadY = 3;
+    const maxX = getX(maxIdx), maxY = getY(chartData[maxIdx].avg);
+    const maxText = chartData[maxIdx].avg.toFixed(2);
+    ctx.font = 'bold 11px Menlo, monospace';
+    const maxTextWidth = ctx.measureText(maxText).width;
+    let maxBoxX = maxX - maxTextWidth/2 - boxPadX;
+    let maxBoxY = maxY - 22;
+    if (maxBoxX < chartLeft) maxBoxX = chartLeft;
+    if (maxBoxX + maxTextWidth + boxPadX*2 > chartRight) maxBoxX = chartRight - maxTextWidth - boxPadX*2;
+    if (maxBoxY < chartTop) maxBoxY = maxY + 5;
+    ctx.fillStyle = '#e74c3c'; ctx.strokeStyle = '#e74c3c'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.roundRect(maxBoxX, maxBoxY, maxTextWidth + boxPadX*2, 16, 3); ctx.fill();
+    ctx.fillStyle = '#fff'; ctx.textAlign = 'left';
+    ctx.fillText(maxText, maxBoxX + boxPadX, maxBoxY + 12);
+    ctx.strokeStyle = '#e74c3c'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(maxX, maxY); ctx.lineTo(maxX, maxBoxY + 16); ctx.stroke();
+    
+    // 最低價標示（綠色框框）
+    const minX = getX(minIdx), minY = getY(chartData[minIdx].avg);
+    const minText = chartData[minIdx].avg.toFixed(2);
+    const minTextWidth = ctx.measureText(minText).width;
+    let minBoxX = minX - minTextWidth/2 - boxPadX;
+    let minBoxY = minY + 5;
+    if (minBoxX < chartLeft) minBoxX = chartLeft;
+    if (minBoxX + minTextWidth + boxPadX*2 > chartRight) minBoxX = chartRight - minTextWidth - boxPadX*2;
+    if (minBoxY + 16 > chartBottom) minBoxY = minY - 22;
+    ctx.fillStyle = '#27ae60'; ctx.strokeStyle = '#27ae60'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.roundRect(minBoxX, minBoxY, minTextWidth + boxPadX*2, 16, 3); ctx.fill();
+    ctx.fillStyle = '#fff'; ctx.textAlign = 'left';
+    ctx.fillText(minText, minBoxX + boxPadX, minBoxY + 12);
+    ctx.strokeStyle = '#27ae60'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(minX, minY); ctx.lineTo(minX, minBoxY); ctx.stroke();
+    
+    // 圖例（13MA）
+    ctx.font = '11px sans-serif'; ctx.textAlign = 'left';
+    ctx.fillStyle = '#f39c12';
+    ctx.fillText('— 13MA', chartLeft + 5, 68);
     
     // X軸標籤
     ctx.fillStyle = '#666'; ctx.font = '10px sans-serif'; ctx.textAlign = 'center';
@@ -1162,7 +1239,8 @@ function setPeriod(p) {
     document.querySelectorAll('.period-tab').forEach(t => {
         const txt = t.textContent;
         t.classList.toggle('active', (p === '3m' && txt === '3個月') || (p === '6m' && txt === '6個月') ||
-            (p === '1y' && txt === '1年') || (p === '2y' && txt === '2年') || (p === '3y' && txt === '3年') || (p === 'all' && txt === '全部'));
+            (p === '1y' && txt === '1年') || (p === '2y' && txt === '2年') || (p === '3y' && txt === '3年') || 
+            (p === '5y' && txt === '5年') || (p === 'all' && txt === '全部'));
     });
     if (VIEW === 'chart' && MODE === 'industry') {
         drawIndustryChart();
@@ -1334,6 +1412,7 @@ function filterByPeriod(prices) {
         case '1y': cutoffDate = new Date(now.setFullYear(now.getFullYear() - 1)); break;
         case '2y': cutoffDate = new Date(now.setFullYear(now.getFullYear() - 2)); break;
         case '3y': cutoffDate = new Date(now.setFullYear(now.getFullYear() - 3)); break;
+        case '5y': cutoffDate = new Date(now.setFullYear(now.getFullYear() - 5)); break;
         default: return prices;
     }
     const cutoffNum = parseInt(cutoffDate.toISOString().slice(0,10).replace(/-/g, ''));
@@ -1686,7 +1765,7 @@ function setAvgPeriod(p) {
     PERIOD = p;
     document.querySelectorAll('.avg-period-tab').forEach(t => {
         const txt = t.textContent;
-        t.classList.toggle('active', (p === '3m' && txt === '3個月') || (p === '6m' && txt === '6個月') || (p === '1y' && txt === '1年') || (p === '2y' && txt === '2年') || (p === '3y' && txt === '3年') || (p === 'all' && txt === '全部'));
+        t.classList.toggle('active', (p === '3m' && txt === '3個月') || (p === '6m' && txt === '6個月') || (p === '1y' && txt === '1年') || (p === '2y' && txt === '2年') || (p === '3y' && txt === '3年') || (p === '5y' && txt === '5年') || (p === 'all' && txt === '全部'));
     });
     renderAvgPriceChart();
 }
@@ -1713,6 +1792,7 @@ function getCutoffDateNum() {
         case '1y': cutoffDate = new Date(now.setFullYear(now.getFullYear() - 1)); break;
         case '2y': cutoffDate = new Date(now.setFullYear(now.getFullYear() - 2)); break;
         case '3y': cutoffDate = new Date(now.setFullYear(now.getFullYear() - 3)); break;
+        case '5y': cutoffDate = new Date(now.setFullYear(now.getFullYear() - 5)); break;
         default: return null;
     }
     return parseInt(cutoffDate.toISOString().slice(0,10).replace(/-/g, ''));
@@ -1780,8 +1860,76 @@ function renderAvgPriceChart() {
     dailyData.forEach((d, i) => { if (i === 0) ctx.moveTo(getX(i), getY(d.avg)); else ctx.lineTo(getX(i), getY(d.avg)); });
     ctx.stroke();
     
+    // 13日均線（橘色虛線）
+    const ma13 = [];
+    for (let i = 0; i < dailyData.length; i++) {
+        if (i < 12) { ma13.push(null); }
+        else {
+            let sum = 0;
+            for (let j = i - 12; j <= i; j++) sum += dailyData[j].avg;
+            ma13.push(sum / 13);
+        }
+    }
+    ctx.beginPath(); ctx.strokeStyle = '#f39c12'; ctx.lineWidth = 1.5;
+    ctx.setLineDash([4, 3]);
+    let ma13Started = false;
+    ma13.forEach((val, i) => {
+        if (val !== null) {
+            if (!ma13Started) { ctx.moveTo(getX(i), getY(val)); ma13Started = true; }
+            else ctx.lineTo(getX(i), getY(val));
+        }
+    });
+    ctx.stroke();
+    ctx.setLineDash([]);
+    
     ctx.fillStyle = isUp ? '#e74c3c' : '#27ae60'; ctx.beginPath();
     ctx.arc(getX(dailyData.length - 1), getY(lastAvg), 4, 0, Math.PI * 2); ctx.fill();
+    
+    // 找出最高和最低點的索引
+    let maxIdx = 0, minIdx = 0;
+    dailyData.forEach((d, i) => {
+        if (d.avg >= dailyData[maxIdx].avg) maxIdx = i;
+        if (d.avg <= dailyData[minIdx].avg) minIdx = i;
+    });
+    
+    // 最高價標示（紅色框框）
+    const boxPadX = 6;
+    const maxX = getX(maxIdx), maxY = getY(dailyData[maxIdx].avg);
+    const maxText = dailyData[maxIdx].avg.toFixed(2);
+    ctx.font = 'bold 11px Menlo, monospace';
+    const maxTextWidth = ctx.measureText(maxText).width;
+    let maxBoxX = maxX - maxTextWidth/2 - boxPadX;
+    let maxBoxY = maxY - 22;
+    if (maxBoxX < chartLeft) maxBoxX = chartLeft;
+    if (maxBoxX + maxTextWidth + boxPadX*2 > chartRight) maxBoxX = chartRight - maxTextWidth - boxPadX*2;
+    if (maxBoxY < chartTop) maxBoxY = maxY + 5;
+    ctx.fillStyle = '#e74c3c'; ctx.strokeStyle = '#e74c3c'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.roundRect(maxBoxX, maxBoxY, maxTextWidth + boxPadX*2, 16, 3); ctx.fill();
+    ctx.fillStyle = '#fff'; ctx.textAlign = 'left';
+    ctx.fillText(maxText, maxBoxX + boxPadX, maxBoxY + 12);
+    ctx.strokeStyle = '#e74c3c'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(maxX, maxY); ctx.lineTo(maxX, maxBoxY + 16); ctx.stroke();
+    
+    // 最低價標示（綠色框框）
+    const minX = getX(minIdx), minY = getY(dailyData[minIdx].avg);
+    const minText = dailyData[minIdx].avg.toFixed(2);
+    const minTextWidth = ctx.measureText(minText).width;
+    let minBoxX = minX - minTextWidth/2 - boxPadX;
+    let minBoxY = minY + 5;
+    if (minBoxX < chartLeft) minBoxX = chartLeft;
+    if (minBoxX + minTextWidth + boxPadX*2 > chartRight) minBoxX = chartRight - minTextWidth - boxPadX*2;
+    if (minBoxY + 16 > chartBottom) minBoxY = minY - 22;
+    ctx.fillStyle = '#27ae60'; ctx.strokeStyle = '#27ae60'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.roundRect(minBoxX, minBoxY, minTextWidth + boxPadX*2, 16, 3); ctx.fill();
+    ctx.fillStyle = '#fff'; ctx.textAlign = 'left';
+    ctx.fillText(minText, minBoxX + boxPadX, minBoxY + 12);
+    ctx.strokeStyle = '#27ae60'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(minX, minY); ctx.lineTo(minX, minBoxY); ctx.stroke();
+    
+    // 圖例（13MA）
+    ctx.font = '11px sans-serif'; ctx.textAlign = 'left';
+    ctx.fillStyle = '#f39c12';
+    ctx.fillText('— 13MA', width - 80, 16);
     
     ctx.fillStyle = '#666'; ctx.font = '10px sans-serif'; ctx.textAlign = 'center';
     const labelCount = Math.min(6, dailyData.length);
@@ -1833,6 +1981,8 @@ function setStockPeriod(p) {
             (p === '6m' && t.textContent === '6個月') ||
             (p === '1y' && t.textContent === '1年') ||
             (p === '2y' && t.textContent === '2年') ||
+            (p === '3y' && t.textContent === '3年') ||
+            (p === '5y' && t.textContent === '5年') ||
             (p === 'all' && t.textContent === '全部')
         );
     });
@@ -1859,6 +2009,8 @@ function filterStockPeriod(prices) {
         case '6m': cutoffDate = new Date(now.setMonth(now.getMonth() - 6)); break;
         case '1y': cutoffDate = new Date(now.setFullYear(now.getFullYear() - 1)); break;
         case '2y': cutoffDate = new Date(now.setFullYear(now.getFullYear() - 2)); break;
+        case '3y': cutoffDate = new Date(now.setFullYear(now.getFullYear() - 3)); break;
+        case '5y': cutoffDate = new Date(now.setFullYear(now.getFullYear() - 5)); break;
         default: return prices;
     }
     const cutoffNum = parseInt(cutoffDate.toISOString().slice(0,10).replace(/-/g, ''));
@@ -2050,12 +2202,12 @@ function drawStockChart(prices, name) {
     const dpr = window.devicePixelRatio || 1;
     const rect = container.getBoundingClientRect();
     canvas.width = rect.width * dpr;
-    canvas.height = 300 * dpr;
+    canvas.height = 320 * dpr;
     canvas.style.width = rect.width + 'px';
-    canvas.style.height = '300px';
+    canvas.style.height = '320px';
     ctx.scale(dpr, dpr);
     
-    const width = rect.width, height = 300;
+    const width = rect.width, height = 320;
     const chartLeft = 55, chartRight = width - 15, chartTop = 30, chartBottom = height - 35;
     const chartWidth = chartRight - chartLeft, chartHeight = chartBottom - chartTop;
     
@@ -2064,6 +2216,24 @@ function drawStockChart(prices, name) {
     const minPrice = Math.min(...prices.map(p => p.low));
     const priceRange = maxPrice - minPrice || 1;
     const padding = priceRange * 0.1;
+    
+    // 計算13日均線
+    const ma13 = [];
+    for (let i = 0; i < prices.length; i++) {
+        if (i < 12) { ma13.push(null); }
+        else {
+            let sum = 0;
+            for (let j = i - 12; j <= i; j++) sum += prices[j].close;
+            ma13.push(sum / 13);
+        }
+    }
+    
+    // 找出最高和最低點的索引
+    let maxIdx = 0, minIdx = 0;
+    prices.forEach((p, i) => {
+        if (p.high >= prices[maxIdx].high) maxIdx = i;
+        if (p.low <= prices[minIdx].low) minIdx = i;
+    });
     
     ctx.clearRect(0, 0, width, height);
     
@@ -2095,14 +2265,69 @@ function drawStockChart(prices, name) {
     prices.forEach((p, i) => ctx.lineTo(getX(i), getY(p.close)));
     ctx.lineTo(getX(prices.length - 1), chartBottom); ctx.closePath(); ctx.fillStyle = gradient; ctx.fill();
     
-    // 折線
+    // 折線（收盤價）
     ctx.beginPath(); ctx.strokeStyle = isUp ? '#e74c3c' : '#27ae60'; ctx.lineWidth = 2;
     prices.forEach((p, i) => { if (i === 0) ctx.moveTo(getX(i), getY(p.close)); else ctx.lineTo(getX(i), getY(p.close)); });
     ctx.stroke();
     
+    // 13日均線（橘色虛線）
+    ctx.beginPath(); ctx.strokeStyle = '#f39c12'; ctx.lineWidth = 1.5;
+    ctx.setLineDash([4, 3]);
+    let started = false;
+    ma13.forEach((val, i) => {
+        if (val !== null) {
+            if (!started) { ctx.moveTo(getX(i), getY(val)); started = true; }
+            else ctx.lineTo(getX(i), getY(val));
+        }
+    });
+    ctx.stroke();
+    ctx.setLineDash([]);
+    
     // 終點
     ctx.fillStyle = isUp ? '#e74c3c' : '#27ae60';
     ctx.beginPath(); ctx.arc(getX(prices.length - 1), getY(lastClose), 4, 0, Math.PI * 2); ctx.fill();
+    
+    // 最高價標示（紅色框框）
+    const maxX = getX(maxIdx), maxY = getY(prices[maxIdx].high);
+    const maxText = prices[maxIdx].high.toFixed(2);
+    ctx.font = 'bold 11px Menlo, monospace';
+    const maxTextWidth = ctx.measureText(maxText).width;
+    const boxPadX = 6, boxPadY = 3;
+    let maxBoxX = maxX - maxTextWidth/2 - boxPadX;
+    let maxBoxY = maxY - 22;
+    // 確保不超出邊界
+    if (maxBoxX < chartLeft) maxBoxX = chartLeft;
+    if (maxBoxX + maxTextWidth + boxPadX*2 > chartRight) maxBoxX = chartRight - maxTextWidth - boxPadX*2;
+    if (maxBoxY < chartTop) maxBoxY = maxY + 5;
+    ctx.fillStyle = '#e74c3c'; ctx.strokeStyle = '#e74c3c'; ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.roundRect(maxBoxX, maxBoxY, maxTextWidth + boxPadX*2, 16, 3);
+    ctx.fill();
+    ctx.fillStyle = '#fff'; ctx.textAlign = 'left';
+    ctx.fillText(maxText, maxBoxX + boxPadX, maxBoxY + 12);
+    // 連接線
+    ctx.strokeStyle = '#e74c3c'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(maxX, maxY); ctx.lineTo(maxX, maxBoxY + 16); ctx.stroke();
+    
+    // 最低價標示（綠色框框）
+    const minX = getX(minIdx), minY = getY(prices[minIdx].low);
+    const minText = prices[minIdx].low.toFixed(2);
+    const minTextWidth = ctx.measureText(minText).width;
+    let minBoxX = minX - minTextWidth/2 - boxPadX;
+    let minBoxY = minY + 5;
+    // 確保不超出邊界
+    if (minBoxX < chartLeft) minBoxX = chartLeft;
+    if (minBoxX + minTextWidth + boxPadX*2 > chartRight) minBoxX = chartRight - minTextWidth - boxPadX*2;
+    if (minBoxY + 16 > chartBottom) minBoxY = minY - 22;
+    ctx.fillStyle = '#27ae60'; ctx.strokeStyle = '#27ae60'; ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.roundRect(minBoxX, minBoxY, minTextWidth + boxPadX*2, 16, 3);
+    ctx.fill();
+    ctx.fillStyle = '#fff'; ctx.textAlign = 'left';
+    ctx.fillText(minText, minBoxX + boxPadX, minBoxY + 12);
+    // 連接線
+    ctx.strokeStyle = '#27ae60'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(minX, minY); ctx.lineTo(minX, minBoxY); ctx.stroke();
     
     // 標題
     ctx.fillStyle = '#c96442'; ctx.font = 'bold 14px sans-serif'; ctx.textAlign = 'center';
@@ -2113,6 +2338,11 @@ function drawStockChart(prices, name) {
     const pct = (change / firstClose * 100).toFixed(2);
     ctx.font = '12px Menlo, monospace'; ctx.fillStyle = isUp ? '#e74c3c' : '#27ae60'; ctx.textAlign = 'right';
     ctx.fillText(`${lastClose.toFixed(2)} (${change >= 0 ? '+' : ''}${pct}%)`, chartRight, 18);
+    
+    // 圖例（13MA）
+    ctx.font = '11px sans-serif'; ctx.textAlign = 'left';
+    ctx.fillStyle = '#f39c12';
+    ctx.fillText('— 13MA', chartLeft + 5, 18);
     
     // X軸標籤
     ctx.fillStyle = '#666'; ctx.font = '10px sans-serif'; ctx.textAlign = 'center';
@@ -2137,6 +2367,8 @@ function setMultiPeriod(p) {
             (p === '6m' && t.textContent === '6個月') ||
             (p === '1y' && t.textContent === '1年') ||
             (p === '2y' && t.textContent === '2年') ||
+            (p === '3y' && t.textContent === '3年') ||
+            (p === '5y' && t.textContent === '5年') ||
             (p === 'all' && t.textContent === '全部')
         );
     });
@@ -2163,6 +2395,8 @@ function filterMultiPeriod(prices) {
         case '6m': cutoffDate = new Date(now.setMonth(now.getMonth() - 6)); break;
         case '1y': cutoffDate = new Date(now.setFullYear(now.getFullYear() - 1)); break;
         case '2y': cutoffDate = new Date(now.setFullYear(now.getFullYear() - 2)); break;
+        case '3y': cutoffDate = new Date(now.setFullYear(now.getFullYear() - 3)); break;
+        case '5y': cutoffDate = new Date(now.setFullYear(now.getFullYear() - 5)); break;
         default: return prices;
     }
     const cutoffNum = parseInt(cutoffDate.toISOString().slice(0,10).replace(/-/g, ''));
@@ -2417,6 +2651,9 @@ function setKlinePeriod(p) {
             (p === '3m' && t.textContent === '3個月') ||
             (p === '6m' && t.textContent === '6個月') ||
             (p === '1y' && t.textContent === '1年') ||
+            (p === '2y' && t.textContent === '2年') ||
+            (p === '3y' && t.textContent === '3年') ||
+            (p === '5y' && t.textContent === '5年') ||
             (p === 'all' && t.textContent === '全部')
         );
     });
@@ -2431,6 +2668,9 @@ function filterKlinePeriod(prices) {
         case '3m': cutoffDate = new Date(now.setMonth(now.getMonth() - 3)); break;
         case '6m': cutoffDate = new Date(now.setMonth(now.getMonth() - 6)); break;
         case '1y': cutoffDate = new Date(now.setFullYear(now.getFullYear() - 1)); break;
+        case '2y': cutoffDate = new Date(now.setFullYear(now.getFullYear() - 2)); break;
+        case '3y': cutoffDate = new Date(now.setFullYear(now.getFullYear() - 3)); break;
+        case '5y': cutoffDate = new Date(now.setFullYear(now.getFullYear() - 5)); break;
         default: return prices;
     }
     const cutoffNum = parseInt(cutoffDate.toISOString().slice(0,10).replace(/-/g, ''));
