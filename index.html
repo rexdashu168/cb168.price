@@ -12,6 +12,8 @@
         body { font-family: -apple-system, BlinkMacSystemFont, "Microsoft JhengHei", sans-serif; background: var(--bg); color: var(--text); font-size: 16px; line-height: 1.6; }
         .container { max-width: 900px; margin: 0 auto; padding: 12px; }
         @media(min-width: 1024px) { .container { max-width: 1200px; padding: 20px; } }
+
+```
     .loading { position: fixed; top:0; left:0; right:0; bottom:0; background: var(--bg); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; }
     .loading.hidden { display: none; }
     .spinner { width: 40px; height: 40px; border: 3px solid #e0e0e0; border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px; }
@@ -99,6 +101,8 @@
     th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #eee; }
     th { background: #f8f8f8; font-weight: 600; position: sticky; top: 0; }
     tr:hover { background: #fafafa; cursor: pointer; }
+    tr.no-price { background: #f9f9f9; opacity: 0.7; }
+    tr.no-price:hover { cursor: default; }
     .code { color: var(--primary); font-weight: 600; }
     .up { color: var(--up); }
     .down { color: var(--down); }
@@ -120,6 +124,7 @@
 
     .hidden { display: none !important; }
 </style>
+```
 
 </head>
 <body>
@@ -135,6 +140,7 @@
         <div class="subtitle">可轉債歷史價格查詢系統 | Rex大叔投資研究室</div>
     </div>
 
+```
 <!-- 子功能標籤 -->
 <div class="sub-tabs" id="subTabs">
     <div class="sub-tab active" onclick="setMode('stock')">🔍 個股查詢</div>
@@ -205,6 +211,7 @@
         <tbody id="tableBody"></tbody>
     </table>
 </div>
+```
 
 </div>
 
@@ -612,15 +619,21 @@ function filterByPeriod(prices) {
 
 function renderTable() {
     const q = document.getElementById('search').value.toLowerCase().trim();
-    const codes = Object.keys(DB.cbPrice).sort();
+    
+    // 合併 cbPrice 和 cbInfo 的所有代碼
+    const priceKeys = Object.keys(DB.cbPrice);
+    const infoKeys = Object.keys(DB.cbInfo);
+    const allCodes = [...new Set([...priceKeys, ...infoKeys])].sort();
     
     // 篩選
-    const filtered = codes.filter(c => {
+    const filtered = allCodes.filter(c => {
         const info = DB.cbInfo[c] || {};
+        const hasPrice = DB.cbPrice[c] && DB.cbPrice[c].length > 0;
         
         // 搜尋條件
         const matchSearch = !q || c.toLowerCase().includes(q) || 
             (info.name||'').toLowerCase().includes(q) || 
+            (info.stockName||'').toLowerCase().includes(q) ||
             (info.industry||'').toLowerCase().includes(q);
         
         // 產業篩選
@@ -636,33 +649,49 @@ function renderTable() {
     document.getElementById('filterCount').textContent = filtered.length;
     
     if(filtered.length === 0) {
-        document.getElementById('tableBody').innerHTML = `<tr><td colspan="10" style="text-align:center;padding:40px;color:#999">${codes.length === 0 ? '請先點擊上方年度按鈕載入資料' : '無符合條件的CB'}</td></tr>`;
+        document.getElementById('tableBody').innerHTML = `<tr><td colspan="10" style="text-align:center;padding:40px;color:#999">${allCodes.length === 0 ? '請先上傳 00_CB.xlsx 或載入年度資料' : '無符合條件的CB'}</td></tr>`;
         return;
     }
     
     document.getElementById('tableBody').innerHTML = filtered.slice(0, 300).map(code => {
-        const allPrices = DB.cbPrice[code];
-        const p = filterByPeriod(allPrices);
-        if(p.length === 0) return '';
-        
         const info = DB.cbInfo[code] || {};
-        const first = p[0], last = p[p.length - 1];
-        const high = Math.max(...p.map(x => x.high)), low = Math.min(...p.map(x => x.low));
-        const chg = last.close - first.close, pct = first.close > 0 ? (chg / first.close * 100) : 0;
+        const allPrices = DB.cbPrice[code] || [];
+        const p = filterByPeriod(allPrices);
         
-        return `<tr onclick="openDetail('${code}')">
+        // 有價格資料
+        if(p.length > 0) {
+            const first = p[0], last = p[p.length - 1];
+            const high = Math.max(...p.map(x => x.high)), low = Math.min(...p.map(x => x.low));
+            const chg = last.close - first.close, pct = first.close > 0 ? (chg / first.close * 100) : 0;
+            
+            return `<tr onclick="openDetail('${code}')">
+                <td class="code">${code}</td>
+                <td>${info.name || '-'}</td>
+                <td class="hide-mobile">${info.industry || '-'}</td>
+                <td class="text-center">${p.length}</td>
+                <td class="hide-mobile">${first.date}</td>
+                <td class="hide-mobile">${last.date}</td>
+                <td class="text-right">${high.toFixed(2)}</td>
+                <td class="text-right">${low.toFixed(2)}</td>
+                <td class="text-right">${last.close.toFixed(2)}</td>
+                <td class="text-right ${chg >= 0 ? 'up' : 'down'}">${chg >= 0 ? '+' : ''}${pct.toFixed(1)}%</td>
+            </tr>`;
+        }
+        
+        // 只有基本資料，無價格
+        return `<tr class="no-price">
             <td class="code">${code}</td>
             <td>${info.name || '-'}</td>
             <td class="hide-mobile">${info.industry || '-'}</td>
-            <td class="text-center">${p.length}</td>
-            <td class="hide-mobile">${first.date}</td>
-            <td class="hide-mobile">${last.date}</td>
-            <td class="text-right">${high.toFixed(2)}</td>
-            <td class="text-right">${low.toFixed(2)}</td>
-            <td class="text-right">${last.close.toFixed(2)}</td>
-            <td class="text-right ${chg >= 0 ? 'up' : 'down'}">${chg >= 0 ? '+' : ''}${pct.toFixed(1)}%</td>
+            <td class="text-center" style="color:#999">-</td>
+            <td class="hide-mobile" style="color:#999">未載入</td>
+            <td class="hide-mobile" style="color:#999">-</td>
+            <td class="text-right" style="color:#999">-</td>
+            <td class="text-right" style="color:#999">-</td>
+            <td class="text-right" style="color:#999">-</td>
+            <td class="text-right" style="color:#999">-</td>
         </tr>`;
-    }).filter(r => r).join('');
+    }).join('');
 }
 
 function openDetail(code) {
