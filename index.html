@@ -66,14 +66,20 @@
     .quick-filter .badge { background: rgba(0,0,0,0.1); padding: 2px 8px; border-radius: 10px; font-size: 12px; }
     .quick-filter.active .badge { background: rgba(255,255,255,0.3); }
 
-    .ind-grid { display: flex; flex-direction: column; gap: 8px; max-height: 400px; overflow-y: auto; }
-    .ind-tag { display: flex; align-items: center; gap: 12px; padding: 14px 18px; background: var(--clickable); border: 1px solid var(--clickable-border); border-radius: 12px; cursor: pointer; font-size: 16px; font-weight: 600; color: #2c2c2c; transition: all 0.2s; }
+    .ind-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+    .ind-tag { padding: 6px 12px; background: var(--clickable); border: 1px solid var(--clickable-border); border-radius: 16px; cursor: pointer; font-size: 13px; font-weight: 600; color: #2c2c2c; transition: all 0.2s; display: flex; align-items: center; gap: 4px; }
     .ind-tag:hover { border-color: var(--primary); background: var(--clickable-hover); }
     .ind-tag.active { background: var(--listed); color: #fff; border-color: var(--listed); }
-    .ind-tag .emoji { font-size: 20px; }
-    .ind-tag .name { flex: 1; }
-    .ind-tag .num { background: rgba(0,0,0,0.08); padding: 4px 14px; border-radius: 12px; font-size: 15px; font-weight: 700; font-family: 'Menlo', monospace; color: var(--primary); min-width: 50px; text-align: center; }
-    .ind-tag.active .num { background: rgba(255,255,255,0.3); color: #fff; }
+    .ind-tag .num { font-size: 12px; opacity: 0.8; }
+    .ind-tag.active .num { opacity: 1; }
+    
+    /* 篩選標籤組 */
+    .filter-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; padding-top: 10px; border-top: 1px dashed #ddd; }
+    .filter-tag { padding: 5px 10px; background: #fff; border: 1px solid #ddd; border-radius: 12px; cursor: pointer; font-size: 12px; font-weight: 600; color: #666; transition: all 0.2s; }
+    .filter-tag:hover { border-color: var(--primary); }
+    .filter-tag.active { background: var(--info); color: #fff; border-color: var(--info); }
+    .filter-tag.active.guarantee { background: #e74c3c; border-color: #e74c3c; }
+    .filter-tag.active.method { background: #9b59b6; border-color: #9b59b6; }
 
     .search-box { margin-bottom: 16px; }
     .search-input { width: 100%; padding: 12px 16px; border-radius: 10px; border: 2px solid var(--border); font-size: 16px; outline: none; }
@@ -99,12 +105,12 @@
 
     /* 表格區域 */
     .table-wrap { overflow-x: auto; background: #fff; border-radius: 10px; border: 1px solid var(--border); }
-    table { width: 100%; border-collapse: collapse; font-size: 13px; }
-    th, td { padding: 8px 10px; text-align: left; border-bottom: 1px solid #eee; white-space: nowrap; }
-    th { background: #f8f8f8; font-weight: 600; position: sticky; top: 0; cursor: pointer; user-select: none; font-size: 12px; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    th, td { padding: 6px 6px; text-align: left; border-bottom: 1px solid #eee; white-space: nowrap; }
+    th { background: #f8f8f8; font-weight: 600; position: sticky; top: 0; cursor: pointer; user-select: none; text-align: center; }
     th:hover { background: #f0f0f0; }
-    th.sorted-asc::after { content: ' ▲'; color: var(--primary); }
-    th.sorted-desc::after { content: ' ▼'; color: var(--primary); }
+    th.sorted-asc::after { content: '▲'; color: var(--primary); font-size: 10px; }
+    th.sorted-desc::after { content: '▼'; color: var(--primary); font-size: 10px; }
     tr:hover { background: #fafafa; cursor: pointer; }
     tr.no-price { background: #f9f9f9; opacity: 0.7; }
     .code { color: var(--primary); font-weight: 600; }
@@ -112,16 +118,17 @@
     .down { color: var(--down); }
     .text-right { text-align: right; }
     .text-center { text-align: center; }
+    .text-left { text-align: left; }
     .premium-low { background: rgba(39,174,96,0.08); }
     .premium-high { background: rgba(231,76,60,0.08); }
     
     /* 擔保標籤 */
-    .guarantee-badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; }
+    .guarantee-badge { display: inline-block; padding: 1px 5px; border-radius: 3px; font-size: 12px; font-weight: 700; }
     .guarantee-badge.yes { background: #fff0f0; color: #e74c3c; border: 1px solid #f5c6cb; }
     .guarantee-badge.no { background: #e8f5e9; color: #27ae60; border: 1px solid #c3e6cb; }
     
     /* 剩餘天數 */
-    .days-badge { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+    .days-badge { display: inline-block; padding: 1px 4px; border-radius: 3px; font-size: 12px; font-weight: 600; }
     .days-badge.urgent { background: #fff3cd; color: #856404; }
     .days-badge.warning { background: #ffeeba; color: #856404; }
     .days-badge.normal { background: #f8f9fa; color: #6c757d; }
@@ -251,10 +258,10 @@
     <input type="text" class="search-input" id="search" placeholder="搜尋CB代號、名稱、產業、產業地位..." oninput="renderTable()">
 </div>
 
-<div class="control-row">
-    <div class="view-tabs">
+<div class="control-row" id="controlRow">
+    <div class="view-tabs" id="viewTabs">
         <div class="view-tab active" onclick="setView('table')">📋 表格</div>
-        <div class="view-tab" onclick="setView('chart')">📈 走勢圖</div>
+        <div class="view-tab" onclick="setView('chart')" id="chartViewTab">📈 走勢圖</div>
     </div>
     <div class="period-tabs">
         <div class="period-tab" onclick="setPeriod('3m')">3個月</div>
@@ -266,7 +273,7 @@
     </div>
 </div>
 
-<div class="chart-area hidden" id="chartArea"><canvas id="mainChart"></canvas></div>
+<div class="chart-area hidden" id="chartArea"><canvas id="industryChart"></canvas></div>
 
 <div class="table-wrap" id="tableArea">
     <table>
@@ -314,8 +321,8 @@
 
 <script>
 const FILES = { CBPRICE_BASE: 'data/', CB_INFO: '00_CB.xlsx' };
-const CACHE_DB_NAME = 'CBPriceCache_v32';
-const CACHE_DB_VERSION = 1;
+const CACHE_DB_NAME = 'CBPriceCache_v3';
+const CACHE_DB_VERSION = 3;
 const CACHE_MAX_AGE = 24 * 60 * 60 * 1000;
 
 const DB = { cbPrice: {}, cbPriceYears: {}, cbInfo: {}, dailyAvg: {}, listedCodes: new Set() };
@@ -330,7 +337,7 @@ let LISTED_MODE = 'listed';
 let MODE = 'stock';
 let VIEW = 'table';
 let PERIOD = '1y';
-let FILTER = { industry: '', guarantee: '', quickFilter: '' };
+let FILTER = { industry: '', guarantee: '', method: '', quickFilter: '' };
 let CURRENT_CODE = '';
 let AVG_TYPE = 'all';
 let SORT = { field: '', dir: '' };
@@ -379,20 +386,26 @@ async function init() {
         const cached = await loadFromCache();
         
         if (cached && Object.keys(DB.cbInfo).length > 0) {
-            hideLoading();
+            // 有快取，直接顯示
+            document.getElementById('loading').classList.add('hidden');
             updateUI();
+            
+            // 背景檢查更新
             const meta = await getCacheData('meta', 'main');
-            if (Date.now() - (meta?.timestamp || 0) > CACHE_MAX_AGE) backgroundUpdate();
+            if (Date.now() - (meta?.timestamp || 0) > CACHE_MAX_AGE) {
+                setTimeout(() => backgroundUpdate(), 1000);
+            }
         } else {
-            document.getElementById('loadStatus').innerText = '首次載入資料...';
+            // 無快取，前景載入
+            document.getElementById('loadStatus').innerText = '首次載入中...';
             await loadFromNetwork();
             await saveToCache();
-            hideLoading();
+            document.getElementById('loading').classList.add('hidden');
             updateUI();
         }
     } catch(e) {
         console.error('初始化失敗:', e);
-        document.getElementById('loadStatus').innerText = '載入失敗，請重新整理';
+        document.getElementById('loadStatus').innerText = '載入失敗';
     }
 }
 
@@ -660,12 +673,12 @@ function calcNDayChange(prices, n) {
     return ((last - nDayAgo) / nDayAgo * 100);
 }
 
-// 計算振幅
+// 計算振幅 (最高/最低 - 1) * 100
 function calcAmplitude(prices) {
     if (!prices || prices.length === 0) return null;
     const last = prices[prices.length - 1];
     if (last.low <= 0) return null;
-    return ((last.high - last.low) / last.low * 100);
+    return ((last.high / last.low - 1) * 100);
 }
 
 // ========== UI 控制 ==========
@@ -694,32 +707,159 @@ function setMode(m) {
         m === 'stock' ? '個股' : m === 'industry' ? '產業' : m === 'overall' ? '整體' : '均價'
     )));
     
-    if (m === 'stock') FILTER = { industry: '', guarantee: '', quickFilter: '' };
-    else if (m === 'industry') { FILTER.guarantee = ''; FILTER.quickFilter = ''; }
-    else if (m === 'overall') { FILTER.industry = ''; FILTER.quickFilter = ''; }
+    if (m === 'stock') FILTER = { industry: '', guarantee: '', method: '', quickFilter: '' };
+    else if (m === 'industry') { FILTER.quickFilter = ''; }
+    else if (m === 'overall') { FILTER.industry = ''; FILTER.method = ''; FILTER.quickFilter = ''; }
     
     const isAvgMode = m === 'avgPrice';
+    const isIndustryMode = m === 'industry';
+    
     document.getElementById('avgPriceArea').classList.toggle('hidden', !isAvgMode);
     document.getElementById('statsBox').classList.toggle('hidden', isAvgMode);
-    document.getElementById('quickFilters').classList.toggle('hidden', isAvgMode || LISTED_MODE === 'delisted' || m === 'industry');
+    document.getElementById('quickFilters').classList.toggle('hidden', isAvgMode || LISTED_MODE === 'delisted' || isIndustryMode);
     document.getElementById('filterStatus').classList.toggle('hidden', isAvgMode || !hasActiveFilter());
     document.querySelector('.search-box').classList.toggle('hidden', isAvgMode);
-    document.querySelector('.control-row').classList.toggle('hidden', isAvgMode);
+    document.getElementById('controlRow').classList.toggle('hidden', isAvgMode);
     document.getElementById('tableArea').classList.toggle('hidden', isAvgMode);
     document.getElementById('pagination').classList.toggle('hidden', isAvgMode);
     document.getElementById('chartArea').classList.toggle('hidden', true);
+    
+    // 個股查詢隱藏走勢圖按鈕，產業查詢顯示
+    const chartTab = document.getElementById('chartViewTab');
+    if (chartTab) chartTab.classList.toggle('hidden', m === 'stock' || m === 'overall');
+    
+    VIEW = 'table';
+    document.querySelectorAll('.view-tab').forEach((t,i) => t.classList.toggle('active', i === 0));
     
     if (isAvgMode) renderAvgPriceChart();
     else { PAGE.current = 1; renderStatsBox(); updateFilterStatus(); renderTable(); }
 }
 
-function hasActiveFilter() { return FILTER.industry || FILTER.guarantee || FILTER.quickFilter; }
+function hasActiveFilter() { return FILTER.industry || FILTER.guarantee || FILTER.method || FILTER.quickFilter; }
 
 function setView(v) {
     VIEW = v;
     document.querySelectorAll('.view-tab').forEach((t,i) => t.classList.toggle('active', ['table','chart'][i] === v));
     document.getElementById('tableArea').classList.toggle('hidden', v !== 'table');
     document.getElementById('chartArea').classList.toggle('hidden', v !== 'chart');
+    document.getElementById('pagination').classList.toggle('hidden', v !== 'table');
+    
+    if (v === 'chart' && MODE === 'industry') {
+        setTimeout(() => drawIndustryChart(), 50);
+    }
+}
+
+// 繪製產業平均價格走勢圖
+function drawIndustryChart() {
+    const canvas = document.getElementById('industryChart');
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    const container = canvas.parentElement;
+    const dpr = window.devicePixelRatio || 1;
+    const rect = container.getBoundingClientRect();
+    canvas.width = rect.width * dpr;
+    canvas.height = 300 * dpr;
+    canvas.style.width = rect.width + 'px';
+    canvas.style.height = '300px';
+    ctx.scale(dpr, dpr);
+    
+    const width = rect.width, height = 300;
+    
+    // 取得符合篩選條件的CB代碼
+    const filteredData = getFilteredData();
+    const codes = filteredData.map(d => d.code);
+    
+    if (codes.length === 0) {
+        ctx.fillStyle = '#999'; ctx.font = '14px sans-serif'; ctx.textAlign = 'center';
+        ctx.fillText('請先選擇產業', width/2, height/2);
+        return;
+    }
+    
+    // 收集每日均價
+    const dailyPrices = {};
+    codes.forEach(code => {
+        const prices = filterByPeriod(DB.cbPrice[code] || []);
+        prices.forEach(p => {
+            if (!dailyPrices[p.dateNum]) dailyPrices[p.dateNum] = { date: p.date, prices: [] };
+            dailyPrices[p.dateNum].prices.push(p.close);
+        });
+    });
+    
+    // 計算每日均價
+    const sortedDates = Object.keys(dailyPrices).map(Number).sort((a,b) => a-b);
+    const chartData = sortedDates.map(dateNum => {
+        const day = dailyPrices[dateNum];
+        const avg = day.prices.reduce((a,b) => a+b, 0) / day.prices.length;
+        return { dateNum, date: day.date, avg, count: day.prices.length };
+    });
+    
+    if (chartData.length < 2) {
+        ctx.fillStyle = '#999'; ctx.font = '14px sans-serif'; ctx.textAlign = 'center';
+        ctx.fillText('資料不足', width/2, height/2);
+        return;
+    }
+    
+    const avgPrices = chartData.map(d => d.avg);
+    const maxPrice = Math.max(...avgPrices), minPrice = Math.min(...avgPrices);
+    const priceRange = maxPrice - minPrice || 1, padding = priceRange * 0.1;
+    const chartLeft = 55, chartRight = width - 15, chartTop = 30, chartBottom = height - 40;
+    const chartWidth = chartRight - chartLeft, chartHeight = chartBottom - chartTop;
+    
+    ctx.clearRect(0, 0, width, height);
+    
+    // 標題
+    const title = FILTER.industry ? `${FILTER.industry} 平均價格走勢 (${codes.length}檔)` : `全部產業平均價格走勢 (${codes.length}檔)`;
+    ctx.fillStyle = '#333'; ctx.font = 'bold 14px sans-serif'; ctx.textAlign = 'left';
+    ctx.fillText(title, chartLeft, 18);
+    
+    // 格線
+    ctx.strokeStyle = '#e8e8e8'; ctx.lineWidth = 1;
+    for (let i = 0; i <= 4; i++) { const y = chartTop + (chartHeight / 4) * i; ctx.beginPath(); ctx.moveTo(chartLeft, y); ctx.lineTo(chartRight, y); ctx.stroke(); }
+    
+    // Y軸標籤
+    ctx.fillStyle = '#666'; ctx.font = '11px Menlo, monospace'; ctx.textAlign = 'right';
+    for (let i = 0; i <= 4; i++) {
+        const price = maxPrice + padding - ((priceRange + padding * 2) / 4) * i;
+        ctx.fillText(price.toFixed(1), chartLeft - 5, chartTop + (chartHeight / 4) * i + 4);
+    }
+    
+    const getX = (i) => chartLeft + (i / (chartData.length - 1)) * chartWidth;
+    const getY = (price) => chartTop + ((maxPrice + padding - price) / (priceRange + padding * 2)) * chartHeight;
+    
+    const lastAvg = chartData[chartData.length - 1].avg, firstAvg = chartData[0].avg;
+    const isUp = lastAvg >= firstAvg;
+    
+    // 填充區域
+    const gradient = ctx.createLinearGradient(0, chartTop, 0, chartBottom);
+    gradient.addColorStop(0, isUp ? 'rgba(231, 76, 60, 0.15)' : 'rgba(39, 174, 96, 0.15)');
+    gradient.addColorStop(1, isUp ? 'rgba(231, 76, 60, 0.02)' : 'rgba(39, 174, 96, 0.02)');
+    ctx.beginPath(); ctx.moveTo(getX(0), chartBottom);
+    chartData.forEach((d, i) => ctx.lineTo(getX(i), getY(d.avg)));
+    ctx.lineTo(getX(chartData.length - 1), chartBottom); ctx.closePath(); ctx.fillStyle = gradient; ctx.fill();
+    
+    // 折線
+    ctx.beginPath(); ctx.strokeStyle = isUp ? '#e74c3c' : '#27ae60'; ctx.lineWidth = 2;
+    chartData.forEach((d, i) => { if (i === 0) ctx.moveTo(getX(i), getY(d.avg)); else ctx.lineTo(getX(i), getY(d.avg)); });
+    ctx.stroke();
+    
+    // 終點
+    ctx.fillStyle = isUp ? '#e74c3c' : '#27ae60'; ctx.beginPath();
+    ctx.arc(getX(chartData.length - 1), getY(lastAvg), 4, 0, Math.PI * 2); ctx.fill();
+    
+    // X軸標籤
+    ctx.fillStyle = '#666'; ctx.font = '10px sans-serif'; ctx.textAlign = 'center';
+    const labelCount = Math.min(6, chartData.length);
+    for (let i = 0; i < labelCount; i++) {
+        const idx = Math.floor((i / (labelCount - 1)) * (chartData.length - 1));
+        ctx.fillText(chartData[idx].date.substring(2), getX(idx), chartBottom + 15);
+    }
+    
+    // 右上角顯示漲跌
+    const change = lastAvg - firstAvg;
+    const pct = (change / firstAvg * 100).toFixed(2);
+    ctx.font = '12px Menlo, monospace'; ctx.fillStyle = isUp ? '#e74c3c' : '#27ae60'; ctx.textAlign = 'right';
+    ctx.fillText(`${lastAvg.toFixed(2)} (${change >= 0 ? '+' : ''}${pct}%)`, chartRight, 18);
 }
 
 function setPeriod(p) {
@@ -729,7 +869,11 @@ function setPeriod(p) {
         t.classList.toggle('active', (p === '3m' && txt === '3個月') || (p === '6m' && txt === '6個月') ||
             (p === '1y' && txt === '1年') || (p === '2y' && txt === '2年') || (p === '3y' && txt === '3年') || (p === 'all' && txt === '全部'));
     });
-    renderTable();
+    if (VIEW === 'chart' && MODE === 'industry') {
+        drawIndustryChart();
+    } else {
+        renderTable();
+    }
 }
 
 function toggleQuickFilter(type) {
@@ -763,13 +907,21 @@ function setFilter(type, value) {
     PAGE.current = 1;
     renderStatsBox();
     updateFilterStatus();
-    renderTable();
+    if (VIEW === 'chart' && MODE === 'industry') {
+        drawIndustryChart();
+    } else {
+        renderTable();
+    }
 }
 
 function clearFilter() {
-    FILTER = { industry: '', guarantee: '', quickFilter: '' };
+    FILTER = { industry: '', guarantee: '', method: '', quickFilter: '' };
     document.querySelectorAll('.quick-filter').forEach(el => el.classList.remove('active'));
     PAGE.current = 1;
+    VIEW = 'table';
+    document.querySelectorAll('.view-tab').forEach((t,i) => t.classList.toggle('active', i === 0));
+    document.getElementById('chartArea').classList.add('hidden');
+    document.getElementById('tableArea').classList.remove('hidden');
     renderStatsBox();
     updateFilterStatus();
     renderTable();
@@ -779,8 +931,9 @@ function updateFilterStatus() {
     const el = document.getElementById('filterStatus');
     if (MODE === 'avgPrice') { el.classList.add('hidden'); return; }
     const tags = [];
-    if (MODE === 'industry' && FILTER.industry) tags.push(FILTER.industry);
-    if (MODE === 'overall' && FILTER.guarantee) tags.push(FILTER.guarantee);
+    if (FILTER.industry) tags.push(FILTER.industry);
+    if (FILTER.guarantee) tags.push(FILTER.guarantee);
+    if (FILTER.method) tags.push(FILTER.method);
     if (FILTER.quickFilter) {
         const qfLabels = { lowPremium: '低溢價', discount: '折價', nearExpiry: '近期到期', highVolume: '高成交量' };
         tags.push(qfLabels[FILTER.quickFilter] || FILTER.quickFilter);
@@ -832,13 +985,15 @@ async function reloadData() {
 // ========== 渲染函數 ==========
 function renderStatsBox() {
     const targetCodes = LISTED_MODE === 'listed' ? Array.from(DB.listedCodes) : Object.keys(DB.cbInfo).filter(c => !DB.listedCodes.has(c));
-    const industries = {}, guarantees = { '有擔保': 0, '無擔保': 0 };
+    const industries = {}, guarantees = { '有擔保': 0, '無擔保': 0 }, methods = { '詢圈': 0, '競拍': 0 };
     
     targetCodes.forEach(code => {
         const info = DB.cbInfo[code];
         if (!info) return;
         industries[info.industry || '其他傳產'] = (industries[info.industry || '其他傳產'] || 0) + 1;
         guarantees[info.guarantee || '無擔保']++;
+        if (info.method === '詢圈') methods['詢圈']++;
+        else if (info.method === '競拍') methods['競拍']++;
     });
     
     const sortedIndustries = Object.entries(industries).sort((a,b) => b[1]-a[1]);
@@ -852,11 +1007,15 @@ function renderStatsBox() {
     } else if (MODE === 'industry') {
         html = `<div class="section-title"><span>🏭 ${modeLabel} - 產業查詢</span>
             <button onclick="reloadData()" style="background:var(--clickable);border:1px solid var(--clickable-border);padding:6px 14px;border-radius:16px;font-size:13px;cursor:pointer;color:#555;">🔄 重新載入</button></div>
-            <div style="color:#666;font-size:14px;margin:8px 0 12px;">點擊產業標籤篩選</div>
             <div class="ind-grid">${sortedIndustries.map(([ind, cnt]) => `
-                <div class="ind-tag ${FILTER.industry === ind ? 'active' : ''}" onclick="setFilter('industry', '${ind}')">
-                    <span class="emoji">${industryEmoji(ind)}</span><span class="name">${ind}</span><span class="num">${cnt}</span>
-                </div>`).join('')}</div>`;
+                <div class="ind-tag ${FILTER.industry === ind ? 'active' : ''}" onclick="setFilter('industry', '${ind}')">${industryEmoji(ind)} ${ind} <span class="num">${cnt}</span></div>`).join('')}</div>
+            <div class="filter-tags">
+                <span style="font-size:12px;color:#888;margin-right:4px;">交集篩選：</span>
+                <div class="filter-tag guarantee ${FILTER.guarantee === '有擔保' ? 'active' : ''}" onclick="setFilter('guarantee', '有擔保')">有擔保 ${guarantees['有擔保']}</div>
+                <div class="filter-tag guarantee ${FILTER.guarantee === '無擔保' ? 'active' : ''}" onclick="setFilter('guarantee', '無擔保')">無擔保 ${guarantees['無擔保']}</div>
+                <div class="filter-tag method ${FILTER.method === '詢圈' ? 'active' : ''}" onclick="setFilter('method', '詢圈')">詢圈 ${methods['詢圈']}</div>
+                <div class="filter-tag method ${FILTER.method === '競拍' ? 'active' : ''}" onclick="setFilter('method', '競拍')">競拍 ${methods['競拍']}</div>
+            </div>`;
     } else if (MODE === 'overall') {
         html = `<div class="section-title"><span>📊 ${modeLabel} - 整體查詢</span>
             <button onclick="reloadData()" style="background:var(--clickable);border:1px solid var(--clickable-border);padding:6px 14px;border-radius:16px;font-size:13px;cursor:pointer;color:#555;">🔄 重新載入</button></div>
@@ -899,6 +1058,7 @@ function getFilteredData() {
             (info.industry||'').toLowerCase().includes(q) || (info.industryPosition||'').toLowerCase().includes(q);
         const matchIndustry = !FILTER.industry || info.industry === FILTER.industry;
         const matchGuarantee = !FILTER.guarantee || info.guarantee === FILTER.guarantee;
+        const matchMethod = !FILTER.method || info.method === FILTER.method;
         
         let matchQuick = true;
         if (FILTER.quickFilter && LISTED_MODE === 'listed') {
@@ -910,7 +1070,7 @@ function getFilteredData() {
             }
         }
         
-        return matchSearch && matchIndustry && matchGuarantee && matchQuick;
+        return matchSearch && matchIndustry && matchGuarantee && matchMethod && matchQuick;
     }).map(code => {
         const info = DB.cbInfo[code] || {};
         const allPrices = DB.cbPrice[code] || [];
