@@ -1784,12 +1784,91 @@ function getDailyAvgData() {
     const dateNums = Object.keys(DB.dailyAvg).map(Number).sort((a, b) => a - b);
     const cutoffNum = getCutoffDateNum();
     const filteredDates = cutoffNum ? dateNums.filter(d => d >= cutoffNum) : dateNums;
-    return filteredDates.map(dateNum => {
+    
+    // 取得原始日線數據
+    const rawData = filteredDates.map(dateNum => {
         const day = DB.dailyAvg[dateNum];
         const prices = AVG_TYPE === 'all' ? day.all : AVG_TYPE === 'guaranteed' ? day.guaranteed : day.unguaranteed;
         if (prices.length === 0) return null;
         return { dateNum, date: day.date, avg: prices.reduce((a, b) => a + b, 0) / prices.length, count: prices.length };
     }).filter(d => d !== null);
+    
+    // 根據時間區間決定採樣方式
+    const samplingMode = getSamplingMode();
+    if (samplingMode === 'daily') return rawData;
+    
+    // 進行採樣
+    return sampleData(rawData, samplingMode);
+}
+
+// 根據時間區間決定採樣模式
+function getSamplingMode() {
+    switch(PERIOD) {
+        case '3m':
+        case '6m':
+            return 'daily';   // 日線
+        case '1y':
+        case '2y':
+            return 'weekly';  // 週線
+        case '3y':
+        case '5y':
+            return 'biweekly'; // 雙週線
+        case 'all':
+        default:
+            return 'monthly'; // 月線
+    }
+}
+
+// 取得採樣模式的顯示名稱
+function getSamplingLabel() {
+    switch(getSamplingMode()) {
+        case 'daily': return '日線';
+        case 'weekly': return '週線';
+        case 'biweekly': return '雙週線';
+        case 'monthly': return '月線';
+        default: return '';
+    }
+}
+
+// 數據採樣函數
+function sampleData(data, mode) {
+    if (data.length === 0) return [];
+    
+    const groups = {};
+    
+    data.forEach(d => {
+        const dateStr = d.date; // YYYY/MM/DD
+        const parts = dateStr.split('/');
+        const year = parseInt(parts[0]);
+        const month = parseInt(parts[1]);
+        const day = parseInt(parts[2]);
+        const dateObj = new Date(year, month - 1, day);
+        
+        let groupKey;
+        if (mode === 'weekly') {
+            // 週線：以年+週數為key
+            const startOfYear = new Date(year, 0, 1);
+            const weekNum = Math.ceil(((dateObj - startOfYear) / 86400000 + startOfYear.getDay() + 1) / 7);
+            groupKey = `${year}-W${String(weekNum).padStart(2, '0')}`;
+        } else if (mode === 'biweekly') {
+            // 雙週線：以年+雙週數為key
+            const startOfYear = new Date(year, 0, 1);
+            const weekNum = Math.ceil(((dateObj - startOfYear) / 86400000 + startOfYear.getDay() + 1) / 7);
+            const biweekNum = Math.ceil(weekNum / 2);
+            groupKey = `${year}-B${String(biweekNum).padStart(2, '0')}`;
+        } else if (mode === 'monthly') {
+            // 月線：以年月為key
+            groupKey = `${year}-${String(month).padStart(2, '0')}`;
+        }
+        
+        // 每個group保留最後一筆（該期間最後交易日）
+        if (!groups[groupKey] || d.dateNum > groups[groupKey].dateNum) {
+            groups[groupKey] = d;
+        }
+    });
+    
+    // 按日期排序返回
+    return Object.values(groups).sort((a, b) => a.dateNum - b.dateNum);
 }
 
 function getCutoffDateNum() {
@@ -1823,7 +1902,10 @@ function renderAvgPriceChart() {
     ctx.scale(dpr, dpr);
     
     const width = rect.width, height = 320;
+    const isMobile = width < 500;
     const dailyData = getDailyAvgData();
+    const samplingMode = getSamplingMode();
+    const samplingLabel = getSamplingLabel();
     
     if (dailyData.length < 2) {
         ctx.fillStyle = '#999'; ctx.font = '14px sans-serif'; ctx.textAlign = 'center';
@@ -1834,20 +1916,29 @@ function renderAvgPriceChart() {
     
     const avgPrices = dailyData.map(d => d.avg);
     const maxPrice = Math.max(...avgPrices), minPrice = Math.min(...avgPrices);
-    const priceRange = maxPrice - minPrice || 1, padding = priceRange * 0.1;
-    const chartLeft = 55, chartRight = width - 15, chartTop = 25, chartBottom = height - 40;
+    const priceRange = maxPrice - minPrice || 1, padding = priceRange * 0.12;
+    const chartLeft = isMobile ? 45 : 55;
+    const chartRight = width - 15;
+    const chartTop = 30;
+    const chartBottom = height - 40;
     const chartWidth = chartRight - chartLeft, chartHeight = chartBottom - chartTop;
     
     ctx.clearRect(0, 0, width, height);
     
+    // 標題（包含採樣模式標籤）
     const typeLabel = AVG_TYPE === 'all' ? '全部CB' : AVG_TYPE === 'guaranteed' ? '有擔保CB' : '無擔保CB';
-    ctx.fillStyle = '#333'; ctx.font = 'bold 14px sans-serif'; ctx.textAlign = 'left';
+    ctx.fillStyle = '#333'; ctx.font = isMobile ? 'bold 13px sans-serif' : 'bold 14px sans-serif'; ctx.textAlign = 'left';
     ctx.fillText(`${typeLabel} 明日參價均價走勢`, chartLeft, 16);
+    
+    // 採樣模式標籤（灰色小字）
+    ctx.fillStyle = '#999'; ctx.font = isMobile ? '10px sans-serif' : '11px sans-serif';
+    const titleWidth = ctx.measureText(`${typeLabel} 明日參價均價走勢`).width;
+    ctx.fillText(`(${samplingLabel})`, chartLeft + titleWidth + 8, 16);
     
     ctx.strokeStyle = '#e8e8e8'; ctx.lineWidth = 1;
     for (let i = 0; i <= 4; i++) { const y = chartTop + (chartHeight / 4) * i; ctx.beginPath(); ctx.moveTo(chartLeft, y); ctx.lineTo(chartRight, y); ctx.stroke(); }
     
-    ctx.fillStyle = '#666'; ctx.font = '11px Menlo, monospace'; ctx.textAlign = 'right';
+    ctx.fillStyle = '#666'; ctx.font = isMobile ? '10px Menlo, monospace' : '11px Menlo, monospace'; ctx.textAlign = 'right';
     for (let i = 0; i <= 4; i++) {
         const price = maxPrice + padding - ((priceRange + padding * 2) / 4) * i;
         ctx.fillText(price.toFixed(1), chartLeft - 5, chartTop + (chartHeight / 4) * i + 4);
@@ -1870,27 +1961,39 @@ function renderAvgPriceChart() {
     dailyData.forEach((d, i) => { if (i === 0) ctx.moveTo(getX(i), getY(d.avg)); else ctx.lineTo(getX(i), getY(d.avg)); });
     ctx.stroke();
     
-    // 13日均線（橘色虛線）
-    const ma13 = [];
-    for (let i = 0; i < dailyData.length; i++) {
-        if (i < 12) { ma13.push(null); }
-        else {
-            let sum = 0;
-            for (let j = i - 12; j <= i; j++) sum += dailyData[j].avg;
-            ma13.push(sum / 13);
+    // 均線（根據採樣模式調整）
+    // 日線：13日均線，週線：5週均線，雙週線/月線：不顯示
+    const showMA = (samplingMode === 'daily' || samplingMode === 'weekly');
+    const maPeriod = samplingMode === 'daily' ? 13 : 5; // 日線13MA，週線5MA
+    const maLabel = samplingMode === 'daily' ? '13MA' : '5MA';
+    
+    if (showMA && dailyData.length >= maPeriod) {
+        const ma = [];
+        for (let i = 0; i < dailyData.length; i++) {
+            if (i < maPeriod - 1) { ma.push(null); }
+            else {
+                let sum = 0;
+                for (let j = i - (maPeriod - 1); j <= i; j++) sum += dailyData[j].avg;
+                ma.push(sum / maPeriod);
+            }
         }
+        ctx.beginPath(); ctx.strokeStyle = '#f39c12'; ctx.lineWidth = 1.5;
+        ctx.setLineDash([4, 3]);
+        let maStarted = false;
+        ma.forEach((val, i) => {
+            if (val !== null) {
+                if (!maStarted) { ctx.moveTo(getX(i), getY(val)); maStarted = true; }
+                else ctx.lineTo(getX(i), getY(val));
+            }
+        });
+        ctx.stroke();
+        ctx.setLineDash([]);
+        
+        // 圖例
+        ctx.font = isMobile ? '10px sans-serif' : '11px sans-serif'; ctx.textAlign = 'left';
+        ctx.fillStyle = '#f39c12';
+        ctx.fillText(`— ${maLabel}`, width - 80, 16);
     }
-    ctx.beginPath(); ctx.strokeStyle = '#f39c12'; ctx.lineWidth = 1.5;
-    ctx.setLineDash([4, 3]);
-    let ma13Started = false;
-    ma13.forEach((val, i) => {
-        if (val !== null) {
-            if (!ma13Started) { ctx.moveTo(getX(i), getY(val)); ma13Started = true; }
-            else ctx.lineTo(getX(i), getY(val));
-        }
-    });
-    ctx.stroke();
-    ctx.setLineDash([]);
     
     ctx.fillStyle = isUp ? '#e74c3c' : '#27ae60'; ctx.beginPath();
     ctx.arc(getX(dailyData.length - 1), getY(lastAvg), 4, 0, Math.PI * 2); ctx.fill();
@@ -1903,22 +2006,23 @@ function renderAvgPriceChart() {
     });
     
     // 最高價標示（紅色框框）
-    const boxPadX = 6;
+    const boxPadX = isMobile ? 4 : 6;
+    const boxHeight = isMobile ? 14 : 16;
     const maxX = getX(maxIdx), maxY = getY(dailyData[maxIdx].avg);
     const maxText = dailyData[maxIdx].avg.toFixed(2);
-    ctx.font = 'bold 11px Menlo, monospace';
+    ctx.font = isMobile ? 'bold 10px Menlo, monospace' : 'bold 11px Menlo, monospace';
     const maxTextWidth = ctx.measureText(maxText).width;
     let maxBoxX = maxX - maxTextWidth/2 - boxPadX;
-    let maxBoxY = maxY - 22;
+    let maxBoxY = maxY - 20;
     if (maxBoxX < chartLeft) maxBoxX = chartLeft;
     if (maxBoxX + maxTextWidth + boxPadX*2 > chartRight) maxBoxX = chartRight - maxTextWidth - boxPadX*2;
     if (maxBoxY < chartTop) maxBoxY = maxY + 5;
     ctx.fillStyle = '#e74c3c'; ctx.strokeStyle = '#e74c3c'; ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.roundRect(maxBoxX, maxBoxY, maxTextWidth + boxPadX*2, 16, 3); ctx.fill();
+    ctx.beginPath(); ctx.roundRect(maxBoxX, maxBoxY, maxTextWidth + boxPadX*2, boxHeight, 3); ctx.fill();
     ctx.fillStyle = '#fff'; ctx.textAlign = 'left';
-    ctx.fillText(maxText, maxBoxX + boxPadX, maxBoxY + 12);
+    ctx.fillText(maxText, maxBoxX + boxPadX, maxBoxY + (isMobile ? 10 : 12));
     ctx.strokeStyle = '#e74c3c'; ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.moveTo(maxX, maxY); ctx.lineTo(maxX, maxBoxY + 16); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(maxX, maxY); ctx.lineTo(maxX, maxBoxY + boxHeight); ctx.stroke();
     
     // 最低價標示（綠色框框）
     const minX = getX(minIdx), minY = getY(dailyData[minIdx].avg);
@@ -1928,29 +2032,34 @@ function renderAvgPriceChart() {
     let minBoxY = minY + 5;
     if (minBoxX < chartLeft) minBoxX = chartLeft;
     if (minBoxX + minTextWidth + boxPadX*2 > chartRight) minBoxX = chartRight - minTextWidth - boxPadX*2;
-    if (minBoxY + 16 > chartBottom) minBoxY = minY - 22;
+    if (minBoxY + boxHeight > chartBottom) minBoxY = minY - 20;
     ctx.fillStyle = '#27ae60'; ctx.strokeStyle = '#27ae60'; ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.roundRect(minBoxX, minBoxY, minTextWidth + boxPadX*2, 16, 3); ctx.fill();
+    ctx.beginPath(); ctx.roundRect(minBoxX, minBoxY, minTextWidth + boxPadX*2, boxHeight, 3); ctx.fill();
     ctx.fillStyle = '#fff'; ctx.textAlign = 'left';
-    ctx.fillText(minText, minBoxX + boxPadX, minBoxY + 12);
+    ctx.fillText(minText, minBoxX + boxPadX, minBoxY + (isMobile ? 10 : 12));
     ctx.strokeStyle = '#27ae60'; ctx.lineWidth = 1;
     ctx.beginPath(); ctx.moveTo(minX, minY); ctx.lineTo(minX, minBoxY); ctx.stroke();
     
-    // 圖例（13MA）
-    ctx.font = '11px sans-serif'; ctx.textAlign = 'left';
-    ctx.fillStyle = '#f39c12';
-    ctx.fillText('— 13MA', width - 80, 16);
-    
-    ctx.fillStyle = '#666'; ctx.font = '10px sans-serif'; ctx.textAlign = 'center';
-    const labelCount = Math.min(6, dailyData.length);
+    // X軸標籤
+    ctx.fillStyle = '#666'; ctx.font = isMobile ? '9px sans-serif' : '10px sans-serif'; ctx.textAlign = 'center';
+    const labelCount = isMobile ? Math.min(4, dailyData.length) : Math.min(6, dailyData.length);
     for (let i = 0; i < labelCount; i++) {
         const idx = Math.floor((i / (labelCount - 1)) * (dailyData.length - 1));
-        ctx.fillText(dailyData[idx].date.substring(2), getX(idx), chartBottom + 15);
+        // 根據採樣模式調整日期格式
+        let dateStr;
+        if (samplingMode === 'monthly') {
+            dateStr = dailyData[idx].date.substring(2, 7); // YY/MM
+        } else if (isMobile) {
+            dateStr = dailyData[idx].date.substring(5); // MM/DD
+        } else {
+            dateStr = dailyData[idx].date.substring(2); // YY/MM/DD
+        }
+        ctx.fillText(dateStr, getX(idx), chartBottom + 15);
     }
     
     const change = lastAvg - firstAvg;
     const pct = (change / firstAvg * 100).toFixed(2);
-    ctx.font = '12px Menlo, monospace'; ctx.fillStyle = isUp ? '#e74c3c' : '#27ae60'; ctx.textAlign = 'right';
+    ctx.font = isMobile ? '11px Menlo, monospace' : '12px Menlo, monospace'; ctx.fillStyle = isUp ? '#e74c3c' : '#27ae60'; ctx.textAlign = 'right';
     ctx.fillText(`${lastAvg.toFixed(2)} (${change >= 0 ? '+' : ''}${pct}%)`, chartRight, 16);
     
     updateAvgStats(dailyData);
@@ -1967,13 +2076,24 @@ function updateAvgStats(dailyData) {
     const change = last.avg - first.avg;
     const pct = (change / first.avg * 100).toFixed(2);
     
+    // 根據採樣模式顯示對應的數據筆數標籤
+    const samplingMode = getSamplingMode();
+    let countLabel;
+    switch(samplingMode) {
+        case 'daily': countLabel = '交易天數'; break;
+        case 'weekly': countLabel = '週數'; break;
+        case 'biweekly': countLabel = '雙週數'; break;
+        case 'monthly': countLabel = '月數'; break;
+        default: countLabel = '數據筆數';
+    }
+    
     statsEl.innerHTML = `
         <div class="avg-stat-item"><div class="val">${last.avg.toFixed(2)}</div><div class="lbl">最新均價</div></div>
         <div class="avg-stat-item"><div class="val">${maxAvg.toFixed(2)}</div><div class="lbl">期間最高</div></div>
         <div class="avg-stat-item"><div class="val">${minAvg.toFixed(2)}</div><div class="lbl">期間最低</div></div>
         <div class="avg-stat-item"><div class="val" style="color:${change >= 0 ? '#e74c3c' : '#27ae60'}">${change >= 0 ? '+' : ''}${pct}%</div><div class="lbl">期間漲跌</div></div>
         <div class="avg-stat-item"><div class="val">${last.count}</div><div class="lbl">最新檔數</div></div>
-        <div class="avg-stat-item"><div class="val">${dailyData.length}</div><div class="lbl">交易天數</div></div>`;
+        <div class="avg-stat-item"><div class="val">${dailyData.length}</div><div class="lbl">${countLabel}</div></div>`;
 }
 
 // ========== 個股查詢功能 ==========
