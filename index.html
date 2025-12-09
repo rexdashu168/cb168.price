@@ -279,7 +279,8 @@ function industryEmoji(ind) {
         '電機機械': '⚙️', '鋼鐵產業': '🔩', '汽車產業': '🚗', '航運產業': '🚢',
         '觀光餐旅': '🏨', '金融保險': '🏦', '建材營造': '🏗️', '食品產業': '🍜',
         '貿易百貨': '🛒', '油電燃氣': '⛽', '文化創意': '🎬', '其他傳產': '📦',
-        '電器電纜': '🔋', '造紙產業': '📄', '水泥產業': '🧱', '農業科技': '🌾'
+        '電器電纜': '🔋', '造紙產業': '📄', '水泥產業': '🧱', '農業科技': '🌾',
+        '運動休閒': '⚽', '綠能環保': '🌱', '居家生活': '🏠', '數位雲端': '☁️'
     };
     return map[ind] || '📦';
 }
@@ -296,6 +297,15 @@ function setMode(m) {
         m === 'stock' ? '個股' : m === 'industry' ? '產業' : m === 'overall' ? '整體' : '均價'
     )));
     
+    // 切換模式時清除不相關的篩選
+    if(m === 'stock') {
+        FILTER = { industry: '', guarantee: '' };
+    } else if(m === 'industry') {
+        FILTER.guarantee = ''; // 產業模式只保留產業篩選
+    } else if(m === 'overall') {
+        FILTER.industry = ''; // 整體模式只保留擔保篩選
+    }
+    
     // 控制各區塊顯示
     const isAvgMode = m === 'avgPrice';
     document.getElementById('avgPriceArea').classList.toggle('hidden', !isAvgMode);
@@ -310,6 +320,7 @@ function setMode(m) {
         renderAvgPriceChart();
     } else {
         renderStatsBox();
+        updateFilterStatus();
         renderTable();
     }
 }
@@ -591,13 +602,29 @@ function clearFilter() {
 
 function updateFilterStatus() {
     const el = document.getElementById('filterStatus');
-    const hasFilter = FILTER.industry || FILTER.guarantee;
+    
+    // 均價走勢模式不顯示篩選狀態
+    if(MODE === 'avgPrice') {
+        el.classList.add('hidden');
+        return;
+    }
+    
+    // 根據模式決定要顯示的篩選條件
+    let hasFilter = false;
+    const tags = [];
+    
+    if(MODE === 'industry' && FILTER.industry) {
+        hasFilter = true;
+        tags.push(FILTER.industry);
+    }
+    if(MODE === 'overall' && FILTER.guarantee) {
+        hasFilter = true;
+        tags.push(FILTER.guarantee);
+    }
+    
     el.classList.toggle('hidden', !hasFilter);
     
     if(hasFilter) {
-        const tags = [];
-        if(FILTER.industry) tags.push(FILTER.industry);
-        if(FILTER.guarantee) tags.push(FILTER.guarantee);
         document.getElementById('filterTag').textContent = tags.join(' + ');
     }
 }
@@ -763,8 +790,19 @@ async function init() {
     const cached = await loadFromCache();
     
     if(cached && Object.keys(DB.cbPrice).length > 0) {
-        // 快取有資料，直接使用
+        // 快取有資料
         document.getElementById('loadStatus').innerText = '從快取載入完成！';
+        
+        // 檢查 dailyAvg 是否需要重新計算
+        const needRecalc = Object.keys(DB.dailyAvg).length === 0 || 
+            !Object.values(DB.dailyAvg).some(d => d.guaranteed && d.guaranteed.length > 0);
+        
+        if(needRecalc) {
+            console.log('⚠️ dailyAvg 需要重新計算...');
+            recalculateDailyAvg();
+            await saveToCache(); // 更新快取
+        }
+        
         renderStatsBox();
         renderTable();
         document.getElementById('loading').classList.add('hidden');
@@ -825,9 +863,20 @@ function recalculateDailyAvg() {
     // 清空並重建
     DB.dailyAvg = {};
     
+    let guaranteedCB = 0;
+    let unguaranteedCB = 0;
+    let unknownCB = 0;
+    
     Object.entries(DB.cbPrice).forEach(([code, prices]) => {
         const info = DB.cbInfo[code];
         const isGuaranteed = info && info.guarantee === '有擔保';
+        
+        if(info) {
+            if(isGuaranteed) guaranteedCB++;
+            else unguaranteedCB++;
+        } else {
+            unknownCB++;
+        }
         
         prices.forEach(p => {
             const dateNum = p.dateNum;
@@ -847,6 +896,14 @@ function recalculateDailyAvg() {
     });
     
     console.log('✅ 每日均價計算完成，共', Object.keys(DB.dailyAvg).length, '天');
+    console.log('✅ CB分類: 有擔保', guaranteedCB, '檔, 無擔保', unguaranteedCB, '檔, 無資料', unknownCB, '檔');
+    
+    // 顯示最近一天的統計
+    const lastDate = Object.keys(DB.dailyAvg).map(Number).sort((a,b) => b-a)[0];
+    if(lastDate) {
+        const last = DB.dailyAvg[lastDate];
+        console.log('✅ 最後交易日', last.date, ': 全部', last.all.length, '檔, 有擔保', last.guaranteed.length, '檔, 無擔保', last.unguaranteed.length, '檔');
+    }
 }
 
 // 載入單一年度資料（靜默模式）
@@ -887,50 +944,71 @@ async function loadCbInfo() {
             const wb = XLSX.read(await res.arrayBuffer(), {type: 'array'});
             console.log('工作表:', wb.SheetNames);
             
-            // 工作表名稱：優先使用「01」
-            const sheetNames = ['01', '01_ALLCB基本資料', wb.SheetNames[0]].filter(s => s && wb.Sheets[s]);
+            // 找到正確的工作表
+            const targetSheets = ['01_ALLCB基本資料', '01', wb.SheetNames[0]];
+            let foundSheet = null;
+            for(const sn of targetSheets) {
+                if(wb.Sheets[sn]) {
+                    foundSheet = sn;
+                    break;
+                }
+            }
             
-            sheetNames.forEach(sn => {
-                const sheet = wb.Sheets[sn];
-                if(!sheet) return;
-                const rows = XLSX.utils.sheet_to_json(sheet);
-                console.log('讀取工作表:', sn, '筆數:', rows.length);
+            if(!foundSheet) {
+                console.log('找不到目標工作表');
+                continue;
+            }
+            
+            const sheet = wb.Sheets[foundSheet];
+            const rows = XLSX.utils.sheet_to_json(sheet);
+            console.log('讀取工作表:', foundSheet, '筆數:', rows.length);
+            
+            // Debug: 顯示第一筆資料的所有欄位
+            if(rows.length > 0) {
+                console.log('欄位名稱:', Object.keys(rows[0]));
+            }
+            
+            let guaranteedCount = 0;
+            let unguaranteedCount = 0;
+            
+            rows.forEach(r => {
+                const code = String(r['CB代號'] || r['代號'] || '').trim();
+                if(!code || code.length < 4) return;
                 
-                rows.forEach(r => {
-                    const code = String(r['CB代號'] || r['代號'] || '').trim();
-                    if(!code || code.length < 4) return;
-                    
-                    // L欄：產業分類
-                    const industry = r['產業分類'] || r['產業'] || '其他';
-                    const simpleIndustry = simplifyIndustry(industry);
-                    
-                    const guarVal = r['擔保'] || '';
-                    const guarantee = (guarVal === '有擔保' || guarVal === 'Y' || guarVal === '有') ? '有擔保' : '無擔保';
-                    
-                    const methodVal = r['發行方式'] || '';
-                    const method = methodVal.includes('競') ? '競拍' : (methodVal.includes('詢') ? '詢圈' : '');
-                    
-                    DB.cbInfo[code] = {
-                        name: r['CB簡稱'] || r['名稱'] || '',
-                        stockCode: String(r['股票代號'] || '').replace(/\.0$/, ''),
-                        stockName: r['標的簡稱'] || '',
-                        industry: simpleIndustry,
-                        convPrice: parseFloat(r['轉換價格'] || r['轉換價格(元)']) || 0,
-                        guarantee: guarantee,
-                        method: method
-                    };
-                    
-                    // 統計產業
-                    META.industries[simpleIndustry] = (META.industries[simpleIndustry] || 0) + 1;
-                    // 統計擔保
-                    META.guarantees[guarantee] = (META.guarantees[guarantee] || 0) + 1;
-                });
+                // L欄：產業分類
+                const industry = r['產業分類'] || r['產業'] || '其他';
+                const simpleIndustry = simplifyIndustry(industry);
+                
+                // F欄：擔保
+                const guarVal = String(r['擔保'] || '').trim();
+                const guarantee = (guarVal === '有擔保') ? '有擔保' : '無擔保';
+                
+                if(guarantee === '有擔保') guaranteedCount++;
+                else unguaranteedCount++;
+                
+                const methodVal = r['詢圈競拍'] || r['發行方式'] || '';
+                const method = String(methodVal).includes('競') ? '競拍' : (String(methodVal).includes('詢') ? '詢圈' : '');
+                
+                DB.cbInfo[code] = {
+                    name: r['名稱'] || r['CB簡稱'] || '',
+                    stockCode: String(r['股票代號'] || '').replace(/\.0$/, ''),
+                    stockName: r['標的簡稱'] || '',
+                    industry: simpleIndustry,
+                    convPrice: parseFloat(r['轉換價格'] || r['轉換價格(元)']) || 0,
+                    guarantee: guarantee,
+                    method: method
+                };
+                
+                // 統計產業
+                META.industries[simpleIndustry] = (META.industries[simpleIndustry] || 0) + 1;
+                // 統計擔保
+                META.guarantees[guarantee] = (META.guarantees[guarantee] || 0) + 1;
             });
             
             if(Object.keys(DB.cbInfo).length > 0) {
                 META.cbInfoLoaded = true;
-                console.log('✅ CB資料載入成功:', path, Object.keys(DB.cbInfo).length, '筆');
-                console.log('產業統計:', META.industries);
+                console.log('✅ CB資料載入成功:', Object.keys(DB.cbInfo).length, '筆');
+                console.log('✅ 有擔保:', guaranteedCount, '筆, 無擔保:', unguaranteedCount, '筆');
                 return;
             }
         } catch(e) { 
@@ -962,36 +1040,82 @@ function renderStatsBox() {
     const codes = Object.keys(DB.cbPrice);
     let totalRecords = 0;
     codes.forEach(c => totalRecords += DB.cbPrice[c].length);
-    const loadedYears = Object.keys(DB.cbPriceYears).length;
-    const sortedIndustries = Object.entries(META.industries).sort((a,b) => b[1]-a[1]);
     const cbInfoCnt = Object.keys(DB.cbInfo).length;
     
-    let html = `
-        <div class="section-title" style="display:flex;justify-content:space-between;align-items:center;">
-            <span>📊 統計數據</span>
-            <button onclick="reloadData()" style="background:var(--clickable);border:1px solid var(--clickable-border);padding:6px 14px;border-radius:16px;font-size:13px;cursor:pointer;color:#555;">🔄 重新載入</button>
-        </div>
-        <div class="stats-grid">
-            <div class="stat-item"><div class="stat-num">${cbInfoCnt}</div><div class="stat-label">全部CB</div></div>
-            <div class="stat-item"><div class="stat-num">${codes.length}</div><div class="stat-label">有價格CB</div></div>
-            <div class="stat-item"><div class="stat-num">${totalRecords.toLocaleString()}</div><div class="stat-label">價格筆數</div></div>
-            <div class="stat-item clickable ${FILTER.guarantee === '有擔保' ? 'active' : ''}" onclick="setFilter('guarantee', '有擔保')"><div class="stat-num">${padNum(META.guarantees['有擔保'])}</div><div class="stat-label">有擔保</div></div>
-            <div class="stat-item clickable ${FILTER.guarantee === '無擔保' ? 'active' : ''}" onclick="setFilter('guarantee', '無擔保')"><div class="stat-num">${padNum(META.guarantees['無擔保'])}</div><div class="stat-label">無擔保</div></div>
-        </div>
-    `;
+    // 直接從 DB.cbInfo 重新計算產業和擔保統計（確保同步）
+    const industries = {};
+    const guarantees = { '有擔保': 0, '無擔保': 0 };
     
-    // 產業標籤區塊（有資料時直接顯示）
-    if(sortedIndustries.length > 0) {
-        html += `
-            <div class="section-title">📊 各產業CB分佈</div>
-            <div class="ind-grid">
-                ${sortedIndustries.map(([ind, cnt]) => `
-                    <div class="ind-tag ${FILTER.industry === ind ? 'active' : ''}" onclick="setFilter('industry', '${ind}')">
-                        <span class="emoji">${industryEmoji(ind)}</span>
-                        <span class="name">${ind}</span>
-                        <span class="num">${cnt}</span>
-                    </div>
-                `).join('')}
+    Object.values(DB.cbInfo).forEach(info => {
+        // 產業統計
+        const ind = info.industry || '其他傳產';
+        industries[ind] = (industries[ind] || 0) + 1;
+        // 擔保統計
+        const guar = info.guarantee || '無擔保';
+        guarantees[guar] = (guarantees[guar] || 0) + 1;
+    });
+    
+    const sortedIndustries = Object.entries(industries).sort((a,b) => b[1]-a[1]);
+    
+    let html = '';
+    
+    // === 個股查詢模式 ===
+    if(MODE === 'stock') {
+        html = `
+            <div class="section-title" style="display:flex;justify-content:space-between;align-items:center;">
+                <span>🔍 個股查詢</span>
+                <button onclick="reloadData()" style="background:var(--clickable);border:1px solid var(--clickable-border);padding:6px 14px;border-radius:16px;font-size:13px;cursor:pointer;color:#555;">🔄 重新載入</button>
+            </div>
+            <div style="color:#666;font-size:14px;margin-top:8px;">
+                輸入CB代號、名稱或產業關鍵字搜尋，共 <b style="color:var(--primary)">${cbInfoCnt}</b> 檔CB
+            </div>
+        `;
+    }
+    
+    // === 產業查詢模式 ===
+    else if(MODE === 'industry') {
+        html = `
+            <div class="section-title" style="display:flex;justify-content:space-between;align-items:center;">
+                <span>🏭 產業查詢</span>
+                <button onclick="reloadData()" style="background:var(--clickable);border:1px solid var(--clickable-border);padding:6px 14px;border-radius:16px;font-size:13px;cursor:pointer;color:#555;">🔄 重新載入</button>
+            </div>
+            <div style="color:#666;font-size:14px;margin:8px 0 12px;">
+                點擊產業標籤篩選該產業的CB
+            </div>
+        `;
+        
+        // 產業標籤
+        if(sortedIndustries.length > 0) {
+            html += `
+                <div class="ind-grid">
+                    ${sortedIndustries.map(([ind, cnt]) => `
+                        <div class="ind-tag ${FILTER.industry === ind ? 'active' : ''}" onclick="setFilter('industry', '${ind}')">
+                            <span class="emoji">${industryEmoji(ind)}</span>
+                            <span class="name">${ind}</span>
+                            <span class="num">${cnt}</span>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+    }
+    
+    // === 整體查詢模式 ===
+    else if(MODE === 'overall') {
+        html = `
+            <div class="section-title" style="display:flex;justify-content:space-between;align-items:center;">
+                <span>📊 整體查詢</span>
+                <button onclick="reloadData()" style="background:var(--clickable);border:1px solid var(--clickable-border);padding:6px 14px;border-radius:16px;font-size:13px;cursor:pointer;color:#555;">🔄 重新載入</button>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-item"><div class="stat-num">${cbInfoCnt}</div><div class="stat-label">全部CB</div></div>
+                <div class="stat-item"><div class="stat-num">${codes.length}</div><div class="stat-label">有價格CB</div></div>
+                <div class="stat-item"><div class="stat-num">${totalRecords.toLocaleString()}</div><div class="stat-label">價格筆數</div></div>
+                <div class="stat-item clickable ${FILTER.guarantee === '有擔保' ? 'active' : ''}" onclick="setFilter('guarantee', '有擔保')"><div class="stat-num">${padNum(guarantees['有擔保'])}</div><div class="stat-label">有擔保</div></div>
+                <div class="stat-item clickable ${FILTER.guarantee === '無擔保' ? 'active' : ''}" onclick="setFilter('guarantee', '無擔保')"><div class="stat-num">${padNum(guarantees['無擔保'])}</div><div class="stat-label">無擔保</div></div>
+            </div>
+            <div style="color:#666;font-size:14px;margin-top:12px;">
+                點擊「有擔保」或「無擔保」篩選CB類型
             </div>
         `;
     }
@@ -1071,6 +1195,15 @@ function renderTable() {
     const infoKeys = Object.keys(DB.cbInfo);
     const allCodes = [...new Set([...priceKeys, ...infoKeys])].sort();
     
+    // Debug: 檢查篩選條件
+    if(FILTER.industry) {
+        const matchingCodes = allCodes.filter(c => {
+            const info = DB.cbInfo[c];
+            return info && info.industry === FILTER.industry;
+        });
+        console.log(`🔍 篩選產業「${FILTER.industry}」: 找到 ${matchingCodes.length} 筆`, matchingCodes.slice(0, 5));
+    }
+    
     // 篩選
     const filtered = allCodes.filter(c => {
         const info = DB.cbInfo[c] || {};
@@ -1082,10 +1215,10 @@ function renderTable() {
             (info.stockName||'').toLowerCase().includes(q) ||
             (info.industry||'').toLowerCase().includes(q);
         
-        // 產業篩選
+        // 產業篩選（產業查詢模式才啟用）
         const matchIndustry = !FILTER.industry || (info.industry || '') === FILTER.industry;
         
-        // 擔保篩選
+        // 擔保篩選（整體查詢模式才啟用）
         const matchGuarantee = !FILTER.guarantee || (info.guarantee || '') === FILTER.guarantee;
         
         return matchSearch && matchIndustry && matchGuarantee;
@@ -1094,8 +1227,17 @@ function renderTable() {
     // 更新篩選計數
     document.getElementById('filterCount').textContent = filtered.length;
     
+    // 空資料提示
     if(filtered.length === 0) {
-        document.getElementById('tableBody').innerHTML = `<tr><td colspan="10" style="text-align:center;padding:40px;color:#999">${allCodes.length === 0 ? '請先上傳 00_CB.xlsx 或載入年度資料' : '無符合條件的CB'}</td></tr>`;
+        let emptyMsg = '無符合條件的CB';
+        if(allCodes.length === 0) {
+            emptyMsg = '請先點擊「🔄 重新載入」載入資料';
+        } else if(MODE === 'industry' && FILTER.industry) {
+            emptyMsg = `「${FILTER.industry}」產業目前沒有CB資料`;
+        } else if(MODE === 'overall' && FILTER.guarantee) {
+            emptyMsg = `「${FILTER.guarantee}」目前沒有CB資料`;
+        }
+        document.getElementById('tableBody').innerHTML = `<tr><td colspan="10" style="text-align:center;padding:40px;color:#999">${emptyMsg}</td></tr>`;
         return;
     }
     
