@@ -107,6 +107,23 @@
     .modal-stat .val { font-size: 20px; font-weight: 700; color: var(--primary); }
     .modal-stat .lbl { font-size: 12px; color: #666; }
 
+    /* 均價走勢區塊 */
+    .avg-price-area { background: #fff; border-radius: 14px; padding: 20px; margin-bottom: 18px; border: 1px solid var(--border); }
+    .avg-type-tabs { display: flex; gap: 8px; margin-bottom: 14px; justify-content: center; }
+    .avg-type-tab { padding: 10px 24px; border-radius: 20px; font-size: 15px; font-weight: 600; cursor: pointer; border: 2px solid var(--clickable-border); background: var(--clickable); color: #333; transition: all 0.2s; }
+    .avg-type-tab:hover { border-color: var(--primary); background: var(--clickable-hover); }
+    .avg-type-tab.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .avg-period-tabs { display: flex; gap: 6px; margin-bottom: 16px; justify-content: center; flex-wrap: wrap; }
+    .avg-period-tab { padding: 6px 14px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid var(--border); background: #fff; color: #555; }
+    .avg-period-tab:hover { border-color: var(--primary); }
+    .avg-period-tab.active { background: #3498db; color: #fff; border-color: #3498db; }
+    .avg-chart-container { background: #fafafa; border-radius: 10px; padding: 15px; margin-bottom: 16px; }
+    .avg-chart-container canvas { width: 100%; height: 320px; }
+    .avg-stats { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+    .avg-stat-item { background: linear-gradient(135deg, #fff8f0, #fff0e5); padding: 14px 20px; border-radius: 10px; text-align: center; min-width: 100px; }
+    .avg-stat-item .val { font-size: 22px; font-weight: 700; color: var(--primary); font-family: 'Menlo', monospace; }
+    .avg-stat-item .lbl { font-size: 13px; color: #666; margin-top: 4px; }
+
     .hidden { display: none !important; }
 </style>
 ```
@@ -131,10 +148,32 @@
     <div class="sub-tab active" onclick="setMode('stock')">🔍 個股查詢</div>
     <div class="sub-tab" onclick="setMode('industry')">🏭 產業查詢</div>
     <div class="sub-tab" onclick="setMode('overall')">📊 整體查詢</div>
+    <div class="sub-tab" onclick="setMode('avgPrice')">📈 均價走勢</div>
 </div>
 
 <div class="stats-box" id="statsBox">
     <!-- 動態渲染 -->
+</div>
+
+<!-- 均價走勢區塊 -->
+<div class="avg-price-area hidden" id="avgPriceArea">
+    <div class="avg-type-tabs">
+        <div class="avg-type-tab active" onclick="setAvgType('all')">全部</div>
+        <div class="avg-type-tab" onclick="setAvgType('guaranteed')">有擔保</div>
+        <div class="avg-type-tab" onclick="setAvgType('unguaranteed')">無擔保</div>
+    </div>
+    <div class="avg-period-tabs">
+        <div class="avg-period-tab" onclick="setAvgPeriod('3m')">3個月</div>
+        <div class="avg-period-tab" onclick="setAvgPeriod('6m')">6個月</div>
+        <div class="avg-period-tab active" onclick="setAvgPeriod('1y')">1年</div>
+        <div class="avg-period-tab" onclick="setAvgPeriod('2y')">2年</div>
+        <div class="avg-period-tab" onclick="setAvgPeriod('3y')">3年</div>
+        <div class="avg-period-tab" onclick="setAvgPeriod('all')">全部</div>
+    </div>
+    <div class="avg-chart-container">
+        <canvas id="avgPriceChart"></canvas>
+    </div>
+    <div class="avg-stats" id="avgStats"></div>
 </div>
 
 <!-- 篩選狀態列 -->
@@ -218,17 +257,18 @@ const FILES = {
     CBPRICE_BASE: 'data/',           // 價格檔案在 data/ 目錄
     CB_INFO: '00_CB.xlsx'            // CB基本資料在根目錄
 };
-const DB = { cbPrice: {}, cbPriceYears: {}, cbInfo: {} };
+const DB = { cbPrice: {}, cbPriceYears: {}, cbInfo: {}, dailyAvg: {} };
 const META = { industries: {}, guarantees: { '有擔保': 0, '無擔保': 0 }, cbInfoLoaded: false };
 const currentYear = new Date().getFullYear();
 const availableYears = [];
 for(let y = 2011; y <= currentYear; y++) availableYears.push(y);
 
-let MODE = 'stock';      // stock, industry, overall
+let MODE = 'stock';      // stock, industry, overall, avgPrice
 let VIEW = 'table';      // table, chart
 let PERIOD = '1y';       // 3m, 6m, 1y, 2y, 3y, all
 let FILTER = { industry: '', guarantee: '' };
 let CURRENT_CODE = '';   // 目前顯示的 CB 代碼
+let AVG_TYPE = 'all';    // all, guaranteed, unguaranteed
 
 // 產業Emoji對照（使用簡化產業名稱）
 function industryEmoji(ind) {
@@ -253,10 +293,25 @@ function padNum(n) {
 function setMode(m) {
     MODE = m;
     document.querySelectorAll('.sub-tab').forEach(t => t.classList.toggle('active', t.textContent.includes(
-        m === 'stock' ? '個股' : m === 'industry' ? '產業' : '整體'
+        m === 'stock' ? '個股' : m === 'industry' ? '產業' : m === 'overall' ? '整體' : '均價'
     )));
-    renderStatsBox();
-    renderTable();
+    
+    // 控制各區塊顯示
+    const isAvgMode = m === 'avgPrice';
+    document.getElementById('avgPriceArea').classList.toggle('hidden', !isAvgMode);
+    document.getElementById('statsBox').classList.toggle('hidden', isAvgMode);
+    document.getElementById('filterStatus').classList.toggle('hidden', isAvgMode || (!FILTER.industry && !FILTER.guarantee));
+    document.querySelector('.search-box').classList.toggle('hidden', isAvgMode);
+    document.querySelector('.control-row').classList.toggle('hidden', isAvgMode);
+    document.getElementById('tableArea').classList.toggle('hidden', isAvgMode);
+    document.getElementById('chartArea').classList.toggle('hidden', true);
+    
+    if(isAvgMode) {
+        renderAvgPriceChart();
+    } else {
+        renderStatsBox();
+        renderTable();
+    }
 }
 
 function setView(v) {
@@ -277,6 +332,243 @@ function setPeriod(p) {
         );
     });
     renderTable();
+}
+
+// 均價走勢 - 切換類型
+function setAvgType(type) {
+    AVG_TYPE = type;
+    document.querySelectorAll('.avg-type-tab').forEach(t => {
+        t.classList.toggle('active', 
+            (type === 'all' && t.textContent === '全部') ||
+            (type === 'guaranteed' && t.textContent === '有擔保') ||
+            (type === 'unguaranteed' && t.textContent === '無擔保')
+        );
+    });
+    renderAvgPriceChart();
+}
+
+// 均價走勢 - 切換時間區間
+function setAvgPeriod(p) {
+    PERIOD = p;
+    document.querySelectorAll('.avg-period-tab').forEach(t => {
+        const txt = t.textContent;
+        t.classList.toggle('active', 
+            (p === '3m' && txt === '3個月') || (p === '6m' && txt === '6個月') ||
+            (p === '1y' && txt === '1年') || (p === '2y' && txt === '2年') ||
+            (p === '3y' && txt === '3年') || (p === 'all' && txt === '全部')
+        );
+    });
+    renderAvgPriceChart();
+}
+
+// 繪製均價走勢圖
+function renderAvgPriceChart() {
+    const canvas = document.getElementById('avgPriceChart');
+    if(!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    const container = canvas.parentElement;
+    
+    // 設置 canvas 尺寸
+    const dpr = window.devicePixelRatio || 1;
+    const rect = container.getBoundingClientRect();
+    canvas.width = rect.width * dpr;
+    canvas.height = 320 * dpr;
+    canvas.style.width = rect.width + 'px';
+    canvas.style.height = '320px';
+    ctx.scale(dpr, dpr);
+    
+    const width = rect.width;
+    const height = 320;
+    
+    // 取得每日均價資料
+    const dailyData = getDailyAvgData();
+    
+    if(dailyData.length < 2) {
+        ctx.fillStyle = '#999';
+        ctx.font = '14px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('資料不足，無法繪製走勢圖', width/2, height/2);
+        updateAvgStats([]);
+        return;
+    }
+    
+    // 計算價格範圍
+    const avgPrices = dailyData.map(d => d.avg);
+    const maxPrice = Math.max(...avgPrices);
+    const minPrice = Math.min(...avgPrices);
+    const priceRange = maxPrice - minPrice || 1;
+    const padding = priceRange * 0.1;
+    
+    // 繪圖區域
+    const chartLeft = 55;
+    const chartRight = width - 15;
+    const chartTop = 25;
+    const chartBottom = height - 40;
+    const chartWidth = chartRight - chartLeft;
+    const chartHeight = chartBottom - chartTop;
+    
+    // 清空畫布
+    ctx.clearRect(0, 0, width, height);
+    
+    // 標題
+    const typeLabel = AVG_TYPE === 'all' ? '全部CB' : AVG_TYPE === 'guaranteed' ? '有擔保CB' : '無擔保CB';
+    ctx.fillStyle = '#333';
+    ctx.font = 'bold 14px sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText(`${typeLabel} 明日參價均價走勢`, chartLeft, 16);
+    
+    // 繪製背景格線
+    ctx.strokeStyle = '#e8e8e8';
+    ctx.lineWidth = 1;
+    for(let i = 0; i <= 4; i++) {
+        const y = chartTop + (chartHeight / 4) * i;
+        ctx.beginPath();
+        ctx.moveTo(chartLeft, y);
+        ctx.lineTo(chartRight, y);
+        ctx.stroke();
+    }
+    
+    // Y軸價格標籤
+    ctx.fillStyle = '#666';
+    ctx.font = '11px Menlo, monospace';
+    ctx.textAlign = 'right';
+    for(let i = 0; i <= 4; i++) {
+        const price = maxPrice + padding - ((priceRange + padding * 2) / 4) * i;
+        const y = chartTop + (chartHeight / 4) * i;
+        ctx.fillText(price.toFixed(1), chartLeft - 5, y + 4);
+    }
+    
+    // 計算點位置
+    const getX = (i) => chartLeft + (i / (dailyData.length - 1)) * chartWidth;
+    const getY = (price) => chartTop + ((maxPrice + padding - price) / (priceRange + padding * 2)) * chartHeight;
+    
+    // 繪製區域填充
+    const gradient = ctx.createLinearGradient(0, chartTop, 0, chartBottom);
+    const lastAvg = dailyData[dailyData.length - 1].avg;
+    const firstAvg = dailyData[0].avg;
+    const isUp = lastAvg >= firstAvg;
+    
+    if(isUp) {
+        gradient.addColorStop(0, 'rgba(231, 76, 60, 0.15)');
+        gradient.addColorStop(1, 'rgba(231, 76, 60, 0.02)');
+    } else {
+        gradient.addColorStop(0, 'rgba(39, 174, 96, 0.15)');
+        gradient.addColorStop(1, 'rgba(39, 174, 96, 0.02)');
+    }
+    
+    ctx.beginPath();
+    ctx.moveTo(getX(0), chartBottom);
+    dailyData.forEach((d, i) => ctx.lineTo(getX(i), getY(d.avg)));
+    ctx.lineTo(getX(dailyData.length - 1), chartBottom);
+    ctx.closePath();
+    ctx.fillStyle = gradient;
+    ctx.fill();
+    
+    // 繪製折線
+    ctx.beginPath();
+    ctx.strokeStyle = isUp ? '#e74c3c' : '#27ae60';
+    ctx.lineWidth = 2;
+    dailyData.forEach((d, i) => {
+        if(i === 0) ctx.moveTo(getX(i), getY(d.avg));
+        else ctx.lineTo(getX(i), getY(d.avg));
+    });
+    ctx.stroke();
+    
+    // 標記終點
+    ctx.fillStyle = isUp ? '#e74c3c' : '#27ae60';
+    ctx.beginPath();
+    ctx.arc(getX(dailyData.length - 1), getY(lastAvg), 4, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // X軸日期標籤
+    ctx.fillStyle = '#666';
+    ctx.font = '10px sans-serif';
+    ctx.textAlign = 'center';
+    
+    const labelCount = Math.min(6, dailyData.length);
+    for(let i = 0; i < labelCount; i++) {
+        const idx = Math.floor((i / (labelCount - 1)) * (dailyData.length - 1));
+        const x = getX(idx);
+        const dateStr = dailyData[idx].date.substring(2); // YY/MM/DD
+        ctx.fillText(dateStr, x, chartBottom + 15);
+    }
+    
+    // 右上角顯示最新均價
+    const change = lastAvg - firstAvg;
+    const pct = (change / firstAvg * 100).toFixed(2);
+    ctx.font = '12px Menlo, monospace';
+    ctx.fillStyle = isUp ? '#e74c3c' : '#27ae60';
+    ctx.textAlign = 'right';
+    ctx.fillText(`${lastAvg.toFixed(2)} (${change >= 0 ? '+' : ''}${pct}%)`, chartRight, 16);
+    
+    // 更新統計數據
+    updateAvgStats(dailyData);
+}
+
+// 取得每日均價資料
+function getDailyAvgData() {
+    const dateNums = Object.keys(DB.dailyAvg).map(Number).sort((a, b) => a - b);
+    
+    // 根據時間區間過濾
+    const cutoffNum = getCutoffDateNum();
+    const filteredDates = cutoffNum ? dateNums.filter(d => d >= cutoffNum) : dateNums;
+    
+    return filteredDates.map(dateNum => {
+        const day = DB.dailyAvg[dateNum];
+        const prices = AVG_TYPE === 'all' ? day.all : 
+                       AVG_TYPE === 'guaranteed' ? day.guaranteed : day.unguaranteed;
+        
+        if(prices.length === 0) return null;
+        
+        const avg = prices.reduce((a, b) => a + b, 0) / prices.length;
+        return { dateNum, date: day.date, avg, count: prices.length };
+    }).filter(d => d !== null);
+}
+
+// 取得時間區間的起始日期數字
+function getCutoffDateNum() {
+    if(PERIOD === 'all') return null;
+    
+    const now = new Date();
+    let cutoffDate;
+    switch(PERIOD) {
+        case '3m': cutoffDate = new Date(now.setMonth(now.getMonth() - 3)); break;
+        case '6m': cutoffDate = new Date(now.setMonth(now.getMonth() - 6)); break;
+        case '1y': cutoffDate = new Date(now.setFullYear(now.getFullYear() - 1)); break;
+        case '2y': cutoffDate = new Date(now.setFullYear(now.getFullYear() - 2)); break;
+        case '3y': cutoffDate = new Date(now.setFullYear(now.getFullYear() - 3)); break;
+        default: return null;
+    }
+    return parseInt(cutoffDate.toISOString().slice(0,10).replace(/-/g, ''));
+}
+
+// 更新均價統計數據
+function updateAvgStats(dailyData) {
+    const statsEl = document.getElementById('avgStats');
+    if(!statsEl) return;
+    
+    if(dailyData.length < 2) {
+        statsEl.innerHTML = '<div style="color:#999;text-align:center;padding:20px">無資料</div>';
+        return;
+    }
+    
+    const avgPrices = dailyData.map(d => d.avg);
+    const first = dailyData[0];
+    const last = dailyData[dailyData.length - 1];
+    const maxAvg = Math.max(...avgPrices);
+    const minAvg = Math.min(...avgPrices);
+    const change = last.avg - first.avg;
+    const pct = (change / first.avg * 100).toFixed(2);
+    
+    statsEl.innerHTML = `
+        <div class="avg-stat-item"><div class="val">${last.avg.toFixed(2)}</div><div class="lbl">最新均價</div></div>
+        <div class="avg-stat-item"><div class="val">${maxAvg.toFixed(2)}</div><div class="lbl">期間最高</div></div>
+        <div class="avg-stat-item"><div class="val">${minAvg.toFixed(2)}</div><div class="lbl">期間最低</div></div>
+        <div class="avg-stat-item"><div class="val" style="color:${change >= 0 ? '#e74c3c' : '#27ae60'}">${change >= 0 ? '+' : ''}${pct}%</div><div class="lbl">期間漲跌</div></div>
+        <div class="avg-stat-item"><div class="val">${last.count}</div><div class="lbl">最新檔數</div></div>
+        <div class="avg-stat-item"><div class="val">${dailyData.length}</div><div class="lbl">交易天數</div></div>
+    `;
 }
 
 function setFilter(type, value) {
@@ -363,6 +655,9 @@ async function loadFromCache() {
         if(cbPriceData && cbPriceData.data) {
             Object.assign(DB.cbPrice, cbPriceData.data);
             Object.assign(DB.cbPriceYears, cbPriceData.years || {});
+            if(cbPriceData.dailyAvg) {
+                Object.assign(DB.dailyAvg, cbPriceData.dailyAvg);
+            }
         }
         
         // 讀取 META
@@ -384,7 +679,7 @@ async function saveToCache() {
         if(!cacheDB) await openCacheDB();
         
         await setCacheData('cbInfo', { id: 'main', data: DB.cbInfo });
-        await setCacheData('cbPrice', { id: 'main', data: DB.cbPrice, years: DB.cbPriceYears });
+        await setCacheData('cbPrice', { id: 'main', data: DB.cbPrice, years: DB.cbPriceYears, dailyAvg: DB.dailyAvg });
         await setCacheData('meta', { 
             id: 'main', 
             timestamp: Date.now(),
@@ -444,6 +739,7 @@ async function reloadData() {
     DB.cbPrice = {};
     DB.cbPriceYears = {};
     DB.cbInfo = {};
+    DB.dailyAvg = {};
     META.industries = {};
     META.guarantees = { '有擔保': 0, '無擔保': 0 };
     META.cbInfoLoaded = false;
@@ -518,7 +814,39 @@ async function loadAllYearsParallel() {
         DB.cbPrice[c].sort((a, b) => a.dateNum - b.dateNum);
     });
     
+    // 重新計算每日均價的擔保分類（因為 cbInfo 已載入）
+    recalculateDailyAvg();
+    
     document.getElementById('loadStatus').innerText = '載入完成！';
+}
+
+// 重新計算每日均價的擔保分類
+function recalculateDailyAvg() {
+    // 清空並重建
+    DB.dailyAvg = {};
+    
+    Object.entries(DB.cbPrice).forEach(([code, prices]) => {
+        const info = DB.cbInfo[code];
+        const isGuaranteed = info && info.guarantee === '有擔保';
+        
+        prices.forEach(p => {
+            const dateNum = p.dateNum;
+            const refPrice = p.refPrice || p.close;
+            
+            if(!DB.dailyAvg[dateNum]) {
+                DB.dailyAvg[dateNum] = { date: p.date, all: [], guaranteed: [], unguaranteed: [] };
+            }
+            
+            DB.dailyAvg[dateNum].all.push(refPrice);
+            if(isGuaranteed) {
+                DB.dailyAvg[dateNum].guaranteed.push(refPrice);
+            } else {
+                DB.dailyAvg[dateNum].unguaranteed.push(refPrice);
+            }
+        });
+    });
+    
+    console.log('✅ 每日均價計算完成，共', Object.keys(DB.dailyAvg).length, '天');
 }
 
 // 載入單一年度資料（靜默模式）
@@ -676,20 +1004,42 @@ function parseWorkbook(wb) {
         if(!/^\d{8}$/.test(sn.trim())) return;
         const ds = sn.trim();
         const fd = `${ds.substring(0,4)}/${ds.substring(4,6)}/${ds.substring(6,8)}`;
+        const dateNum = parseInt(ds);
+        
         XLSX.utils.sheet_to_json(wb.Sheets[sn]).forEach(r => {
             const code = String(r['代號'] || '').trim();
             const close = parseFloat(r['收市']) || 0;
             if(!code || close <= 0) return;
             if(!DB.cbPrice[code]) DB.cbPrice[code] = [];
+            
+            const refPrice = parseFloat(r['明日參價']) || close; // 明日參價，沒有則用收盤價
+            
             DB.cbPrice[code].push({
-                date: fd, dateNum: parseInt(ds),
+                date: fd, dateNum: dateNum,
                 open: parseFloat(r['開市']) || close,
                 high: parseFloat(r['最高']) || close,
                 low: parseFloat(r['最低']) || close,
                 close: close,
                 change: parseFloat(r['漲跌']) || 0,
-                vol: parseFloat(r['單位']) || 0
+                vol: parseFloat(r['單位']) || 0,
+                refPrice: refPrice
             });
+            
+            // 累積每日參價資料（用於計算均價）
+            if(!DB.dailyAvg[dateNum]) {
+                DB.dailyAvg[dateNum] = { date: fd, all: [], guaranteed: [], unguaranteed: [] };
+            }
+            DB.dailyAvg[dateNum].all.push(refPrice);
+            
+            // 根據擔保類型分類
+            const info = DB.cbInfo[code];
+            if(info) {
+                if(info.guarantee === '有擔保') {
+                    DB.dailyAvg[dateNum].guaranteed.push(refPrice);
+                } else {
+                    DB.dailyAvg[dateNum].unguaranteed.push(refPrice);
+                }
+            }
         });
     });
 }
